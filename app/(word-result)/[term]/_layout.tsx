@@ -1,4 +1,4 @@
-// app/(tabs)/diction/term/[term]/_layout.tsx
+// app/(word-result)/[term]/_layout.tsx
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import DictionaryScreen from "./dictionary";
 import MediaScreen from "./media";
@@ -8,7 +8,12 @@ const TopTabs = createMaterialTopTabNavigator();
 
 export default function TermTabsLayout() {
   return (
-    <TopTabs.Navigator style={[debugBorder("white")]}>
+    <TopTabs.Navigator
+      style={[debugBorder()]}
+      screenOptions={{
+        tabBarIndicatorStyle: { backgroundColor: "black" },
+      }}
+    >
       <TopTabs.Screen
         name="dictionary"
         component={DictionaryScreen}

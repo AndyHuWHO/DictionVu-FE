@@ -1,8 +1,7 @@
-// app/(tabs)/diction/term/[term]/dictionary.tsx
+// app/(word-result)/[term]/dictionary.tsx
 import { Text, View, Button, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
 import debugBorder from "@/constants/debugBorder";
 
 export default function DictionaryScreen() {

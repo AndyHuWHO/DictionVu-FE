@@ -1,4 +1,4 @@
-const debugBorder = (color: string = 'red') => ({
+const debugBorder = (color: string = 'white') => ({
   borderWidth: 1,
   borderColor: color,
 });
