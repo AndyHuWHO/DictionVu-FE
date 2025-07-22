@@ -1,12 +1,19 @@
 // app/(tabs)/_layout.tsx
 import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import Feather from "@expo/vector-icons/Feather";
+import { useThemeContext } from "@/context/ThemeContext";
+import { Colors } from "@/constants/Colors";
 
 export default function TabLayout() {
+  const { colorScheme } = useThemeContext();
+  const theme = Colors[colorScheme];
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarStyle: { backgroundColor: theme.tabBarBackground },
+        tabBarActiveTintColor: theme.tabBarActive,
+        tabBarInactiveTintColor: theme.tabBarInactive,
       }}
     >
       <Tabs.Screen name="diction/index" options={{ title: "Diction" }} />
@@ -17,10 +24,10 @@ export default function TabLayout() {
           title: "Upload",
           tabBarLabel: () => null,
           tabBarIcon: () => (
-            <Ionicons
-              name="add-circle"
-              size={30}
-              style={{ marginBottom: -15 }}
+            <Feather
+              name="plus-circle"
+              size={27}
+              style={{ marginBottom: -15, color: theme.tabBarActive }}
             />
           ),
         }}

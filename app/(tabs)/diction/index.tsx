@@ -4,10 +4,16 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemedView } from "@/components/themed/ThemedView";
+import { useThemeContext } from "@/context/ThemeContext";
+import { Colors } from "@/constants/Colors";
+import { ThemedTextInput } from "@/components/themed/ThemedTextInput";
 
 export default function DictionTabScreen() {
   const [term, setTerm] = useState("");
   const router = useRouter();
+  const { colorScheme } = useThemeContext();
+  const theme = Colors[colorScheme];
 
   useFocusEffect(
     React.useCallback(() => {
@@ -16,16 +22,15 @@ export default function DictionTabScreen() {
   );
 
   const handleSearch = () => {
-    const trimmed = term.trim();
+    const trimmed = term.trim().toLowerCase();
     if (!trimmed) return;
     router.push(`/(word-result)/${encodeURIComponent(trimmed)}`);
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.searchRow}>
-        <TextInput
-          placeholder="Enter a word..."
+    <ThemedView style={styles.container}>
+      <ThemedView style={styles.searchRow}>
+        <ThemedTextInput
           value={term}
           onChangeText={setTerm}
           style={styles.input}
@@ -34,10 +39,10 @@ export default function DictionTabScreen() {
           onSubmitEditing={handleSearch}
         />
         <TouchableOpacity onPress={handleSearch} style={styles.iconButton}>
-          <Ionicons name="search" size={24} color="#222" />
+          <Ionicons name="search" size={24} color={theme.icon} />
         </TouchableOpacity>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 }
 

@@ -1,17 +1,28 @@
 // app/(word-result)/[term]/_layout.tsx
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import DictionaryScreen from "./dictionary";
-import MediaScreen from "./media";
+import DictionaryScreen from "./Dictionary";
+import MediaScreen from "./Media";
 import debugBorder from "@/constants/debugBorder";
+import { useThemeContext } from "@/context/ThemeContext";
+import { Colors } from "@/constants/Colors";
 
 const TopTabs = createMaterialTopTabNavigator();
 
 export default function TermTabsLayout() {
+  const { colorScheme } = useThemeContext();
+  const theme = Colors[colorScheme];
   return (
     <TopTabs.Navigator
-      style={[debugBorder()]}
+      style={[]}
       screenOptions={{
-        tabBarIndicatorStyle: { backgroundColor: "black" },
+        tabBarIndicatorStyle: {
+          backgroundColor: theme.tabBarActive,
+          width: 100,
+          marginLeft: 50,
+        },
+        tabBarStyle: { backgroundColor: theme.tabBarBackground },
+        tabBarActiveTintColor: theme.tabBarActive,
+        tabBarInactiveTintColor: theme.tabBarInactive,
       }}
     >
       <TopTabs.Screen
