@@ -5,6 +5,7 @@ import MediaScreen from "./Media";
 import debugBorder from "@/constants/debugBorder";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
+import { ThemedText } from "@/components/themed/ThemedText";
 
 const TopTabs = createMaterialTopTabNavigator();
 
@@ -15,14 +16,32 @@ export default function TermTabsLayout() {
     <TopTabs.Navigator
       style={[]}
       screenOptions={{
-        tabBarIndicatorStyle: {
-          backgroundColor: theme.tabBarActive,
-          width: 100,
-          marginLeft: 50,
+        // tabBarIndicatorStyle: {
+        //   backgroundColor: theme.tabBarActive,
+        //   width: 100,
+        //   marginLeft: 50,
+        // },
+        tabBarIndicator(props) {
+          return (
+            <></>
+          );
+        },
+        tabBarLabel(props) {
+          return (
+            <ThemedText
+              style={{
+                color: props.focused ? theme.tabBarActive : theme.tabBarInactive,
+                fontSize: 14,
+                fontWeight: props.focused ? "bold" : "normal",
+              }}
+            >
+              {props.children}
+            </ThemedText>
+          );
         },
         tabBarStyle: { backgroundColor: theme.tabBarBackground },
-        tabBarActiveTintColor: theme.tabBarActive,
-        tabBarInactiveTintColor: theme.tabBarInactive,
+        // tabBarActiveTintColor: theme.tabBarActive,
+        // tabBarInactiveTintColor: theme.tabBarInactive,
       }}
     >
       <TopTabs.Screen

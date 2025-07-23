@@ -33,13 +33,13 @@ export default function DictionTabScreen() {
         <ThemedTextInput
           value={term}
           onChangeText={setTerm}
-          style={styles.input}
+          style={[styles.input]}
           autoCapitalize="none"
           returnKeyType="search"
           onSubmitEditing={handleSearch}
         />
         <TouchableOpacity onPress={handleSearch} style={styles.iconButton}>
-          <Ionicons name="search" size={24} color={theme.icon} />
+          <Ionicons name="search" size={24} color={theme.icon}/>
         </TouchableOpacity>
       </ThemedView>
     </ThemedView>
