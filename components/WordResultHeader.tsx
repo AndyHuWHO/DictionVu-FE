@@ -7,7 +7,6 @@ import { ThemedView } from "./themed/ThemedView";
 import { ThemedTextInput } from "./themed/ThemedTextInput";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
-import { debugBorder } from "@/constants/debugBorder";
 
 type Props = {
   route: {
@@ -30,7 +29,13 @@ export default function WordResultHeader({ route }: Props) {
     const trimmed = value.trim().toLowerCase();
     setValue("");
     if (!trimmed) return;
+    // router.push(`/(word-result)/${encodeURIComponent(trimmed)}`);
     router.replace(`/(word-result)/${encodeURIComponent(trimmed)}`);
+  };
+
+  const handleBack = () => {
+    // router.replace("/(tabs)/diction");
+    router.dismiss();
   };
 
   return (
@@ -39,7 +44,7 @@ export default function WordResultHeader({ route }: Props) {
       style={{ backgroundColor: theme.background }}
     >
       <ThemedView style={[styles.header]}>
-        <TouchableOpacity onPress={() => router.dismiss()} style={styles.icon}>
+        <TouchableOpacity onPress={handleBack} style={styles.icon}>
           <Ionicons name="chevron-back-outline" size={24} color={theme.icon} />
         </TouchableOpacity>
         {/* <ThemedView style={[styles.inputWrapper]}> */}
