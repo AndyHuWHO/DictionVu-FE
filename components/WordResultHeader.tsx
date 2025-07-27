@@ -54,7 +54,7 @@ export default function WordResultHeader({ route }: Props) {
         </TouchableOpacity>
         {/* <ThemedView style={[styles.inputWrapper]}> */}
         <ThemedTextInput
-          style={[styles.input, { textAlign: isFocused ? "left" : "center" }]}
+          style={[styles.input, {textAlign: isFocused ? "left" : "center" }]}
           value={value}
           onFocus={() => setIsFocused(true)}
           onBlur={handleUnfocus}

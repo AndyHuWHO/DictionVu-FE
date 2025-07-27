@@ -69,13 +69,13 @@ const styles = StyleSheet.create({
   partOfSpeech: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#70d0fcff",
+    color: "#23f9f9ff",
     marginBottom: 8,
     textTransform: "capitalize",
   },
   pronunciation: {
-    fontSize: 15,
-    color: "#cee5acff",
+    fontSize: 16,
+    color: "#ff9533ff",
     marginBottom: 8,
   },
   senseBlock: {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   translation: {
     fontSize: 16,
-    color: "#e092c2ff",
+    color: "#ff7dd1ff",
     marginBottom: 8,
   },
   examplesBlock: {

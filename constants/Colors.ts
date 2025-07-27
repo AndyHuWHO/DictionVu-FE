@@ -4,7 +4,7 @@ export const Colors = {
     background: '#fff',
     tint: '#0a7ea4',
     icon: '#4d5458ff',
-    border: '#ccc',
+    border: '#57595aff',
     placeholder: '#888',
     primary: '#0a7ea4',
     secondary: '#687076',
@@ -15,7 +15,7 @@ export const Colors = {
     disabled: '#e0e0e0',
     tabBarBackground: '#fff',
     tabBarActive: '#010101ff',
-    tabBarInactive: '#687076',
+    tabBarInactive: '#a3a6a8ff',
   },
   dark: {
     text: '#ECEDEE',

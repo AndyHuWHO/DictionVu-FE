@@ -30,7 +30,7 @@ export default function DictionTabScreen() {
 
   return (
       <ThemedView style={[styles.container]}>
-        <ThemedView style={styles.searchRow}>
+        <ThemedView style={[styles.searchRow, {borderColor: theme.border}]}>
           <ThemedTextInput
             value={term}
             onChangeText={setTerm}
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   searchRow: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: "#ccc",
+    // borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 6,
     paddingHorizontal: 8,

@@ -8,7 +8,7 @@ import { DictionaryEntry } from "@/components/DictionaryEntry";
 import {View, TouchableOpacity } from "react-native";
 import { useState } from "react";
 
-export default function DictionaryScreen() {
+export default function DictionaryScreen2() {
   const { term } = useLocalSearchParams();
   const searchTerm = Array.isArray(term) ? term[0] : term ?? "";
   const { data, error, isLoading } = useGetWordInfoQuery(searchTerm, {
