@@ -38,6 +38,11 @@ export default function WordResultHeader({ route }: Props) {
     router.dismiss();
   };
 
+  const handleUnfocus = () => {
+    setIsFocused(false);
+    setValue("");
+  };
+
   return (
     <SafeAreaView
       edges={["top", "left", "right"]}
@@ -52,7 +57,7 @@ export default function WordResultHeader({ route }: Props) {
           style={[styles.input, { textAlign: isFocused ? "left" : "center" }]}
           value={value}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onBlur={handleUnfocus}
           onChangeText={setValue}
           onSubmitEditing={handleSearch}
           placeholder={placeholder}

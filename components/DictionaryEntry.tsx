@@ -19,17 +19,17 @@ type DictionaryInfo = {
 export function DictionaryEntry({ info }: { info: DictionaryInfo }) {
   return (
     <ThemedView style={styles.infoBlock}>
-      <ThemedText style={styles.partOfSpeech}>{info.partOfSpeech}</ThemedText>
+      {/* <ThemedText style={styles.partOfSpeech}>{info.partOfSpeech}</ThemedText> */}
       <ThemedText style={styles.pronunciation}>
-        UK: /{info.pronunciation.uk}/ | US: /{info.pronunciation.us}/
+        uk: / {info.pronunciation.uk} /{"\n"}us: / {info.pronunciation.us} /
       </ThemedText>
       {info.wordSenseList.map((sense, sIdx) => (
         <ThemedView key={sIdx} style={styles.senseBlock}>
-          <ThemedText style={styles.definition}>
-            {sIdx + 1}. {sense.definitionEn}
-          </ThemedText>
           <ThemedText style={styles.translation}>
-            中文翻译： {sense.translationZh}
+            {sIdx + 1}. 中文翻译： {sense.translationZh}
+          </ThemedText>
+          <ThemedText style={styles.definition}>
+            {sense.definitionEn}
           </ThemedText>
           {sense.sampleExpressions.length > 0 && (
             <ThemedView style={styles.examplesBlock}>
@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   examplesHeader: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
   },
   example: {
-    fontSize: 14,
+    fontSize: 15,
     marginBottom: 4,
     marginTop: 4,
     marginLeft: 8,

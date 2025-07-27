@@ -37,6 +37,7 @@ export default function DictionTabScreen() {
             style={[styles.input]}
             autoCapitalize="none"
             returnKeyType="search"
+            // onBlur={() => setTerm("")}
             onSubmitEditing={handleSearch}
           />
           <TouchableOpacity onPress={handleSearch} style={styles.iconButton}>
