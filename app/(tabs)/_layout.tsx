@@ -4,10 +4,25 @@ import Feather from "@expo/vector-icons/Feather";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/ThemedText";
+import { useRouter } from "expo-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export default function TabLayout() {
   const { colorScheme } = useThemeContext();
   const theme = Colors[colorScheme];
+  const auth = useSelector((state: RootState) => state.auth);
+  const router = useRouter();
+
+  const requireAuth = () => {
+    if (!auth.token) {
+      console.log("User not authenticated, redirecting to login");
+      router.push("/(auth)/login");
+      return false;
+    }
+    return true;
+  };
+
   return (
     <Tabs
       screenOptions={{
@@ -84,6 +99,13 @@ export default function TabLayout() {
               style={{ marginBottom: -10, color: theme.tabBarActive }}
             />
           ),
+        }}
+        listeners={{
+          tabPress: (e) => {
+            if (!requireAuth()) {
+              e.preventDefault();
+            }
+          },
         }}
       />
       <Tabs.Screen

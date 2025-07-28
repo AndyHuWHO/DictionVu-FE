@@ -5,7 +5,7 @@ import { ThemedText } from "@/components/themed/ThemedText";
 import { useGetWordInfoQuery } from "@/redux/apis/wordApi";
 import { ThemedScrollView } from "@/components/themed/ThemedScrollView";
 import { DictionaryEntry } from "@/components/DictionaryEntry";
-import {View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { useState } from "react";
 
 export default function DictionaryScreen() {
@@ -29,7 +29,7 @@ export default function DictionaryScreen() {
   if (error) {
     return (
       <ThemedScrollView contentContainerStyle={styles.container}>
-        <ThemedText style={{ fontSize: 18}}>
+        <ThemedText style={{ fontSize: 18 }}>
           {" "}
           {"status" in error &&
           error.data &&
@@ -50,11 +50,10 @@ export default function DictionaryScreen() {
     );
   }
 
-  const posList = data.dictionaryInfoList.map(info => info.partOfSpeech);
-
+  const posList = data.dictionaryInfoList.map((info) => info.partOfSpeech);
 
   return (
-<ThemedScrollView contentContainerStyle={styles.contentContainer}>
+    <ThemedScrollView contentContainerStyle={styles.contentContainer}>
       <ThemedText style={styles.word}>{data.word}</ThemedText>
       {/* POS Tabs */}
       <View style={styles.posTabs}>
@@ -63,14 +62,16 @@ export default function DictionaryScreen() {
             key={idx}
             style={[
               styles.posTab,
-              idx === selectedIdx && styles.posTabSelected
+              idx === selectedIdx && styles.posTabSelected,
             ]}
             onPress={() => setSelectedIdx(idx)}
           >
-            <ThemedText style={[
-              styles.posTabText,
-              idx === selectedIdx && styles.posTabTextSelected
-            ]}>
+            <ThemedText
+              style={[
+                styles.posTabText,
+                idx === selectedIdx && styles.posTabTextSelected,
+              ]}
+            >
               {pos}
             </ThemedText>
           </TouchableOpacity>
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    margin: 80
+    margin: 80,
   },
   contentContainer: {
     padding: 24,
@@ -99,34 +100,34 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 8,
   },
-    posTabs: {
+  posTabs: {
     flexDirection: "row",
-    flexWrap: "wrap",     
+    flexWrap: "wrap",
     marginBottom: 16,
     gap: 8,
   },
-posTab: {
-  paddingVertical: 8,
-  paddingHorizontal: 18,
-  borderRadius: 20,
-  backgroundColor: "#919393ff",
-  // marginRight: 8,
-  // marginBottom: 8,
-  borderWidth: 1,
-  borderColor: "#919393ff",
-  // Shadow for iOS
-  shadowColor: "#434343ff",
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.25,
-  shadowRadius: 4,
-  elevation: 3,
-},
-posTabSelected: {
-  backgroundColor: "#12cbd9ff",
-  borderColor: "#12cbd9ff",
-  shadowOpacity: 0.25,
-  elevation: 6,
-},
+  posTab: {
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    backgroundColor: "#919393ff",
+    // marginRight: 8,
+    // marginBottom: 8,
+    borderWidth: 1,
+    borderColor: "#919393ff",
+    // Shadow for iOS
+    shadowColor: "#434343ff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  posTabSelected: {
+    backgroundColor: "#12cbd9ff",
+    borderColor: "#12cbd9ff",
+    shadowOpacity: 0.25,
+    elevation: 6,
+  },
   posTabText: {
     fontSize: 15,
     color: "#eee",
