@@ -1,13 +1,18 @@
 // app/(auth)/login.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  View,
   Text,
   TextInput,
   Image,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  View,
 } from "react-native";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
@@ -30,73 +35,90 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     const result = await dispatch(loginThunk({ email, password }));
     if (loginThunk.fulfilled.match(result)) {
-      router.back(); 
+      router.back();
     }
   };
 
   const handleSkipLogin = () => {
-    router.back(); 
+    router.back();
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="dark" />
-      <TouchableOpacity onPress={handleSkipLogin} style={styles.closeButton}>
-        <Feather name="x" size={28} color="#000000ff" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Log In to Dictionvu</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          <StatusBar style="dark" />
 
-      <Image
-        source={require("@/assets/dictionvu-logo2.png")} 
-        style={styles.logo}
-        resizeMode="contain"
-      />
+          <TouchableOpacity onPress={handleSkipLogin} style={styles.closeButton}>
+            <Feather name="x" size={28} color="#000000ff" />
+          </TouchableOpacity>
 
-      <TextInput
-        style={[styles.input]}
-        placeholder="Email"
-        placeholderTextColor={theme.placeholder}
-        value={email}
-        autoCapitalize="none"
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
+          <Text style={styles.title}>Log In to Dictionvu</Text>
 
-      <TextInput
-        style={[styles.input]}
-        placeholder="Enter password"
-        placeholderTextColor={theme.placeholder}
-        value={password}
-        secureTextEntry
-        onChangeText={setPassword}
-      />
+          <Image
+            source={require("@/assets/dictionvu-logo2.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
 
-      {auth.status === "loading" ? (
-        <ActivityIndicator
-          size="large"
-          color={theme.icon}
-          style={styles.loading}
-        />
-      ) : (
-        <TouchableOpacity style={[styles.button]} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Log In</Text>
-        </TouchableOpacity>
-      )}
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={theme.placeholder}
+            value={email}
+            autoCapitalize="none"
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            returnKeyType="next"
+          />
 
-      {auth.status === "error" && (
-        <Text style={[styles.errorText, { color: theme.error }]}>
-          {auth.error || "Login failed. Try again."}
-        </Text>
-      )}
-    </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter password"
+            placeholderTextColor={theme.placeholder}
+            value={password}
+            secureTextEntry
+            onChangeText={setPassword}
+            returnKeyType="done"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+
+          {auth.status === "loading" ? (
+            <ActivityIndicator
+              size="large"
+              color={theme.activity}
+              style={styles.loading}
+            />
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>Log In</Text>
+            </TouchableOpacity>
+          )}
+
+          {auth.status === "error" && (
+            <Text style={[styles.errorText, { color: theme.error }]}>
+              {auth.error || "Login failed. Try again."}
+            </Text>
+          )}
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingHorizontal: 30,
+    flexGrow: 1,
     justifyContent: "center",
+    paddingHorizontal: 30,
+    paddingTop: 60,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 22,

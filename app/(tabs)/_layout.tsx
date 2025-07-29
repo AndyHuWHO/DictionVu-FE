@@ -16,7 +16,6 @@ export default function TabLayout() {
 
   const requireAuth = () => {
     if (!auth.token) {
-      console.log("User not authenticated, redirecting to login");
       router.push("/(auth)/login");
       return false;
     }
@@ -143,6 +142,13 @@ export default function TabLayout() {
                 }}
               />
             );
+          },
+        }}
+        listeners={{
+          tabPress: (e) => {
+            if (!requireAuth()) {
+              e.preventDefault();
+            }
           },
         }}
       />
