@@ -5,8 +5,11 @@ import { useRouter } from "expo-router";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedText } from "@/components/themed/ThemedText";
 
+
 export default function MediaScreen() {
   const { term } = useLocalSearchParams();
+
+  const searchTerm = Array.isArray(term) ? term[0] : term ?? "";
 
   return (
     <ThemedView style={[styles.container]}>

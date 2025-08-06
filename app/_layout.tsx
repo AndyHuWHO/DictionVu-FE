@@ -7,6 +7,8 @@ import WordResultHeader from "../components/WordResultHeader";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import AuthProvider from "@/context/AuthProvider";
+import Toast from "react-native-toast-message";
+
 
 export default function RootLayout() {
   return (
@@ -31,7 +33,16 @@ export default function RootLayout() {
                 name="(auth)/login"
                 options={{ headerShown: false, title: "Log In" }}
               />
+              <Stack.Screen
+                name="upload/preview"
+                options={{ headerShown: false, title: "Preview" }}
+              />
+              <Stack.Screen
+                name="upload/edit"
+                options={{ headerShown: false, title: "Edit" }}
+              />
             </Stack>
+            <Toast />
           </AuthProvider>
         </SafeAreaProvider>
       </ThemeProvider>

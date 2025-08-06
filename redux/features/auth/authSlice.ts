@@ -1,3 +1,4 @@
+// redux/features/auth/authSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 import { loginThunk, logoutThunk, loadTokenFromStorage } from "./authThunks";
 

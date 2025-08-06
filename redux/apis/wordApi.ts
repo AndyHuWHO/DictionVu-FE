@@ -5,7 +5,6 @@ import { WordResponse } from "./types/wordDictionaryInfo";
 export const wordApi = createApi({
   reducerPath: "wordApi",
   baseQuery: fetchBaseQuery({
-    // baseUrl:"https://61d854096556.ngrok-free.app/api/words",
     baseUrl: process.env.EXPO_PUBLIC_WORD_API_BASE_URL,
   }),
   tagTypes: ['Word'],

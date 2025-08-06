@@ -2,13 +2,12 @@
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import { TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedTextInput } from "@/components/themed/ThemedTextInput";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DictionTabScreen() {
   const [term, setTerm] = useState("");

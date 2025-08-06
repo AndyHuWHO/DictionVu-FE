@@ -1,12 +1,13 @@
+// redux/features/auth/authService.ts
 import axios from "axios";
 import { AuthResponse } from "./types";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
-export async function loginRequest(
+export const loginRequest = async (
   email: string,
   password: string
-): Promise<AuthResponse> {
+): Promise<AuthResponse> => {
   const response = await axios.post<AuthResponse>(
     `${API_BASE_URL}/api/auth/login`,
     {
@@ -15,4 +16,5 @@ export async function loginRequest(
     }
   );
   return response.data;
-}
+};
+
