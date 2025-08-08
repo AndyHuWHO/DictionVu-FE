@@ -99,7 +99,7 @@ export default function PreviewScreen() {
         style={styles.video}
         allowsFullscreen={false}
         nativeControls={false}
-        contentFit="cover"
+        contentFit="contain"
       />
       <TouchableOpacity
         style={styles.nextButton}

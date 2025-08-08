@@ -1,13 +1,13 @@
 // redux/features/mediaUpload/mediaUploadSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
-import { uploadMediaThunk } from "./mediaUploadThunk";
-import { Media } from "./types";
+import { uploadMediaThunk } from "./mediaUploadThunks";
+import { MediaItem } from "./types";
 import Toast from "react-native-toast-message";
 
 interface MediaUploadState {
   status: "idle" | "uploading" | "succeeded" | "failed";
   error: string | null;
-  uploadedMedia: Media | null;
+  uploadedMedia: MediaItem | null;
 }
 
 const initialState: MediaUploadState = {

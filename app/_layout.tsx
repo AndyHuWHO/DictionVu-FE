@@ -24,10 +24,13 @@ export default function RootLayout() {
               />
               <Stack.Screen
                 name="(word-result)/[term]"
-                options={({ route }) => ({
+                options={
+                  ({ route }) => ({
                   header: () => <WordResultHeader route={route} />,
                   animation: "none",
-                })}
+                })
+                // {headerShown: false, title: "Word Result"}
+              }
               />
               <Stack.Screen
                 name="(auth)/login"

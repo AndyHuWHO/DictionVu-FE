@@ -3,6 +3,7 @@ import { StyleSheet, ActivityIndicator, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { WebView } from "react-native-webview";
 import { useRef, useState } from "react";
+import { ThemedView } from "@/components/themed/ThemedView";
 
 export default function GoogleScreen() {
   const { term } = useLocalSearchParams();
@@ -13,11 +14,11 @@ export default function GoogleScreen() {
   const [loading, setLoading] = useState(true);
 
   return (
-    <View style={{ flex: 1 }}>
+    <ThemedView style={{ flex: 1}}>
       {loading && (
-        <View style={styles.loader}>
+        <ThemedView style={styles.loader}>
           <ActivityIndicator size="large" color="#666" />
-        </View>
+        </ThemedView>
       )}
 
       <WebView
@@ -44,7 +45,7 @@ export default function GoogleScreen() {
           true;
         `}
       />
-    </View>
+    </ThemedView>
   );
 }
 

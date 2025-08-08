@@ -22,9 +22,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as FileSystem from "expo-file-system";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadMediaThunk } from "@/redux/features/mediaUpload/mediaUploadThunk";
+import { uploadMediaThunk } from "@/redux/features/mediaUpload/mediaUploadThunks";
 import { RootState, AppDispatch } from "@/redux/store";
-import * as Mime from "react-native-mime-types";
 
 export default function EditMediaScreen() {
   const { contentUri, thumbnailUri } = useLocalSearchParams<{
@@ -148,7 +147,7 @@ export default function EditMediaScreen() {
                 <Image
                   source={{ uri: thumbnailUri }}
                   style={styles.thumbnail}
-                  resizeMode="cover"
+                  resizeMode="contain"
                 />
               </View>
             )}
@@ -298,6 +297,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     overflow: "hidden",
     marginBottom: 20,
+    backgroundColor: "black",
   },
   thumbnail: {
     width: "100%",

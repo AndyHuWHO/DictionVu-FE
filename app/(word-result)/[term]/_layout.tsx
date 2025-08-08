@@ -10,6 +10,13 @@ import debugBorder from "@/constants/debugBorder";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/ThemedText";
+import { useEffect } from "react";
+import { useNavigationState } from "@react-navigation/native";
+import { ThemedView } from "@/components/themed/ThemedView";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 const TopTabs = createMaterialTopTabNavigator();
 const tabScreens = [
@@ -35,48 +42,147 @@ export default function TermTabsLayout() {
   const theme = Colors[colorScheme];
   const tabCount = tabScreens.length;
   const scrollable = tabCount > 3;
+  const router = useRouter();
+
+  const currentTabRouteName = useNavigationState((state) => {
+    const nested = state.routes[state.index]?.state;
+    if (nested && "routes" in nested) {
+      return typeof nested.index === "number" && nested.routes[nested.index]
+        ? nested.routes[nested.index].name
+        : null;
+    }
+    return null;
+  });
+
+  const handleBack = () => {
+    // router.replace("/(tabs)/diction");
+    console.log("Back pressed, dismissing current route");
+    router.dismiss();
+  };
+
+  useEffect(() => {
+    console.log("Active top tab:", currentTabRouteName);
+  }, [currentTabRouteName]);
+
   return (
-    <TopTabs.Navigator
-      style={[]}
-      screenOptions={{
-        // tabBarIndicatorStyle: {
-        //   backgroundColor: theme.tabBarActive,
-        //   width: 100,
-        //   marginLeft: 50,
-        // },
-        tabBarScrollEnabled: scrollable,
-        tabBarItemStyle: scrollable ? { width: 110 } : {},
-        tabBarIndicator(props) {
-          return <></>;
-        },
-        tabBarLabel(props) {
-          return (
-            <ThemedText
-              style={{
-                color: props.focused
-                  ? theme.tabBarActive
-                  : theme.tabBarInactive,
-                fontSize: 14,
-                fontWeight: props.focused ? "bold" : "normal",
-              }}
-            >
-              {props.children}
-            </ThemedText>
-          );
-        },
-        tabBarStyle: { backgroundColor: theme.tabBarBackground },
-        // tabBarActiveTintColor: theme.tabBarActive,
-        // tabBarInactiveTintColor: theme.tabBarInactive,
-      }}
-    >
-     {tabScreens.map((tab) => (
-        <TopTabs.Screen
-          key={tab.name}
-          name={tab.name}
-          component={tab.component}
-          options={{ title: tab.title }}
-        />
-      ))}
-    </TopTabs.Navigator>
+    <ThemedView style={{ flex: 1, backgroundColor: theme.background }}>
+      {/* <TouchableOpacity
+        onPress={handleBack}
+        style={[
+          {
+            padding: 10,
+            position: "absolute",
+            left: 5,
+            top: 60,
+            // borderWidth: 1,
+            // borderColor: "red",
+            zIndex: 10,
+          },
+        ]}
+      >
+        <Ionicons name="chevron-back-outline" size={24} color={theme.icon} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          { padding: 10, position: "absolute", right: 20, top: 60, zIndex: 10 },
+        ]}
+        onPress={() => {}}
+      >
+        <Ionicons name="search" size={20} color={theme.icon} />
+      </TouchableOpacity> */}
+
+      <TopTabs.Navigator
+        style={[]}
+        screenOptions={{
+          // tabBarIndicatorStyle: {
+          //   backgroundColor: theme.tabBarActive,
+          //   width: 100,
+          //   marginLeft: 50,
+          // },
+          tabBarScrollEnabled: scrollable,
+          tabBarItemStyle: scrollable ? { width: 110 } : {},
+          tabBarIndicator(props) {
+            return <></>;
+          },
+          tabBarLabel(props) {
+            return (
+              <ThemedText
+                style={{
+                  color: props.focused
+                    ? theme.tabBarActive
+                    : theme.tabBarInactive,
+                  fontSize: 14,
+                  fontWeight: props.focused ? "bold" : "normal",
+                }}
+              >
+                {props.children}
+              </ThemedText>
+            );
+          },
+
+          tabBarStyle: {
+            backgroundColor: theme.background,
+            // width: "80%",
+            borderWidth: 1,
+            borderColor: "red",
+            // alignSelf: "center",
+          },
+
+          // tabBarStyle: {
+          //   backgroundColor: "transparent",
+          //   position: "absolute",
+          //   // top: 0,
+          //   // left: 0,
+          //   // right: 0,
+          //   zIndex: 10,
+          //   elevation: 0,
+          //   shadowOpacity: 0,
+          //   borderBottomWidth: 0,
+          //   width: "80%",
+          //   alignSelf: "center",
+          // },
+
+          // tabBarStyle: {
+          //   backgroundColor:
+          //     currentTabRouteName === "media"
+          //       ? "transparent"
+          //       : theme.background,
+          //   position: currentTabRouteName === "media" ? "absolute" : "relative",
+          //   elevation: 0,
+          //   shadowOpacity: 0,
+          //   borderBottomWidth: 0,
+          //   zIndex: 10,
+          //   top: currentTabRouteName === "media" ? 0 : undefined,
+          // },
+
+          tabBarActiveTintColor: theme.tabBarActive,
+          tabBarInactiveTintColor: theme.tabBarInactive,
+        }}
+      >
+        {tabScreens.map((tab) => (
+          <TopTabs.Screen
+            key={tab.name}
+            name={tab.name}
+            component={tab.component}
+            options={{ title: tab.title }}
+          />
+        ))}
+      </TopTabs.Navigator>
+    </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  iconButton: {
+    padding: 10,
+  },
+  tabContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
+});

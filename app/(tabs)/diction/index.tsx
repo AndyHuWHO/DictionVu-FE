@@ -2,12 +2,20 @@
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedTextInput } from "@/components/themed/ThemedTextInput";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DictionTabScreen() {
   const [term, setTerm] = useState("");
@@ -28,22 +36,36 @@ export default function DictionTabScreen() {
   };
 
   return (
-      <ThemedView style={[styles.container]}>
-        <ThemedView style={[styles.searchRow, {borderColor: theme.border}]}>
-          <ThemedTextInput
-            value={term}
-            onChangeText={setTerm}
-            style={[styles.input]}
-            autoCapitalize="none"
-            returnKeyType="search"
-            // onBlur={() => setTerm("")}
-            onSubmitEditing={handleSearch}
-          />
-          <TouchableOpacity onPress={handleSearch} style={styles.iconButton}>
-            <Ionicons name="search" size={24} color={theme.icon} />
-          </TouchableOpacity>
-        </ThemedView>
-      </ThemedView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1, backgroundColor: theme.background }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ThemedView style={[styles.container]}>
+            <ThemedView
+              style={[styles.searchRow, { borderColor: theme.border }]}
+            >
+              <ThemedTextInput
+                value={term}
+                onChangeText={setTerm}
+                style={[styles.input]}
+                autoCapitalize="none"
+                returnKeyType="search"
+                // onBlur={() => setTerm("")}
+                onSubmitEditing={handleSearch}
+              />
+              <TouchableOpacity
+                onPress={handleSearch}
+                style={styles.iconButton}
+              >
+                <Ionicons name="search" size={24} color={theme.icon} />
+              </TouchableOpacity>
+            </ThemedView>
+          </ThemedView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 

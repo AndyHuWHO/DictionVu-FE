@@ -88,10 +88,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     margin: 80,
+    paddingTop: 60,
   },
   contentContainer: {
     padding: 24,
-    paddingTop: 15,
+    // paddingTop: 55,
     alignItems: "flex-start",
     minHeight: "100%",
   },

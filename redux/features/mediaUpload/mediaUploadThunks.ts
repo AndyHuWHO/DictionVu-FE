@@ -6,7 +6,7 @@ import {
   validateMetadata,
   uploadMetadata,
 } from "./mediaUploadService";
-import { Media, MediaMetadata, LocalUris, MediaMetadataRequest } from "./types";
+import { MediaItem, MediaMetadata, LocalUris, MediaMetadataRequest } from "./types";
 import { RootState } from "../../store";
 
 // Input to the thunk
@@ -17,7 +17,7 @@ interface UploadMediaParams {
 
 // Output from the thunk
 export const uploadMediaThunk = createAsyncThunk<
-  Media, // return type
+  MediaItem, // return type
   UploadMediaParams, // thunk arg type
   { state: RootState }
 >("mediaUpload/uploadMedia", async ({ metadata, localUris }, thunkAPI) => {

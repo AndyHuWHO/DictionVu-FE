@@ -31,7 +31,7 @@ export interface MediaMetadataRequest {
   visibility: "PUBLIC" | "PRIVATE";
 }
 
-export interface Media {
+export interface MediaItem {
   id: string;
   authUserId: string;
   objectPresignedGetUrl: string;

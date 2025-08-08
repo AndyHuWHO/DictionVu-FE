@@ -2,7 +2,7 @@
 import axios from "axios";
 import * as FileSystem from "expo-file-system";
 import {
-  Media,
+  MediaItem,
   PresignedUploadResponse,
   MediaMetadataRequest,
 } from "./types";
@@ -58,8 +58,8 @@ export const validateMetadata = async (
 export const uploadMetadata = async (
   token: string,
   metadata: MediaMetadataRequest
-): Promise<Media> => {
-  const response = await axios.post<Media>(
+): Promise<MediaItem> => {
+  const response = await axios.post<MediaItem>(
     `${API_BASE_URL}/api/media`,
     metadata,
     {
