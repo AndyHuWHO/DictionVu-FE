@@ -6,7 +6,6 @@ import DictionaryScreen2 from "./Dictionary2";
 import DictionaryScreen3 from "./Dictionary3";
 import DictionaryScreen4 from "./Dictionary4";
 import MediaScreen from "./Media";
-import debugBorder from "@/constants/debugBorder";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/ThemedText";

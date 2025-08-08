@@ -26,7 +26,13 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: theme.tabBarBackground, height: 80 },
+        tabBarStyle: {
+          backgroundColor: theme.tabBarBackground,
+          height: 100,
+          // borderWidth: 1,
+          // borderColor: "red",
+          paddingTop: 8,
+        },
         tabBarActiveTintColor: theme.tabBarActive,
         tabBarInactiveTintColor: theme.tabBarInactive,
         // tabBarIcon: () => null,
@@ -94,7 +100,7 @@ export default function TabLayout() {
           tabBarIcon: () => (
             <Feather
               name="plus-circle"
-              size={27}
+              size={30}
               style={{ marginBottom: -10, color: theme.tabBarActive }}
             />
           ),
