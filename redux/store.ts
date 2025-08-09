@@ -6,6 +6,7 @@ import authReducer from "./features/auth/authSlice";
 import userReducer from "./features/user/userSlice";
 import mediaUploadReducer from "./features/mediaUpload/mediaUploadSlice";
 import mediaWordReducer from "./features/mediaWord/mediaWordSlice";
+import mediaFeedReducer from "./features/mediaFeed/mediaFeedSlice";
 
 
 
@@ -17,6 +18,7 @@ export const store = configureStore({
     user: userReducer,
     mediaUpload: mediaUploadReducer,
     mediaWord: mediaWordReducer,
+    mediaFeed: mediaFeedReducer, 
   },
   middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(wordApi.middleware, visitProfileApi.middleware),

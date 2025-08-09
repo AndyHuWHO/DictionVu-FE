@@ -43,25 +43,24 @@ export default function TermTabsLayout() {
   const scrollable = tabCount > 3;
   const router = useRouter();
 
-  const currentTabRouteName = useNavigationState((state) => {
-    const nested = state.routes[state.index]?.state;
-    if (nested && "routes" in nested) {
-      return typeof nested.index === "number" && nested.routes[nested.index]
-        ? nested.routes[nested.index].name
-        : null;
-    }
-    return null;
-  });
+  // const currentTabRouteName = useNavigationState((state) => {
+  //   const nested = state.routes[state.index]?.state;
+  //   if (nested && "routes" in nested) {
+  //     return typeof nested.index === "number" && nested.routes[nested.index]
+  //       ? nested.routes[nested.index].name
+  //       : null;
+  //   }
+  //   return null;
+  // });
 
   const handleBack = () => {
     // router.replace("/(tabs)/diction");
-    console.log("Back pressed, dismissing current route");
     router.dismiss();
   };
 
-  useEffect(() => {
-    console.log("Active top tab:", currentTabRouteName);
-  }, [currentTabRouteName]);
+  // useEffect(() => {
+  //   console.log("Active top tab:", currentTabRouteName);
+  // }, [currentTabRouteName]);
 
   return (
     <ThemedView style={{ flex: 1, backgroundColor: theme.background }}>
@@ -122,8 +121,9 @@ export default function TermTabsLayout() {
           tabBarStyle: {
             backgroundColor: theme.background,
             // width: "80%",
-            borderWidth: 1,
-            borderColor: "red",
+            // borderWidth: 1,
+            // borderColor: "red",
+            height: 40,
             // alignSelf: "center",
           },
 

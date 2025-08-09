@@ -31,6 +31,9 @@ export default function VideoItem({
   const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
   const [fadeAnim] = useState(new Animated.Value(1));
 
+  const [contentFit, setContentFit] = useState<"contain" | "cover" | null>(null);
+
+
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
     if (isVisible && isTabFocused && !isPaused) {
@@ -55,6 +58,22 @@ export default function VideoItem({
       setIsPaused(true);
     }
   }, [isVisible, isTabFocused]);
+
+    useEffect(() => {
+    const interval = setInterval(() => {
+      const size = player?.videoTrack?.size;
+      console.log("waiting for video track ready"); 
+      if (size?.width && size?.height) {
+        console.log(player?.videoTrack);
+        const ratio = size.height / size.width;
+        setContentFit(ratio > 1.6 ? "cover" : "contain");
+        console.log("ratio", ratio);
+        clearInterval(interval);
+      }
+    }, 200);
+
+    return () => clearInterval(interval);
+  }, [player]);
 
   const handleTogglePlay = () => {
     if (isPaused) {
@@ -82,15 +101,22 @@ export default function VideoItem({
 
   return (
     <TouchableWithoutFeedback onPress={handleTogglePlay}>
-      <View style={[styles.videoContainer, { height, borderWidth: 1, borderColor: "red" }]}>
+      <View style={[styles.videoContainer, { height, }]}>
+
+      
         <VideoView
           style={styles.video}
           player={player}
+          // contentFit={contentFit}
           contentFit="contain"
           allowsFullscreen
           allowsPictureInPicture
           nativeControls={false}
         />
+
+        {/* {contentFit? */}
+        {/*  :null} */}
+        
 
         {showOverlay && (
           <Animated.View
@@ -147,8 +173,8 @@ const styles = StyleSheet.create({
   },
   bottomContent: {
     position: "absolute",
-    bottom: 80,
-    left: 16,
+    bottom: 70,
+    left: 20,
     right: 80,
   },
   username: {

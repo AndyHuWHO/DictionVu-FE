@@ -1,23 +1,22 @@
-// redux/features/mediaWord/mediaWordSlice.ts
-
+// redux/features/mediaFeed/mediaFeedSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
-import { fetchMediaWordThunk } from "./mediaWordThunks";
+import { fetchMediaFeedThunk } from "./mediaFeedThunks";
 
-interface MediaWordState {
+interface MediaFeedState {
   items: MediaItem[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
-const initialState: MediaWordState = {
+const initialState: MediaFeedState = {
   items: [],
   status: "idle",
   error: null,
 };
 
-const mediaWordSlice = createSlice({
-  name: "mediaWord",
+const mediaFeedSlice = createSlice({
+  name: "mediaFeed",
   initialState,
   reducers: {
     clearMediaState: (state) => {
@@ -28,21 +27,21 @@ const mediaWordSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMediaWordThunk.pending, (state) => {
+      .addCase(fetchMediaFeedThunk.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(fetchMediaWordThunk.fulfilled, (state, action) => {
+      .addCase(fetchMediaFeedThunk.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.items = action.payload;
       })
-      .addCase(fetchMediaWordThunk.rejected, (state, action) => {
+      .addCase(fetchMediaFeedThunk.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       });
   },
 });
 
-export const { clearMediaState } = mediaWordSlice.actions;
+export const { clearMediaState } = mediaFeedSlice.actions;
 
-export default mediaWordSlice.reducer;
+export default mediaFeedSlice.reducer;

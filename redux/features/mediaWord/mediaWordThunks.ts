@@ -2,11 +2,11 @@
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-import { fetchMediaFromAPI } from "./mediaWordService";
+import { fetchMediaWordFromAPI } from "./mediaWordService";
 import { FetchMediaParams } from "./types";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 
-export const fetchMediaThunk = createAsyncThunk<
+export const fetchMediaWordThunk = createAsyncThunk<
   MediaItem[],
   FetchMediaParams,
   { state: RootState }
@@ -17,12 +17,12 @@ export const fetchMediaThunk = createAsyncThunk<
     //   throw new Error("Missing JWT token");
     // }
 
-    const mediaList = await fetchMediaFromAPI(word, page, size);
+    const mediaList = await fetchMediaWordFromAPI(word, page, size);
     return mediaList;
   } catch (error: any) {
-    console.error("Fetch media failed:", error);
+    console.error("Fetch media word failed:", error);
     return thunkAPI.rejectWithValue(
-      error.response?.data?.message || error.message || "Failed to fetch media"
+      error.response?.data?.message || error.message || "Failed to fetch media word"
     );
   }
 });

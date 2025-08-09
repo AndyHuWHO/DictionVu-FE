@@ -78,7 +78,7 @@ export default function WordResultHeader({ route }: Props) {
         {/* </ThemedView> */}
 
         <TouchableOpacity style={styles.icon} onPress={handleSearch}>
-          <Ionicons name="search" size={20} color={theme.icon} />
+          <Ionicons name="search" size={24} color={theme.icon} />
         </TouchableOpacity>
       </ThemedView>
     </SafeAreaView>

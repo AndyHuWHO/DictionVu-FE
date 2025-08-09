@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocalSearchParams } from "expo-router";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedText } from "@/components/themed/ThemedText";
-import { fetchMediaThunk } from "@/redux/features/mediaWord/mediaWordThunks";
+import { fetchMediaWordThunk } from "@/redux/features/mediaWord/mediaWordThunks";
 import { RootState, AppDispatch } from "@/redux/store";
 import MediaList from "@/components/media/MediaList";
 
@@ -20,7 +20,7 @@ export default function MediaScreen() {
 
   useEffect(() => {
     if (searchTerm) {
-      dispatch(fetchMediaThunk({ word: searchTerm }));
+      dispatch(fetchMediaWordThunk({ word: searchTerm }));
     }
   }, [searchTerm]);
 

@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   },
   thumbnailWrapper: {
     alignSelf: "center",
-    width: "40%",
+    width: "30%",
     height: "30%",
     borderRadius: 6,
     overflow: "hidden",
