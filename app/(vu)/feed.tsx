@@ -11,12 +11,16 @@ import MediaList from "@/components/media/MediaList";
 export default function FeedTopTabScreen() {
   const dispatch = useDispatch<AppDispatch>();
   const media = useSelector((state: RootState) => state.mediaFeed.items);
+  const currentIndex = useSelector((state: RootState) => state.mediaFeed.currentIndex);
   const status = useSelector((state: RootState) => state.mediaFeed.status);
   const error = useSelector((state: RootState) => state.mediaFeed.error);
 
   useEffect(() => {
-    dispatch(fetchMediaFeedThunk({}));
-  }, [dispatch]);
+    if (currentIndex === media.length - 1 || media.length === 0) {
+      console.log("Fetching media feed...");
+      dispatch(fetchMediaFeedThunk({}));
+    }
+  }, [dispatch, currentIndex]);
 
   if (status === "loading") {
     return (
@@ -46,7 +50,7 @@ export default function FeedTopTabScreen() {
 
   return (
     <ThemedView style={{ flex: 1 }}>
-      <MediaList media={media} />
+      <MediaList media={media} context="feed" />
     </ThemedView>
   );
 }

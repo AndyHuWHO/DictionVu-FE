@@ -62,12 +62,11 @@ export default function VideoItem({
     useEffect(() => {
     const interval = setInterval(() => {
       const size = player?.videoTrack?.size;
-      console.log("waiting for video track ready"); 
+      // console.log("waiting for video track ready"); 
       if (size?.width && size?.height) {
-        console.log(player?.videoTrack);
+        // console.log(player?.videoTrack);
         const ratio = size.height / size.width;
         setContentFit(ratio > 1.6 ? "cover" : "contain");
-        console.log("ratio", ratio);
         clearInterval(interval);
       }
     }, 200);

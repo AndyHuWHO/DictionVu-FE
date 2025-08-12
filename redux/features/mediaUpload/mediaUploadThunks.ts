@@ -6,8 +6,14 @@ import {
   validateMetadata,
   uploadMetadata,
 } from "./mediaUploadService";
-import { MediaItem, MediaMetadata, LocalUris, MediaMetadataRequest } from "./types";
+import {
+  MediaItem,
+  MediaMetadata,
+  LocalUris,
+  MediaMetadataRequest,
+} from "./types";
 import { RootState } from "../../store";
+import { addMediaItemToFeed } from "@/redux/features/mediaFeed/mediaFeedSlice";
 
 // Input to the thunk
 interface UploadMediaParams {
@@ -48,6 +54,9 @@ export const uploadMediaThunk = createAsyncThunk<
 
     // Step 4: Upload metadata
     const savedMedia = await uploadMetadata(token, validationRequest);
+
+    // Add to media feed immediately
+    thunkAPI.dispatch(addMediaItemToFeed(savedMedia));
 
     return savedMedia;
   } catch (error: any) {

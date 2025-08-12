@@ -118,8 +118,8 @@ export default function EditMediaScreen() {
     // Fire upload in background
     dispatch(uploadMediaThunk({ metadata, localUris }));
 
-    // Navigate away immediately
-    router.replace("/(tabs)/vu");
+    // // dismiss to feed tab without rerendering
+    router.dismissTo("/(tabs)/vu");
   };
 
   return (

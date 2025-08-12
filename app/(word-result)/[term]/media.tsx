@@ -52,7 +52,7 @@ export default function MediaScreen() {
 
   return (
     <ThemedView style={{ flex: 1}}>
-      <MediaList media={media} />
+      <MediaList media={media} context="word" />
     </ThemedView>
   );
 }

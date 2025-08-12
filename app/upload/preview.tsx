@@ -1,11 +1,12 @@
 // app/upload/preview.tsx
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { View, TouchableOpacity, Text, Alert, StyleSheet } from "react-native";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import Slider from "@react-native-community/slider";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function PreviewScreen() {
   const { contentUri } = useLocalSearchParams<{ contentUri: string }>();
@@ -26,7 +27,6 @@ export default function PreviewScreen() {
         time: 1,
       });
       setImage(uri);
-      console.log("Thumbnail URI:", uri);
     } catch (e) {
       console.warn(e);
     }
@@ -68,6 +68,13 @@ export default function PreviewScreen() {
     }, 100);
     return () => clearInterval(interval);
   }, [player, isSliding]);
+
+
+  useFocusEffect(
+  useCallback(() => {
+    if (player) player.play();
+  }, [player])
+);
 
   return (
     <View style={styles.container}>

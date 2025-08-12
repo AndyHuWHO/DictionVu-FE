@@ -5,39 +5,63 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import VideoItem from "./VideoItem";
 import { useIsFocused } from "@react-navigation/native";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { setCurrentIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
 
 type Props = {
   media: MediaItem[];
+  context?: "feed" | "word";
 };
 
-export default function MediaList({ media }: Props) {
+export default function MediaList({ media, context }: Props) {
   const [visibleIndex, setVisibleIndex] = useState<number>(0);
   const [availableHeight, setAvailableHeight] = useState<number | null>(null);
-  // whether media tab is focused
+  const currentIndex = useSelector((state: RootState) => state.mediaFeed.currentIndex);
   const isFocused = useIsFocused();
+  const dispatch = useDispatch();
 
   const determineHeight = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
     setAvailableHeight(height);
   };
 
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index != null) {
-        setVisibleIndex(viewableItems[0].index);
+  // const onViewableItemsChanged = useRef(
+  //   ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+  //     if (viewableItems.length > 0 && viewableItems[0].index !== null) {
+  //       setVisibleIndex(viewableItems[0].index);
+  //       console.log("current index before updating: ", currentIndex);
+  //       if (context === "feed" && currentIndex) {
+  //         console.log("updating current index to:", viewableItems[0].index);
+  //         dispatch(setCurrentIndex(viewableItems[0].index));
+  //       }
+  //     }
+  //   }
+  // ).current;
+
+  const onViewableItemsChanged = useCallback(
+  ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    if (viewableItems.length > 0 && viewableItems[0].index !== null) {
+      setVisibleIndex(viewableItems[0].index);
+      console.log("current index before updating: ", currentIndex);
+      if (context === "feed" && currentIndex !== viewableItems[0].index) {
+        console.log("updating current index to:", viewableItems[0].index);
+        dispatch(setCurrentIndex(viewableItems[0].index));
       }
     }
-  ).current;
+  },
+  [currentIndex, context, dispatch]
+);
 
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 20,
   }).current;
 
-  const { height: SCREEN_HEIGHT } = Dimensions.get("screen");
 
   return (
     <FlatList
@@ -60,7 +84,7 @@ export default function MediaList({ media }: Props) {
         availableHeight !== null ? (
           <VideoItem
             media={item}
-            isVisible={index === visibleIndex}
+            isVisible={context === "feed" ? index === currentIndex : index === visibleIndex}
             isTabFocused={isFocused}
             height={availableHeight}
           />
