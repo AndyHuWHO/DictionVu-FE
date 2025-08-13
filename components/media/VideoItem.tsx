@@ -31,8 +31,7 @@ export default function VideoItem({
   const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
   const [fadeAnim] = useState(new Animated.Value(1));
 
-  const [contentFit, setContentFit] = useState<"contain" | "cover" | null>(null);
-
+  const [contentFit, setContentFit] = useState<"contain" | "cover" >("contain");
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
@@ -59,20 +58,47 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
-    useEffect(() => {
-    const interval = setInterval(() => {
-      const size = player?.videoTrack?.size;
-      // console.log("waiting for video track ready"); 
-      if (size?.width && size?.height) {
-        // console.log(player?.videoTrack);
-        const ratio = size.height / size.width;
-        setContentFit(ratio > 1.6 ? "cover" : "contain");
-        clearInterval(interval);
-      }
-    }, 200);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const size = player?.videoTrack?.size;
+  //     // console.log("waiting for video track ready");
+  //     if (size?.width && size?.height) {
+  //       // console.log(player?.videoTrack);
+  //       const ratio = size.height / size.width;
+  //       setContentFit(ratio > 1.6 ? "cover" : "contain");
+  //       clearInterval(interval);
+  //     }
+  //   }, 200);
 
-    return () => clearInterval(interval);
-  }, [player]);
+  //   return () => clearInterval(interval);
+  // }, [player]);
+
+useEffect(() => {
+  let active = true;
+  const interval = setInterval(async () => {
+    if (!active) return;
+
+    try {
+      const thumbs = await player.generateThumbnailsAsync([0]); // use array of times
+      const thumb = Array.isArray(thumbs) ? thumbs[0] : undefined;
+
+      if (thumb?.width && thumb?.height) {
+        const ratio = thumb.height / thumb.width;
+        console.log("thumbnail generated", thumb, "ratio:", ratio);
+        setContentFit(ratio > 1.6 ? "cover" : "contain");
+
+        clearInterval(interval); // stop polling once we have it
+      }
+    } catch (e) {
+      // swallow errors until ready; don't clear interval yet
+    }
+  }, 200);
+
+  return () => {
+    active = false;
+    clearInterval(interval);
+  };
+}, [media.objectPresignedGetUrl, player]);
 
   const handleTogglePlay = () => {
     if (isPaused) {
@@ -100,22 +126,20 @@ export default function VideoItem({
 
   return (
     <TouchableWithoutFeedback onPress={handleTogglePlay}>
-      <View style={[styles.videoContainer, { height, }]}>
-
-      
-        <VideoView
+      <View style={[styles.videoContainer, { height }]}>
+        {contentFit &&     <VideoView
           style={styles.video}
           player={player}
-          // contentFit={contentFit}
-          contentFit="contain"
+          contentFit={contentFit}
+          // contentFit="contain"
           allowsFullscreen
           allowsPictureInPicture
           nativeControls={false}
-        />
+        /> }
+    
 
         {/* {contentFit? */}
         {/*  :null} */}
-        
 
         {showOverlay && (
           <Animated.View

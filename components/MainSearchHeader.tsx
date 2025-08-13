@@ -9,32 +9,26 @@ import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 
 type Props = {
-  route: {
-    params?: {
-      term?: string;
-    };
-  };
+    term: string | null;
+    setTerm: (term: string | null) => void;
 };
 
-export default function WordResultHeader({ route }: Props) {
+export default function MainSearchHeader({term, setTerm}: Props) {
   const router = useRouter();
   const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const { colorScheme } = useThemeContext();
-  const term = route?.params?.term ?? "";
   const theme = Colors[colorScheme];
-  const placeholder = isFocused ? "" : route?.params?.term ?? "Search ...";
+  const placeholder = isFocused ? "" : term ?? "Search ...";
 
   const handleSearch = () => {
     const trimmed = value.trim().toLowerCase();
-    setValue("");
     if (!trimmed) return;
-    router.replace({ pathname: "/diction/[term]", params: { term: trimmed } });
+    setTerm(trimmed);
   };
 
   const handleBack = () => {
-    // router.replace("/(tabs)/diction");
-    router.dismiss();
+    setTerm(null)
   };
 
   const handleUnfocus = () => {
@@ -48,10 +42,11 @@ export default function WordResultHeader({ route }: Props) {
       style={{ backgroundColor: theme.background }}
     >
       <ThemedView style={[styles.header]}>
-        <TouchableOpacity onPress={handleBack} style={styles.icon}>
+        {term && <TouchableOpacity onPress={handleBack} style={styles.icon}>
           <Ionicons name="chevron-back-outline" size={24} color={theme.icon} />
-        </TouchableOpacity>
-        {/* <ThemedView style={[styles.inputWrapper]}> */}
+        </TouchableOpacity>}
+        
+
         <ThemedTextInput
           style={[styles.input, {textAlign: isFocused ? "left" : "center" }]}
           value={value}
@@ -63,18 +58,6 @@ export default function WordResultHeader({ route }: Props) {
           autoCapitalize="none"
           returnKeyType="search"
         />
-        {/* <TouchableOpacity
-            onPress={() => router.dismiss()}
-            style={[styles.icon]}
-          >
-            <Ionicons
-              name="return-down-back"
-              size={24}
-              color={theme.icon}
-              style={styles.inputIcon}
-            />
-          </TouchableOpacity> */}
-        {/* </ThemedView> */}
 
         <TouchableOpacity style={styles.icon} onPress={handleSearch}>
           <Ionicons name="search" size={24} color={theme.icon} />

@@ -1,4 +1,4 @@
-// app/(word-result)/[term]/Media.tsx
+// app/(tabs)/diction/(word-result)/[term]/media.tsx
 import { useEffect } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";

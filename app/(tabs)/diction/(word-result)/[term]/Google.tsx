@@ -1,4 +1,4 @@
-// app/(word-result)/[term]/google.tsx
+// app/(tabs)/diction/(word-result)/[term]/Google.tsx
 import { StyleSheet, ActivityIndicator, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { WebView } from "react-native-webview";

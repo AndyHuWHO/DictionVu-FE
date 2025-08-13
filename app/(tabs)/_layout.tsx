@@ -55,7 +55,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="diction/index"
+        name="diction"
         options={{
           title: "Diction",
           tabBarIcon(props) {

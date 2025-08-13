@@ -32,7 +32,8 @@ export default function DictionTabScreen() {
   const handleSearch = () => {
     const trimmed = term.trim().toLowerCase();
     if (!trimmed) return;
-    router.push(`/(word-result)/${encodeURIComponent(trimmed)}`);
+    // router.push(`/(word-result)/${encodeURIComponent(trimmed)}`);
+    router.push({ pathname: "/diction/[term]", params: { term: trimmed } });
   };
 
   return (

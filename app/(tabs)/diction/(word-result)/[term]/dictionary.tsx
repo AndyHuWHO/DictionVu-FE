@@ -1,4 +1,4 @@
-// app/(word-result)/[term]/dictionary.tsx
+// app/(tabs)/diction/(word-result)/[term]/dictionary.tsx
 import { StyleSheet, ActivityIndicator } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { ThemedText } from "@/components/themed/ThemedText";

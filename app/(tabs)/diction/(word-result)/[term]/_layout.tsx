@@ -1,11 +1,11 @@
-// app/(word-result)/[term]/_layout.tsx
+// app/(tabs)/diction/(word-result)/[term]/_layout.tsx
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import DictionaryScreen from "./Dictionary";
+import DictionaryScreen from "./dictionary";
 import GoogleScreen from "./Google";
 import DictionaryScreen2 from "./Dictionary2";
 import DictionaryScreen3 from "./Dictionary3";
 import DictionaryScreen4 from "./Dictionary4";
-import MediaScreen from "./Media";
+import MediaScreen from "./media";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/ThemedText";

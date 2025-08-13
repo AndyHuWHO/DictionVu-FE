@@ -22,7 +22,7 @@ export default function RootLayout() {
                 name="(tabs)"
                 options={{ headerShown: false, title: "" }}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="(word-result)/[term]"
                 options={
                   ({ route }) => ({
@@ -31,7 +31,7 @@ export default function RootLayout() {
                 })
                 // {headerShown: false, title: "Word Result"}
               }
-              />
+              /> */}
               <Stack.Screen
                 name="(auth)/login"
                 options={{ headerShown: false, title: "Log In" }}
