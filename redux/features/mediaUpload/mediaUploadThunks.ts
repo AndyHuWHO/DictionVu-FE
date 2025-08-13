@@ -60,9 +60,13 @@ export const uploadMediaThunk = createAsyncThunk<
 
     return savedMedia;
   } catch (error: any) {
-    console.error("Upload failed:", error);
+    // console.error("Upload failed:", error);
+    // // Log the full response body if available
+    // if (error.response && error.response.data) {
+    //   console.error("Response body:", error.response.data);
+    // }
     return thunkAPI.rejectWithValue(
-      error.response?.data?.message || error.message || "Unknown error"
+      error.response?.data || error.message || "Unknown error"
     );
   }
 });

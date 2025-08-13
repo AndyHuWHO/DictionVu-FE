@@ -59,11 +59,26 @@ const mediaUploadSlice = createSlice({
         state.error = action.payload as string;
 
         Toast.hide(); // Hide previous
-        Toast.show({
-          type: "error",
-          text1: "Upload failed",
-          text2: state.error || "Something went wrong",
-        });
+        if (action.payload && typeof action.payload === "object") {
+          const entries = Object.entries(action.payload);
+          entries.forEach(([key, value], idx) => {
+            setTimeout(() => {
+              Toast.show({
+                type: "error",
+                text1: `Upload failed: ${key}`,
+                text2: String(value),
+                visibilityTime: 5000, 
+              });
+            }, idx * 5100); 
+          });
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Upload failed",
+            text2: state.error || "Something went wrong",
+            visibilityTime: 2000, // 2 seconds
+          });
+        }
       });
   },
 });

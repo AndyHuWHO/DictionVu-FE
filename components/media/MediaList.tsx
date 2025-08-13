@@ -48,9 +48,9 @@ export default function MediaList({ media, context }: Props) {
   ({ viewableItems }: { viewableItems: ViewToken[] }) => {
     if (viewableItems.length > 0 && viewableItems[0].index !== null) {
       setVisibleIndex(viewableItems[0].index);
-      console.log("current index before updating: ", currentIndex);
+      // console.log("current index before updating: ", currentIndex);
       if (context === "feed" && currentIndex !== viewableItems[0].index) {
-        console.log("updating current index to:", viewableItems[0].index);
+        // console.log("updating current index to:", viewableItems[0].index);
         dispatch(setCurrentIndex(viewableItems[0].index));
       }
     }

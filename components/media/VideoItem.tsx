@@ -84,7 +84,6 @@ useEffect(() => {
 
       if (thumb?.width && thumb?.height) {
         const ratio = thumb.height / thumb.width;
-        console.log("thumbnail generated", thumb, "ratio:", ratio);
         setContentFit(ratio > 1.6 ? "cover" : "contain");
 
         clearInterval(interval); // stop polling once we have it

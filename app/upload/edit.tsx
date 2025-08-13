@@ -114,6 +114,8 @@ export default function EditMediaScreen() {
       thumbnailUri: thumbnailUri!,
     };
 
+    console.log("Uploading metadata:", metadata);
+
 
     // Fire upload in background
     dispatch(uploadMediaThunk({ metadata, localUris }));

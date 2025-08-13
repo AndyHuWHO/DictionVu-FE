@@ -1,5 +1,5 @@
 // app/(tabs)/upload/index.tsx
-import { useRef, useState, useEffect, use } from "react";
+import { useRef, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import {
   CameraView,
@@ -10,6 +10,9 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import { InteractionManager } from "react-native";
+import UploadControls from "@/components/upload/UploadControls";
 
 export default function UploadCameraScreen() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
@@ -22,6 +25,52 @@ export default function UploadCameraScreen() {
 
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
+  const isFocused = useIsFocused();
+
+  const MAX_SECONDS = 15;
+  const [elapsedSec, setElapsedSec] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startTimer = () => {
+    stopTimer();
+    setElapsedSec(0);
+    timerRef.current = setInterval(() => {
+      setElapsedSec((s) => {
+        const next = s + 1;
+        if (next >= MAX_SECONDS) {
+          clearInterval(timerRef.current!);
+          timerRef.current = null;
+          return MAX_SECONDS;
+        }
+        return next;
+      });
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setElapsedSec(0);
+  };
+
+  const fmtMMSS = (sec: number, sep = ":") => {
+    const clamped = Math.max(0, Math.floor(sec));
+    const m = Math.floor(clamped / 60);
+    const s = clamped % 60;
+    return `${String(m).padStart(2, "0")}${sep}${String(s).padStart(2, "0")}`;
+  };
+
+  const cancelRef = useRef(false);
+  const handleClose = () => {
+    cancelRef.current = true;
+    if (isRecording) {
+      try {
+        cameraRef.current?.stopRecording();
+      } catch {}
+    }
+    router.back();
+  };
 
   useEffect(() => {
     const requestAllPermissions = async () => {
@@ -34,17 +83,26 @@ export default function UploadCameraScreen() {
   }, []);
 
   const startRecording = async () => {
-    if (!cameraRef.current) return;
+    if (!cameraRef.current || isRecording) return;
+
     const availableLenses = await cameraRef.current.getAvailableLensesAsync();
     console.log("Available Lenses:", availableLenses);
 
+    cancelRef.current = false;
     try {
       setIsRecording(true);
+      startTimer();
       const video = await cameraRef.current.recordAsync({
-        maxDuration: 15,
+        maxDuration: MAX_SECONDS,
       });
 
       setIsRecording(false);
+
+      if (cancelRef.current || !video?.uri) return;
+
+      await new Promise<void>((r) =>
+        InteractionManager.runAfterInteractions(() => r())
+      );
 
       router.push({
         pathname: "/upload/preview",
@@ -58,12 +116,14 @@ export default function UploadCameraScreen() {
       console.error("Recording error:", err);
       Alert.alert("Error", "Video recording failed.");
       setIsRecording(false);
+      stopTimer();
     }
   };
 
   const stopRecording = () => {
     if (cameraRef.current) {
       cameraRef.current.stopRecording();
+      // stopTimer();
     }
   };
 
@@ -71,12 +131,15 @@ export default function UploadCameraScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: "videos",
       allowsEditing: true,
-      videoMaxDuration: 15,
+      videoMaxDuration: MAX_SECONDS,
       quality: 0.7,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const asset = result.assets[0];
+      await new Promise<void>((r) =>
+        InteractionManager.runAfterInteractions(() => r())
+      );
       router.push({
         pathname: "/upload/preview",
         params: {
@@ -113,53 +176,41 @@ export default function UploadCameraScreen() {
 
   return (
     <View style={styles.container}>
-      <CameraView
-        ref={cameraRef}
-        style={StyleSheet.absoluteFill}
-        facing={facing}
-        zoom={0}
-        mode="video"
-        videoQuality="720p"
-        mute={false}
-        autofocus="on"
-        selectedLens="Back Camera"
+      {isFocused && (
+        <CameraView
+          ref={cameraRef}
+          style={StyleSheet.absoluteFill}
+          facing={facing}
+          zoom={0}
+          mode="video"
+          videoQuality="720p"
+          mute={false}
+          autofocus="on"
+          selectedLens={"Back Camera"}
+        />
+      )}
+      <TouchableOpacity
+        style={styles.closeButton}
+        onPress={handleClose}
+        accessibilityLabel="Close"
       >
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={() => router.back()}
-          accessibilityLabel="Close"
-        >
-          <Feather name="x" size={28} style={styles.closeButtonIcon} />
-        </TouchableOpacity>
-        <View style={styles.controls}>
-          <TouchableOpacity
-            style={styles.flipButton}
-            onPress={() => setFacing(facing === "back" ? "front" : "back")}
-            // onPress={launchCamera}
-          >
-            <Text style={styles.flipText}>🔁</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.recordButton,
-              isRecording && { backgroundColor: "#900" },
-            ]}
-            onPress={isRecording ? stopRecording : startRecording}
-          >
-            <Text style={styles.recordText}>
-              {isRecording ? "■ Stop" : "● Record"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.galleryButton}
-            onPress={pickFromLibrary}
-          >
-            <Text style={styles.galleryText}>📁</Text>
-          </TouchableOpacity>
+        <Feather name="x" size={28} style={styles.closeButtonIcon} />
+      </TouchableOpacity>
+      {isRecording && (
+        <View style={styles.timerBadge}>
+          <Text style={styles.timerText}>
+            {fmtMMSS(Math.min(elapsedSec, MAX_SECONDS))}/{fmtMMSS(MAX_SECONDS)}
+            {/* If you want dots: fmtMMSS(..., ".") */}
+          </Text>
         </View>
-      </CameraView>
+      )}
+      <UploadControls
+        isRecording={isRecording}
+        onFlip={() => setFacing(facing === "back" ? "front" : "back")}
+        onRecordStart={startRecording}
+        onRecordStop={stopRecording}
+        onPickFromLibrary={pickFromLibrary}
+      />
     </View>
   );
 }
@@ -195,40 +246,20 @@ const styles = StyleSheet.create({
   permissionButtonText: {
     color: "#fff",
   },
-  controls: {
+  timerBadge: {
     position: "absolute",
-    bottom: 40,
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    top: 80,
+    alignSelf: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    zIndex: 12,
   },
-  recordButton: {
-    backgroundColor: "red",
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-    borderRadius: 40,
-  },
-  recordText: {
-    fontSize: 18,
+  timerText: {
     color: "#fff",
-  },
-  flipButton: {
-    backgroundColor: "#00000066",
-    padding: 10,
-    borderRadius: 30,
-  },
-  flipText: {
-    fontSize: 18,
-    color: "#fff",
-  },
-  galleryButton: {
-    backgroundColor: "#00000066",
-    padding: 10,
-    borderRadius: 30,
-  },
-  galleryText: {
-    fontSize: 18,
-    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    letterSpacing: 0.5,
   },
 });

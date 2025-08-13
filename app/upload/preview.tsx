@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { View, TouchableOpacity, Text, Alert, StyleSheet } from "react-native";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import Slider from "@react-native-community/slider";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect } from "@react-navigation/native";
 
 export default function PreviewScreen() {
@@ -70,9 +70,15 @@ export default function PreviewScreen() {
   }, [player, isSliding]);
 
 
-  useFocusEffect(
+useFocusEffect(
   useCallback(() => {
-    if (player) player.play();
+    let tick = setInterval(() => {
+      if (player && player.duration > 0) {
+        player.play();
+        clearInterval(tick);
+      }
+    }, 50);
+    return () => clearInterval(tick);
   }, [player])
 );
 
@@ -83,7 +89,11 @@ export default function PreviewScreen() {
         onPress={() => router.back()}
         accessibilityLabel="Close"
       >
-        <Ionicons name="chevron-back" size={28} style={styles.closeButtonIcon} />
+        <Ionicons
+          name="chevron-back"
+          size={28}
+          style={styles.closeButtonIcon}
+        />
       </TouchableOpacity>
       <Text style={styles.previewTag}>Preview</Text>
       <Slider
@@ -125,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-   previewTag: {
+  previewTag: {
     position: "absolute",
     top: 60,
     alignSelf: "center",
