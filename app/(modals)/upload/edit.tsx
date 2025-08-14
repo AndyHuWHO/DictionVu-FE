@@ -128,8 +128,6 @@ export default function EditMediaScreen() {
       style={{
         flex: 1,
         backgroundColor: "#fff",
-        borderWidth: 1,
-        borderColor: "red",
       }}
        edges={["top", "bottom"]} // Ensure safe area insets are respected
     >
@@ -303,7 +301,7 @@ const styles = StyleSheet.create({
   thumbnailWrapper: {
     alignSelf: "center",
     width: "30%",
-    height: "30%",
+    height: "25%",
     borderRadius: 6,
     overflow: "hidden",
     marginBottom: 20,
