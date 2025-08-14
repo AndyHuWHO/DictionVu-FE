@@ -74,7 +74,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="vu/index"
+        name="vu"
         options={{
           title: "Vu",
           tabBarIcon(props) {

@@ -8,6 +8,7 @@ import { ThemedText } from "@/components/themed/ThemedText";
 import { fetchMediaWordThunk } from "@/redux/features/mediaWord/mediaWordThunks";
 import { RootState, AppDispatch } from "@/redux/store";
 import MediaList from "@/components/media/MediaList";
+import MediaPager from "@/components/media/MediaPager";
 
 export default function MediaScreen() {
   const { term } = useLocalSearchParams();
@@ -52,7 +53,7 @@ export default function MediaScreen() {
 
   return (
     <ThemedView style={{ flex: 1}}>
-      <MediaList media={media} context="word" />
+      <MediaPager media={media} context="word" />
     </ThemedView>
   );
 }
