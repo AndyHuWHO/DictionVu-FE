@@ -97,6 +97,7 @@ export default function TabLayout() {
         options={{
           title: "Upload",
           tabBarLabel: () => null,
+          // href: null,
           tabBarIcon: () => (
             <Feather
               name="plus-circle"
@@ -107,9 +108,9 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: (e) => {
-            if (!requireAuth()) {
-              e.preventDefault();
-            }
+            e.preventDefault(); // <- critical to avoid switching the tab
+            if (!requireAuth()) return;
+            router.push("/(modals)/upload/capture");
           },
         }}
       />

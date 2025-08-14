@@ -1,4 +1,4 @@
-// app/upload/preview.tsx
+// app/(modals)/upload/preview.tsx
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useState, useEffect, useCallback } from "react";
@@ -15,6 +15,7 @@ export default function PreviewScreen() {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(1);
   const [isSliding, setIsSliding] = useState(false);
+  const [contentFit, setContentFit] = useState<"contain" | "cover" >("contain");
 
   const player = useVideoPlayer(contentUri, (player) => {
     player.loop = true;
@@ -40,7 +41,7 @@ export default function PreviewScreen() {
     }
     player.pause();
     router.push({
-      pathname: "/upload/edit",
+      pathname: "/(modals)/upload/edit",
       params: { contentUri, thumbnailUri: image },
     });
   };

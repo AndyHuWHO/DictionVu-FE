@@ -8,7 +8,6 @@ import { store } from "@/redux/store";
 import AuthProvider from "@/context/AuthProvider";
 import Toast from "react-native-toast-message";
 
-
 export default function RootLayout() {
   return (
     <Provider store={store}>
@@ -23,15 +22,21 @@ export default function RootLayout() {
               />
               <Stack.Screen
                 name="(auth)/login"
-                options={{ headerShown: false, title: "Log In" }}
+                options={{
+                  headerShown: false,
+                  title: "Log In",
+                  animation: "fade_from_bottom",
+                  animationDuration: 300,
+                }}
               />
               <Stack.Screen
-                name="upload/preview"
-                options={{ headerShown: false, title: "Preview" }}
-              />
-              <Stack.Screen
-                name="upload/edit"
-                options={{ headerShown: false, title: "Edit" }}
+                name="(modals)"
+                options={{
+                  headerShown: false,
+                  presentation: "fullScreenModal",
+                  // animation: "slide_from_bottom",
+                  // animationDuration: 300,
+                }}
               />
             </Stack>
             <Toast />

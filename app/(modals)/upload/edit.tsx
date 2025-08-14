@@ -1,4 +1,4 @@
-// app/(tabs)/upload/edit.tsx
+// app/(modals)/upload/edit.tsx
 import { useEffect, useState } from "react";
 import {
   View,
@@ -116,7 +116,6 @@ export default function EditMediaScreen() {
 
     console.log("Uploading metadata:", metadata);
 
-
     // Fire upload in background
     dispatch(uploadMediaThunk({ metadata, localUris }));
 
@@ -125,7 +124,15 @@ export default function EditMediaScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+        borderWidth: 1,
+        borderColor: "red",
+      }}
+       edges={["top", "bottom"]} // Ensure safe area insets are respected
+    >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -134,6 +141,7 @@ export default function EditMediaScreen() {
           <ScrollView
             contentContainerStyle={styles.container}
             keyboardShouldPersistTaps="handled"
+            contentInsetAdjustmentBehavior="automatic"
           >
             <StatusBar style="dark" />
 
