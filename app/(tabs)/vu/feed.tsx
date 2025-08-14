@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useEffect } from "react";
 import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
-import MediaList from "@/components/media/MediaList";
 import MediaPager from "@/components/media/MediaPager";
 
 export default function FeedTopTabScreen() {

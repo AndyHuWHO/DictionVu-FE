@@ -7,6 +7,7 @@ import * as VideoThumbnails from "expo-video-thumbnails";
 import Slider from "@react-native-community/slider";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect } from "@react-navigation/native";
+import { fitFromWH } from "@/utils/videoFit";
 
 export default function PreviewScreen() {
   const { contentUri } = useLocalSearchParams<{ contentUri: string }>();
@@ -24,10 +25,11 @@ export default function PreviewScreen() {
 
   const generateThumbnail = async () => {
     try {
-      const { uri } = await VideoThumbnails.getThumbnailAsync(contentUri, {
+      const { uri, width, height } = await VideoThumbnails.getThumbnailAsync(contentUri, {
         time: 1,
       });
       setImage(uri);
+      setContentFit(fitFromWH(width, height));
     } catch (e) {
       console.warn(e);
     }
@@ -42,7 +44,7 @@ export default function PreviewScreen() {
     player.pause();
     router.push({
       pathname: "/(modals)/upload/edit",
-      params: { contentUri, thumbnailUri: image },
+      params: { contentUri, thumbnailUri: image, contentFit },
     });
   };
 
@@ -117,7 +119,7 @@ useFocusEffect(
         style={styles.video}
         allowsFullscreen={false}
         nativeControls={false}
-        contentFit="contain"
+        contentFit={contentFit}
       />
       <TouchableOpacity
         style={styles.nextButton}

@@ -1,5 +1,5 @@
 // app/(modals)/_layout.tsx
 import { Slot } from "expo-router";
 export default function ModalsGroup() {
-  return <Slot />; // or a <Stack> if you want per-group defaults
+  return <Slot />; 
 }

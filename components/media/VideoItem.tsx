@@ -13,6 +13,7 @@ import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { Ionicons } from "@expo/vector-icons";
 import { useGetUserProfileQuery } from "@/redux/apis/visitProfileApi";
 import MediaInteractionColumn from "./MediaInteractionColumn";
+import { fitFromWH } from "@/utils/videoFit";
 
 type Props = {
   media: MediaItem;
@@ -31,7 +32,7 @@ export default function VideoItem({
   const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
   const [fadeAnim] = useState(new Animated.Value(1));
 
-  const [contentFit, setContentFit] = useState<"contain" | "cover" >("contain");
+  const [contentFit, setContentFit] = useState<"contain" | "cover">("contain");
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
@@ -58,46 +59,71 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
+
   // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const size = player?.videoTrack?.size;
-  //     // console.log("waiting for video track ready");
-  //     if (size?.width && size?.height) {
-  //       // console.log(player?.videoTrack);
-  //       const ratio = size.height / size.width;
-  //       setContentFit(ratio > 1.6 ? "cover" : "contain");
-  //       clearInterval(interval);
+  //   let active = true;
+  //   const interval = setInterval(async () => {
+  //     if (!active) return;
+
+  //     try {
+  //       const thumbs = await player.generateThumbnailsAsync([0]); // use array of times
+  //       const thumb = Array.isArray(thumbs) ? thumbs[0] : undefined;
+
+  //       if (thumb?.width && thumb?.height) {
+  //         setContentFit(fitFromWH(thumb.width, thumb.height));
+
+  //         clearInterval(interval); // stop polling once we have it
+  //       }
+  //     } catch (e) {
+  //       // swallow errors until ready; don't clear interval yet
   //     }
   //   }, 200);
 
-  //   return () => clearInterval(interval);
-  // }, [player]);
+  //   return () => {
+  //     active = false;
+  //     clearInterval(interval);
+  //   };
+  // }, [media.objectPresignedGetUrl, player]);
 
-useEffect(() => {
-  let active = true;
-  const interval = setInterval(async () => {
-    if (!active) return;
+  useEffect(() => {
+    let cancelled = false;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
-    try {
-      const thumbs = await player.generateThumbnailsAsync([0]); // use array of times
-      const thumb = Array.isArray(thumbs) ? thumbs[0] : undefined;
-
-      if (thumb?.width && thumb?.height) {
-        const ratio = thumb.height / thumb.width;
-        setContentFit(ratio > 1.6 ? "cover" : "contain");
-
-        clearInterval(interval); // stop polling once we have it
+    // 1) Try server thumbnail first (cheap + instant). We only need its dimensions.
+    Image.getSize(
+      media.thumbnailPresignedGetUrl,
+      (w, h) => {
+        if (cancelled) return;
+        console.log("got video thumb dimensions from server thumb");
+        setContentFit(fitFromWH(w, h));
+      },
+      () => {
+        // 2) Fallback: your existing approach (poll player.generateThumbnailsAsync)
+        interval = setInterval(async () => {
+          if (cancelled) return;
+          try {
+            console.log("polling for video thumb dimensions...");
+            const thumbs = await player.generateThumbnailsAsync([0]);
+            const thumb = Array.isArray(thumbs) ? thumbs[0] : undefined;
+            if (thumb?.width && thumb?.height) {
+              setContentFit(fitFromWH(thumb.width, thumb.height));
+              if (interval) {
+                clearInterval(interval);
+                interval = null;
+              }
+            }
+          } catch {
+            // keep polling until we get dimensions or unmount
+          }
+        }, 200);
       }
-    } catch (e) {
-      // swallow errors until ready; don't clear interval yet
-    }
-  }, 200);
+    );
 
-  return () => {
-    active = false;
-    clearInterval(interval);
-  };
-}, [media.objectPresignedGetUrl, player]);
+    return () => {
+      cancelled = true;
+      if (interval) clearInterval(interval);
+    };
+  }, [media.thumbnailPresignedGetUrl, media.objectPresignedGetUrl, player]);
 
   const handleTogglePlay = () => {
     if (isPaused) {
@@ -126,16 +152,17 @@ useEffect(() => {
   return (
     <TouchableWithoutFeedback onPress={handleTogglePlay}>
       <View style={[styles.videoContainer, { height }]}>
-        {contentFit &&     <VideoView
-          style={styles.video}
-          player={player}
-          contentFit={contentFit}
-          // contentFit="contain"
-          allowsFullscreen
-          allowsPictureInPicture
-          nativeControls={false}
-        /> }
-    
+        {contentFit && (
+          <VideoView
+            style={styles.video}
+            player={player}
+            contentFit={contentFit}
+            // contentFit="contain"
+            allowsFullscreen
+            allowsPictureInPicture
+            nativeControls={false}
+          />
+        )}
 
         {/* {contentFit? */}
         {/*  :null} */}

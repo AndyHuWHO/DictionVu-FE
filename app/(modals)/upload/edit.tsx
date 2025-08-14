@@ -26,9 +26,10 @@ import { uploadMediaThunk } from "@/redux/features/mediaUpload/mediaUploadThunks
 import { RootState, AppDispatch } from "@/redux/store";
 
 export default function EditMediaScreen() {
-  const { contentUri, thumbnailUri } = useLocalSearchParams<{
+  const { contentUri, thumbnailUri, contentFit } = useLocalSearchParams<{
     contentUri: string;
     thumbnailUri: string;
+    contentFit?: "contain" | "cover";
   }>();
   const router = useRouter();
 
@@ -151,13 +152,13 @@ export default function EditMediaScreen() {
             </TouchableOpacity>
             {/* ───── THUMBNAIL ───── */}
             {thumbnailUri && (
-              <View style={styles.thumbnailWrapper}>
+                <View style={styles.thumbnailWrapper}>
                 <Image
                   source={{ uri: thumbnailUri }}
                   style={styles.thumbnail}
-                  resizeMode="contain"
+                  resizeMode={contentFit}
                 />
-              </View>
+                </View>
             )}
 
             {/* ───── FORM ───── */}
