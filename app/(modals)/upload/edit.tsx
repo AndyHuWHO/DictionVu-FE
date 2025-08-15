@@ -130,7 +130,7 @@ export default function EditMediaScreen() {
         flex: 1,
         backgroundColor: "#fff",
       }}
-       edges={["top", "bottom"]} // Ensure safe area insets are respected
+      edges={["top", "bottom"]} // Ensure safe area insets are respected
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -152,13 +152,13 @@ export default function EditMediaScreen() {
             </TouchableOpacity>
             {/* ───── THUMBNAIL ───── */}
             {thumbnailUri && (
-                <View style={styles.thumbnailWrapper}>
+              <View style={styles.thumbnailWrapper}>
                 <Image
                   source={{ uri: thumbnailUri }}
                   style={styles.thumbnail}
                   resizeMode={contentFit}
                 />
-                </View>
+              </View>
             )}
 
             {/* ───── FORM ───── */}
@@ -222,59 +222,57 @@ export default function EditMediaScreen() {
                 {description.trim().split(/\s+/).filter(Boolean).length}/
                 {MAX_WORDS} words
               </Text>
-            </View>
-
-            {/* Tag input */}
-            <View style={styles.wordRow}>
-              <TextInput
-                style={styles.wordInput}
-                placeholder="Add 1 - 5 related tags"
-                placeholderTextColor="#999"
-                value={tagInput}
-                onChangeText={setTagInput}
-                onSubmitEditing={addTag}
-                maxLength={20}
-              />
-              <TouchableOpacity
-                onPress={addTag}
-                disabled={tags.length >= 5}
-                style={[
-                  styles.addButton,
-                  { backgroundColor: "#008df8ff" },
-                  tags.length >= 5 && styles.addButtonDisabled,
-                ]}
-              >
-                <Text style={[styles.addButtonText]}>#Tag</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Tag chips */}
-            <View style={styles.wordChipContainer}>
-              {tags.map((tag) => (
+              {/* Tag input */}
+              <View style={styles.wordRow}>
+                <TextInput
+                  style={styles.wordInput}
+                  placeholder="Add 1 - 5 related tags"
+                  placeholderTextColor="#999"
+                  value={tagInput}
+                  onChangeText={setTagInput}
+                  onSubmitEditing={addTag}
+                  maxLength={20}
+                />
                 <TouchableOpacity
-                  key={tag}
-                  style={styles.wordChip}
-                  onPress={() => removeTag(tag)}
-                  activeOpacity={0.8}
+                  onPress={addTag}
+                  disabled={tags.length >= 5}
+                  style={[
+                    styles.addButton,
+                    { backgroundColor: "#008df8ff" },
+                    tags.length >= 5 && styles.addButtonDisabled,
+                  ]}
                 >
-                  <Text style={styles.wordChipText}>#{tag} ×</Text>
+                  <Text style={[styles.addButtonText]}>#Tag</Text>
                 </TouchableOpacity>
-              ))}
-            </View>
+              </View>
 
-            {/* ───── SETTINGS ───── */}
-            <View style={styles.visibilityToggle}>
-              <Text style={styles.toggleLabel}>
-                {isPublic ? "Public" : "Private"}
-              </Text>
+              {/* Tag chips */}
+              <View style={styles.wordChipContainer}>
+                {tags.map((tag) => (
+                  <TouchableOpacity
+                    key={tag}
+                    style={styles.wordChip}
+                    onPress={() => removeTag(tag)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.wordChipText}>#{tag} ×</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {/* ───── SETTINGS ───── */}
+              <View style={styles.visibilityToggle}>
+                <Text style={styles.toggleLabel}>
+                  {isPublic ? "Public" : "Private"}
+                </Text>
 
-              <Switch
-                value={isPublic}
-                onValueChange={setIsPublic}
-                thumbColor="#fff"
-                trackColor={{ false: "#ccc", true: "#02b881ff" }}
-                style={{ transform: [{ scale: 0.8 }] }}
-              />
+                <Switch
+                  value={isPublic}
+                  onValueChange={setIsPublic}
+                  thumbColor="#fff"
+                  trackColor={{ false: "#ccc", true: "#02b881ff" }}
+                  style={{ transform: [{ scale: 0.8 }] }}
+                />
+              </View>
             </View>
 
             {/* ───── ACTION ───── */}
@@ -391,6 +389,11 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: "center",
     marginTop: 10,
+    // position: "absolute",
+    // bottom: 50,
+    // alignSelf: "center",
+    // paddingHorizontal: 40,
+
   },
   uploadButtonText: {
     color: "#fff",

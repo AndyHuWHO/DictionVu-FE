@@ -94,7 +94,6 @@ export default function VideoItem({
       media.thumbnailPresignedGetUrl,
       (w, h) => {
         if (cancelled) return;
-        console.log("got video thumb dimensions from server thumb");
         setContentFit(fitFromWH(w, h));
       },
       () => {
@@ -102,7 +101,7 @@ export default function VideoItem({
         interval = setInterval(async () => {
           if (cancelled) return;
           try {
-            console.log("polling for video thumb dimensions...");
+            console.log("polling for video thumb dimensions! Slow! Server thumb not available!");
             const thumbs = await player.generateThumbnailsAsync([0]);
             const thumb = Array.isArray(thumbs) ? thumbs[0] : undefined;
             if (thumb?.width && thumb?.height) {
