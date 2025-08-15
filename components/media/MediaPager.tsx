@@ -57,6 +57,7 @@ export default function MediaPager({ media, context }: Props) {
     (e: PagerViewOnPageSelectedEvent) => {
       const idx = e.nativeEvent.position;
       if (context === "feed") {
+        console.log("Page selected in feed context:", idx);
         if (idx !== currentIndex) dispatch(setCurrentIndex(idx));
       } else {
         if (idx !== visibleIndex) setVisibleIndex(idx);
@@ -75,6 +76,7 @@ export default function MediaPager({ media, context }: Props) {
       offscreenPageLimit={1}
       onPageSelected={onPageSelected}
       initialPage={initialPage}
+      scrollEnabled={true}
     >
       {pvHeight === null ? (
         // Render a lightweight placeholder page so PagerView can mount and report layout

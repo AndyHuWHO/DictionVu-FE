@@ -7,6 +7,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useEffect } from "react";
 import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
 import MediaPager from "@/components/media/MediaPager";
+import MediaList from "@/components/media/MediaList";
 
 export default function FeedTopTabScreen() {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,7 +51,7 @@ export default function FeedTopTabScreen() {
 
   return (
     <ThemedView style={{ flex: 1 }}>
-      <MediaPager media={media} context="feed" />
+      <MediaList media={media} context="feed" />
     </ThemedView>
   );
 }
