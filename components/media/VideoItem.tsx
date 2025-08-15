@@ -3,17 +3,17 @@ import { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   Animated,
   Image,
 } from "react-native";
 import { VideoView, useVideoPlayer } from "expo-video";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
-import { Ionicons } from "@expo/vector-icons";
 import { useGetUserProfileQuery } from "@/redux/apis/visitProfileApi";
 import MediaInteractionColumn from "./MediaInteractionColumn";
 import { fitFromWH } from "@/utils/videoFit";
+import MediaMetadataPanel from "./MediaMetadataPanel";
+import PlayOverlay from "./PlayOverlay";
 
 type Props = {
   media: MediaItem;
@@ -59,32 +59,6 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
-
-  // useEffect(() => {
-  //   let active = true;
-  //   const interval = setInterval(async () => {
-  //     if (!active) return;
-
-  //     try {
-  //       const thumbs = await player.generateThumbnailsAsync([0]); // use array of times
-  //       const thumb = Array.isArray(thumbs) ? thumbs[0] : undefined;
-
-  //       if (thumb?.width && thumb?.height) {
-  //         setContentFit(fitFromWH(thumb.width, thumb.height));
-
-  //         clearInterval(interval); // stop polling once we have it
-  //       }
-  //     } catch (e) {
-  //       // swallow errors until ready; don't clear interval yet
-  //     }
-  //   }, 200);
-
-  //   return () => {
-  //     active = false;
-  //     clearInterval(interval);
-  //   };
-  // }, [media.objectPresignedGetUrl, player]);
-
   useEffect(() => {
     let cancelled = false;
     let interval: ReturnType<typeof setInterval> | null = null;
@@ -101,7 +75,9 @@ export default function VideoItem({
         interval = setInterval(async () => {
           if (cancelled) return;
           try {
-            console.log("polling for video thumb dimensions! Slow! Server thumb not available!");
+            console.log(
+              "polling for video thumb dimensions! Slow! Server thumb not available!"
+            );
             const thumbs = await player.generateThumbnailsAsync([0]);
             const thumb = Array.isArray(thumbs) ? thumbs[0] : undefined;
             if (thumb?.width && thumb?.height) {
@@ -163,16 +139,7 @@ export default function VideoItem({
           />
         )}
 
-        {/* {contentFit? */}
-        {/*  :null} */}
-
-        {showOverlay && (
-          <Animated.View
-            style={[styles.playIconWrapper, { opacity: fadeAnim }]}
-          >
-            <Ionicons name="play" size={72} color="rgba(255,255,255,0.85)" />
-          </Animated.View>
-        )}
+        <PlayOverlay visible={showOverlay} fadeAnim={fadeAnim} />
 
         <MediaInteractionColumn
           profileImage={profileImage}
@@ -181,24 +148,7 @@ export default function VideoItem({
           mediaId={media.id}
           authUserId={media.authUserId}
         />
-
-        <View style={styles.bottomContent}>
-          <Text style={styles.username}>
-            @{userProfile?.profileName || "unknown"}
-          </Text>
-          <Text style={styles.description}>{media.description}</Text>
-          {media.words?.length ? (
-            <Text style={styles.tagLine}>
-              {media.words.map((word) => `$${word}`).join(" ")}
-            </Text>
-          ) : null}
-
-          {media.tags?.length ? (
-            <Text style={styles.tagLine}>
-              {media.tags.map((tag) => `#${tag}`).join(" ")}
-            </Text>
-          ) : null}
-        </View>
+        <MediaMetadataPanel media={media} userProfile={userProfile} />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -211,33 +161,5 @@ const styles = StyleSheet.create({
   video: {
     width: "100%",
     height: "100%",
-  },
-  playIconWrapper: {
-    position: "absolute",
-    top: "40%",
-    left: "40%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  bottomContent: {
-    position: "absolute",
-    bottom: 70,
-    left: 20,
-    right: 80,
-  },
-  username: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  description: {
-    color: "#fff",
-    fontSize: 14,
-  },
-  tagLine: {
-    color: "#ccc",
-    fontSize: 13,
-    marginTop: 4,
   },
 });
