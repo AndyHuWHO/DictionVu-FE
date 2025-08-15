@@ -2,14 +2,15 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "skipLibCheck": true,            // ← prevents TS from type-checking .d.ts in node_modules
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     }
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx"
-  ]
+    "**/*.tsx",
+    "expo-env.d.ts"              
+  ],
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
 }
