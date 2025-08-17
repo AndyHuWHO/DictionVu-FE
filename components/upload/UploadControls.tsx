@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-nativ
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 type Props = {
   isRecording: boolean;
@@ -32,15 +33,17 @@ export default function UploadControls({
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.recordButton, isRecording && { backgroundColor: "#900" }]}
+        style={[styles.recordButton, 
+          // isRecording && { backgroundColor: "#900" }
+        ]}
         onPress={isRecording ? onRecordStop : onRecordStart}
         accessibilityLabel={isRecording ? "Stop recording" : "Start recording"}
         activeOpacity={0.9}
       >
         {isRecording ? (
-          <MaterialCommunityIcons name="record-circle" size={60} color="white" />
+          <MaterialIcons name="radio-button-checked" size={74} color="white" />
         ) : (
-          <MaterialCommunityIcons name="record-circle-outline" size={60} color="white" />
+          <Ionicons name="radio-button-on-outline" size={74} color="white" />
         )}
       </TouchableOpacity>
 
@@ -68,9 +71,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   recordButton: {
-    // backgroundColor: "#ff000066",
-    backgroundColor: "red",
-    padding: 3,
+    padding: 0,
     borderRadius: 50,
   },
   flipButton: {

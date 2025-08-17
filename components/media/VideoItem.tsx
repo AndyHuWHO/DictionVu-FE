@@ -156,6 +156,7 @@ export default function VideoItem({
 
 const styles = StyleSheet.create({
   videoContainer: {
+    position: "relative",
     backgroundColor: "#000",
   },
   video: {

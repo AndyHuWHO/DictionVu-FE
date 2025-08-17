@@ -35,7 +35,7 @@ export default function MediaMetadataPanel({ media, userProfile }: Props) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 70,
+    bottom: 30,
     left: 20,
     right: 80,
   },

@@ -200,7 +200,6 @@ export default function UploadCaptureScreen() {
         <View style={styles.timerBadge}>
           <Text style={styles.timerText}>
             {fmtMMSS(Math.min(elapsedSec, MAX_SECONDS))}/{fmtMMSS(MAX_SECONDS)}
-            {/* If you want dots: fmtMMSS(..., ".") */}
           </Text>
         </View>
       )}
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
   },
   timerBadge: {
     position: "absolute",
-    top: 80,
+    bottom: 140,
     alignSelf: "center",
     paddingHorizontal: 12,
     paddingVertical: 6,

@@ -35,9 +35,20 @@ export default function EditMediaScreen() {
 
   const [description, setDescription] = useState("");
   const MAX_WORDS = 100;
+
+  const countGraphemes = (text: string) => {
+  // if (typeof Intl !== "undefined" && Intl.Segmenter) {
+    // console.log("Using Intl.Segmenter for grapheme counting");
+    // const s = new Intl.Segmenter();
+    // return Array.from(s.segment(text)).length;
+  // }
+  // Fallback: counts code points (good enough for most cases)
+  return Array.from(text).length;
+};
+
   const handleDescriptionChange = (text: string) => {
-    const wordList = text.trim().split(/\s+/);
-    if (wordList.length <= MAX_WORDS) {
+    const count = countGraphemes(text);
+    if (count <= MAX_WORDS) {
       setDescription(text);
     }
   };
@@ -214,12 +225,12 @@ export default function EditMediaScreen() {
               <Text
                 style={[
                   styles.wordCount,
-                  description.trim().split(/\s+/).length > MAX_WORDS - 10 && {
+                  countGraphemes(description) > MAX_WORDS - 10 && {
                     color: "red",
                   },
                 ]}
               >
-                {description.trim().split(/\s+/).filter(Boolean).length}/
+                {countGraphemes(description)}/
                 {MAX_WORDS} words
               </Text>
               {/* Tag input */}
