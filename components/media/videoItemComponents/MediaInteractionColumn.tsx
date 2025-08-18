@@ -1,6 +1,16 @@
 // components/media/MediaInteractionColumn.tsx
 import { View, StyleSheet, Image, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { fetchMediaLikedThunk } from "@/redux/features/mediaLiked/mediaLikedThunks";
+import { useLikeMediaMutation } from "@/redux/apis/likeMediaApi";
+import { useUnlikeMediaMutation } from "@/redux/apis/unlikeMediaApi";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { useRouter } from "expo-router";
+
 
 type Props = {
   profileImage: string;
@@ -8,6 +18,7 @@ type Props = {
   commentCount: number;
   mediaId: string;
   authUserId: string;
+  isLiked: boolean;
 };
 
 export default function MediaInteractionColumn({
@@ -16,13 +27,44 @@ export default function MediaInteractionColumn({
   commentCount,
   mediaId,
   authUserId,
+  isLiked,
 }: Props) {
+  const [liked, setLiked] = useState(isLiked);
+  const dispatch = useDispatch<AppDispatch>();
+  const [likeMedia] = useLikeMediaMutation();
+  const [unlikeMedia] = useUnlikeMediaMutation();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.token);
+  const router = useRouter();
+  
+
   const handlePressAvatar = () => {
     console.log("Navigate to user profile:", authUserId);
   };
 
-  const handlePressLike = () => {
-    console.log("Toggle like for media:", mediaId);
+  const handlePressLike = async () => {
+    if (!isAuthenticated) {
+      router.push("/(auth)/login");
+      return;
+    }
+    const newLiked = !liked;
+
+    setLiked(newLiked);
+
+    try {
+      if (newLiked) {
+        await likeMedia({ mediaId }).unwrap();
+      } else {
+        await unlikeMedia({ mediaId }).unwrap();
+      }
+
+      // Refresh liked media list to reflect server truth
+      dispatch(fetchMediaLikedThunk({}));
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
+
+      // Revert optimistic update
+      setLiked(!newLiked);
+    }
   };
 
   const handlePressComment = () => {
@@ -33,18 +75,15 @@ export default function MediaInteractionColumn({
     <View style={styles.container}>
       <View style={styles.iconGroup}>
         <View style={styles.profileBorder}>
-          <Image
-            source={{ uri: profileImage }}
-            style={styles.profileImage}
-          />
+          <Image source={{ uri: profileImage }} style={styles.profileImage} />
         </View>
       </View>
 
       <View style={styles.iconGroup}>
         <Ionicons
-          name="heart-outline"
+          name={liked ? "heart" : "heart-outline"}
           size={40}
-          color="#fff"
+          color="#ffffffff"
           onPress={handlePressLike}
         />
         <Text style={styles.iconLabel}>{likeCount}</Text>

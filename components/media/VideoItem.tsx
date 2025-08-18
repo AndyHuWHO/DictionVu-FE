@@ -1,22 +1,25 @@
 // components/media/VideoItem.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   View,
   StyleSheet,
   TouchableWithoutFeedback,
   Animated,
   Image,
-  TouchableOpacity,
-  Button,
 } from "react-native";
 import { VideoView, useVideoPlayer } from "expo-video";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { useGetUserProfileQuery } from "@/redux/apis/visitProfileApi";
-import MediaInteractionColumn from "./MediaInteractionColumn";
+import MediaInteractionColumn from "./videoItemComponents/MediaInteractionColumn";
 import { fitFromWH } from "@/utils/videoFit";
-import MediaMetadataPanel from "./MediaMetadataPanel";
-import PlayOverlay from "./PlayOverlay";
-import VideoProgressBar from "./VideoProgressBar";
+import MediaMetadataPanel from "./videoItemComponents/MediaMetadataPanel";
+import PlayOverlay from "./videoItemComponents/PlayOverlay";
+import VideoProgressBar from "./videoItemComponents/VideoProgressBar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useLikeMediaMutation } from "@/redux/apis/likeMediaApi";
+import { useUnlikeMediaMutation } from "@/redux/apis/unlikeMediaApi";
+import { selectLikedIdSet } from "@/redux/features/mediaLiked/mediaLikedSelectors";
 
 type Props = {
   media: MediaItem;
@@ -40,6 +43,14 @@ export default function VideoItem({
   const [duration, setDuration] = useState(1);
   const [isSliding, setIsSliding] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
+  // const likedMedia = useSelector((state: RootState) => state.mediaLiked.items);
+  // const likedIdSet = useMemo(() => {
+  //   return new Set(likedMedia.map((m) => m.id));
+  // }, [likedMedia]);
+
+  // const isLiked = likedIdSet.has(media.id);
+  const likedIdSet = useSelector(selectLikedIdSet);
+const isLiked = likedIdSet.has(media.id);
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
@@ -207,6 +218,7 @@ export default function VideoItem({
           commentCount={media.commentCount}
           mediaId={media.id}
           authUserId={media.authUserId}
+          isLiked={isLiked}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
         <VideoProgressBar

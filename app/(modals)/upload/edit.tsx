@@ -206,7 +206,7 @@ export default function EditMediaScreen() {
                     onPress={() => removeWord(word)}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.wordChipText}>{word} ×</Text>
+                    <Text style={styles.wordChipText}>${word} ×</Text>
                   </TouchableOpacity>
                 ))}
               </View>

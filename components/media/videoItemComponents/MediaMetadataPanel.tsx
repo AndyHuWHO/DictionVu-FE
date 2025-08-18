@@ -18,13 +18,13 @@ export default function MediaMetadataPanel({ media, userProfile }: Props) {
       <Text style={styles.description}>{media.description}</Text>
 
       {!!media.words?.length && (
-        <Text style={styles.tagLine}>
-          {media.words.map((word) => `$${word}`).join(" ")}
+        <Text style={[styles.tagLine, { color: "#fff203ff" }]}>
+          {media.words.map((word) => `$${word}`).join("   ")}
         </Text>
       )}
 
       {!!media.tags?.length && (
-        <Text style={styles.tagLine}>
+        <Text style={[styles.tagLine, { color: "#04abffff" }]}>
           {media.tags.map((tag) => `#${tag}`).join(" ")}
         </Text>
       )}
@@ -36,22 +36,22 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     bottom: 30,
-    left: 20,
+    left: 15,
     right: 80,
   },
   username: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 4,
   },
   description: {
     color: "#fff",
-    fontSize: 14,
+    fontSize: 16,
   },
   tagLine: {
     color: "#ccc",
-    fontSize: 13,
+    fontSize: 16,
     marginTop: 4,
   },
 });

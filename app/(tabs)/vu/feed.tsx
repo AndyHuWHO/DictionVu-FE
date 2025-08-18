@@ -6,13 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useEffect } from "react";
 import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
-import MediaPager from "@/components/media/MediaPager";
+import { setCurrentFeedIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
 import MediaList from "@/components/media/MediaList";
 
 export default function FeedTopTabScreen() {
   const dispatch = useDispatch<AppDispatch>();
   const media = useSelector((state: RootState) => state.mediaFeed.items);
-  const currentIndex = useSelector((state: RootState) => state.mediaFeed.currentIndex);
+  const currentIndex = useSelector((state: RootState) => state.mediaFeed.currentFeedIndex);
   const status = useSelector((state: RootState) => state.mediaFeed.status);
   const error = useSelector((state: RootState) => state.mediaFeed.error);
 
@@ -51,7 +51,15 @@ export default function FeedTopTabScreen() {
 
   return (
     <ThemedView style={{ flex: 1 }}>
-      <MediaList media={media} context="feed" />
+      {/* <MediaList media={media} context="feed" /> */}
+      <MediaList
+  media={media}
+  context="feed"
+  contextConfig={{
+    currentIndex,
+    setCurrentIndex: (index) => dispatch(setCurrentFeedIndex(index)),
+  }}
+/>
     </ThemedView>
   );
 }

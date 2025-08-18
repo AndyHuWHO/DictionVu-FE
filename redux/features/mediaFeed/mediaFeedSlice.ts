@@ -5,7 +5,7 @@ import { fetchMediaFeedThunk } from "./mediaFeedThunks";
 
 interface MediaFeedState {
   items: MediaItem[];
-  currentIndex: number;
+  currentFeedIndex: number;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
@@ -14,7 +14,7 @@ const initialState: MediaFeedState = {
   items: [],
   status: "idle",
   error: null,
-  currentIndex: 0,
+  currentFeedIndex: 0,
 };
 
 const mediaFeedSlice = createSlice({
@@ -27,7 +27,7 @@ const mediaFeedSlice = createSlice({
       state.error = null;
     },
     addMediaItemToFeed: (state, action) => {
-      const index = state.currentIndex;
+      const index = state.currentFeedIndex;
       console.log("Adding media item to feed at index:", index);
       state.items = [
         ...state.items.slice(0, index),
@@ -35,9 +35,9 @@ const mediaFeedSlice = createSlice({
         ...state.items.slice(index),
       ];
     },
-    setCurrentIndex: (state, action) => {
-      if (state.currentIndex !== action.payload) {
-        state.currentIndex = action.payload;
+    setCurrentFeedIndex: (state, action) => {
+      if (state.currentFeedIndex !== action.payload) {
+        state.currentFeedIndex = action.payload;
       }
       
     },
@@ -59,6 +59,6 @@ const mediaFeedSlice = createSlice({
   },
 });
 
-export const { clearMediaState, addMediaItemToFeed, setCurrentIndex } = mediaFeedSlice.actions;
+export const { clearMediaState, addMediaItemToFeed, setCurrentFeedIndex } = mediaFeedSlice.actions;
 
 export default mediaFeedSlice.reducer;

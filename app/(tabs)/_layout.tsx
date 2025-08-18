@@ -24,6 +24,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      key={auth.publicId ? auth.publicId : "guest"}
       screenOptions={{
         headerShown: false,
         tabBarStyle: {

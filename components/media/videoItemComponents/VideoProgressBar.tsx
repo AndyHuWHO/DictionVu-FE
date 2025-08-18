@@ -22,10 +22,10 @@ export default function VideoProgressBar({
   onSlidingStart,
   onSlidingComplete,
 }: Props) {
-//   if (!visible) return null;
+  //   if (!visible) return null;
 
   return (
-    <View style={[styles.container, {opacity: visible ? 1 : 0}]}>
+    <View style={[styles.container, { opacity: visible ? 1 : 0 }]}>
       {visible && (
         <Text style={styles.timeText}>
           {fmtMMSS(progress)} / {fmtMMSS(duration)}
@@ -43,7 +43,7 @@ export default function VideoProgressBar({
         maximumTrackTintColor="#777777ff"
         thumbTintColor="transparent"
         // thumbImage={require("@/assets/pixel.png")}
-        style={[{width: "100%", borderRadius: 0, height: 60}]}
+        style={[{ width: "100%"}]}
       />
     </View>
   );
@@ -53,23 +53,15 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     // paddingTop: 4,
-    zIndex:10,
+    zIndex: 10,
     position: "absolute",
-    bottom: -15,
+    bottom: -12,
   },
   timeText: {
-    color: "#fff",
-    fontSize: 13,
+    color: "#ffffffff",
+    fontSize: 14,
     textAlign: "center",
-    marginBottom: 4,
-  },
-  slider: {
-    height: 60,
-    borderRadius: 0,
-    width: "100%",
-  },
-  sliderThick: {
-    height: 60,
-    width: "100%",
+    position: "absolute",
+    alignSelf: "center",
   },
 });

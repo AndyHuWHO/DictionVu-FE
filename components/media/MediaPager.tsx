@@ -7,7 +7,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { setCurrentIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
+import { setCurrentFeedIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
 
 type Props = {
   media: MediaItem[];
@@ -18,7 +18,7 @@ export default function MediaPager({ media, context }: Props) {
   const pagerRef = useRef<PagerView>(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  const currentIndex = useSelector((s: RootState) => s.mediaFeed.currentIndex);
+  const currentIndex = useSelector((s: RootState) => s.mediaFeed.currentFeedIndex);
   const [visibleIndex, setVisibleIndex] = useState(0);
   const [pvHeight, setPvHeight] = useState<number | null>(null);
 
@@ -33,7 +33,7 @@ export default function MediaPager({ media, context }: Props) {
     if (media.length === 0) return;
     if (context === "feed") {
       if (currentIndex > media.length - 1) {
-        dispatch(setCurrentIndex(Math.max(0, media.length - 1)));
+        dispatch(setCurrentFeedIndex(Math.max(0, media.length - 1)));
       }
     } else {
       if (visibleIndex > media.length - 1) {
@@ -58,7 +58,7 @@ export default function MediaPager({ media, context }: Props) {
       const idx = e.nativeEvent.position;
       if (context === "feed") {
         console.log("Page selected in feed context:", idx);
-        if (idx !== currentIndex) dispatch(setCurrentIndex(idx));
+        if (idx !== currentIndex) dispatch(setCurrentFeedIndex(idx));
       } else {
         if (idx !== visibleIndex) setVisibleIndex(idx);
       }
