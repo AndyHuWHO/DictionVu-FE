@@ -6,6 +6,8 @@ import {
   TouchableWithoutFeedback,
   Animated,
   Image,
+  TouchableOpacity,
+  Button,
 } from "react-native";
 import { VideoView, useVideoPlayer } from "expo-video";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
@@ -14,6 +16,7 @@ import MediaInteractionColumn from "./MediaInteractionColumn";
 import { fitFromWH } from "@/utils/videoFit";
 import MediaMetadataPanel from "./MediaMetadataPanel";
 import PlayOverlay from "./PlayOverlay";
+import VideoProgressBar from "./VideoProgressBar";
 
 type Props = {
   media: MediaItem;
@@ -29,10 +32,14 @@ export default function VideoItem({
   height,
 }: Props) {
   const [showOverlay, setShowOverlay] = useState(false);
-  const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
   const [fadeAnim] = useState(new Animated.Value(1));
-
+  const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
   const [contentFit, setContentFit] = useState<"contain" | "cover">("contain");
+
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(1);
+  const [isSliding, setIsSliding] = useState(false);
+  const [showProgressBar, setShowProgressBar] = useState(false);
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
@@ -46,10 +53,12 @@ export default function VideoItem({
 
   const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
 
+  // Auto play/pause based on visibility and tab focus
   useEffect(() => {
     const shouldPlay = isVisible && isTabFocused;
     if (shouldPlay && isPaused) {
       setIsPaused(false);
+      console.log("replaying video on land");
       player.replay();
       player.play();
       setShowOverlay(false);
@@ -59,11 +68,58 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
+  // Update progress and duration when player is ready
+  useEffect(() => {
+    if (!player) return;
+    const checkDuration = setInterval(() => {
+      if (player.duration > 0) {
+        setDuration(player.duration);
+        clearInterval(checkDuration);
+      }
+    }, 100);
+
+    return () => clearInterval(checkDuration);
+  }, [player]);
+
+  // Update progress every 10ms
+  useEffect(() => {
+    if (!player) return;
+
+    const interval = setInterval(() => {
+      if (!isSliding) {
+        setProgress(player.currentTime);
+      }
+    }, 10);
+
+    return () => clearInterval(interval);
+  }, [player, isSliding]);
+
+  // Show progress bar when paused or sliding
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+
+    if (isPaused || isSliding) {
+      setShowProgressBar(true);
+    } else {
+      // // show for 2s, then hide
+      // setShowProgressBar(true);
+      // timeout = setTimeout(() => {
+      //   setShowProgressBar(false);
+      // }, 2000);
+
+      setShowProgressBar(false);
+    }
+
+    // return () => {
+    //   if (timeout) clearTimeout(timeout);
+    // };
+  }, [isPaused, isSliding]);
+
+  // Determine contentFit based on video dimensions
   useEffect(() => {
     let cancelled = false;
     let interval: ReturnType<typeof setInterval> | null = null;
 
-    // 1) Try server thumbnail first (cheap + instant). We only need its dimensions.
     Image.getSize(
       media.thumbnailPresignedGetUrl,
       (w, h) => {
@@ -71,7 +127,7 @@ export default function VideoItem({
         setContentFit(fitFromWH(w, h));
       },
       () => {
-        // 2) Fallback: your existing approach (poll player.generateThumbnailsAsync)
+        // Fallback: poll player.generateThumbnailsAsync
         interval = setInterval(async () => {
           if (cancelled) return;
           try {
@@ -104,9 +160,10 @@ export default function VideoItem({
     if (isPaused) {
       setIsPaused(false);
       player.play();
-      setShowOverlay(true);
 
-      fadeAnim.setValue(1);
+      // setShowOverlay(true);
+      // fadeAnim.setValue(1);
+
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 600,
@@ -125,7 +182,10 @@ export default function VideoItem({
     Image.resolveAssetSource(require("@/assets/favicon.png")).uri;
 
   return (
-    <TouchableWithoutFeedback onPress={handleTogglePlay}>
+    <TouchableWithoutFeedback
+      onPress={handleTogglePlay}
+      onPressIn={() => setShowProgressBar(true)}
+    >
       <View style={[styles.videoContainer, { height }]}>
         {contentFit && (
           <VideoView
@@ -149,6 +209,25 @@ export default function VideoItem({
           authUserId={media.authUserId}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
+        <VideoProgressBar
+          progress={progress}
+          duration={duration}
+          isSliding={isSliding}
+          visible={showProgressBar}
+          onSeek={(value) => setProgress(value)}
+          onSlidingStart={() => setIsSliding(true)}
+          onSlidingComplete={(value) => {
+            // console.log("Seeking to:", value);
+            player.currentTime = parseFloat(value.toFixed(2));
+            setIsSliding(false);
+
+            // setTimeout(() => {
+            //   const confirmedTime = player.currentTime;
+            //   console.log("Confirmed seek time:", confirmedTime);
+            //   setProgress(confirmedTime);
+            // }, 20);
+          }}
+        />
       </View>
     </TouchableWithoutFeedback>
   );

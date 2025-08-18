@@ -13,6 +13,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 import { InteractionManager } from "react-native";
 import UploadControls from "@/components/upload/UploadControls";
+import { fmtMMSS } from "@/utils/fmtMMSS";
 
 export default function UploadCaptureScreen() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
@@ -54,12 +55,6 @@ export default function UploadCaptureScreen() {
     setElapsedSec(0);
   };
 
-  const fmtMMSS = (sec: number, sep = ":") => {
-    const clamped = Math.max(0, Math.floor(sec));
-    const m = Math.floor(clamped / 60);
-    const s = clamped % 60;
-    return `${String(m).padStart(2, "0")}${sep}${String(s).padStart(2, "0")}`;
-  };
 
   const cancelRef = useRef(false);
   const handleClose = () => {

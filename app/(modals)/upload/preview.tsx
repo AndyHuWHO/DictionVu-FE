@@ -8,6 +8,7 @@ import Slider from "@react-native-community/slider";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFocusEffect } from "@react-navigation/native";
 import { fitFromWH } from "@/utils/videoFit";
+import { fmtMMSS } from "@/utils/fmtMMSS";
 
 export default function PreviewScreen() {
   const { contentUri } = useLocalSearchParams<{ contentUri: string }>();
@@ -99,14 +100,17 @@ useFocusEffect(
         />
       </TouchableOpacity>
       <Text style={styles.previewTag}>Preview</Text>
+      <Text style={styles.timeText}>
+                {fmtMMSS(progress)} / {fmtMMSS(duration)}
+              </Text>
       <Slider
         style={styles.progressSlider}
         minimumValue={0}
         maximumValue={duration}
         value={progress}
-        minimumTrackTintColor="#FF004F"
-        maximumTrackTintColor="#333"
-        thumbTintColor="#FF004F"
+        minimumTrackTintColor="#d8d8d8ff"
+        maximumTrackTintColor="#656565ff"
+        thumbTintColor="#d8d8d8ff"
         onSlidingStart={() => setIsSliding(true)}
         onSlidingComplete={(value) => {
           setIsSliding(false);
@@ -164,6 +168,16 @@ const styles = StyleSheet.create({
   closeButtonIcon: {
     color: "#fff",
   },
+    timeText: {
+    color: "#fff",
+    fontSize: 13,
+    textAlign: "center",
+    marginBottom: 4,
+    position: "absolute",
+    bottom: 160,
+    alignSelf: "center",
+    zIndex: 10,
+  },
   progressSlider: {
     position: "absolute",
     bottom: 120,
@@ -181,12 +195,12 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     position: "absolute",
-    bottom: 50,
+    bottom: 40,
     alignSelf: "center",
-    backgroundColor: "#FF004F", // TikTok red
-    paddingHorizontal: 48,
-    paddingVertical: 16,
-    borderRadius: 28,
+    backgroundColor: "#FF004F", 
+    paddingHorizontal: 38,
+    paddingVertical: 10,
+    borderRadius: 20,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
