@@ -50,7 +50,7 @@ export default function VideoItem({
 
   // const isLiked = likedIdSet.has(media.id);
   const likedIdSet = useSelector(selectLikedIdSet);
-const isLiked = likedIdSet.has(media.id);
+  const isLiked = likedIdSet.has(media.id);
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;

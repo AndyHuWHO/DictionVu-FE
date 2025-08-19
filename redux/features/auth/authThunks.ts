@@ -4,6 +4,8 @@ import { loginRequest } from "./authService";
 import { saveToken, deleteToken, getToken } from "./storage";
 import { fetchUserProfileThunk } from "../user/userThunks";
 import { isTokenExpired } from "@/redux/utils/tokenUtils";
+import { clearMediaLikedState } from "../mediaLiked/mediaLikedSlice";
+import { fetchMediaLikedThunk } from "../mediaLiked/mediaLikedThunks";
 
 // Login thunk
 export const loginThunk = createAsyncThunk(
@@ -15,7 +17,7 @@ export const loginThunk = createAsyncThunk(
     try {
       const result = await loginRequest(email, password);
       await saveToken(result.token);
-
+      await thunkAPI.dispatch(fetchMediaLikedThunk({ token: result.token }));
       await thunkAPI.dispatch(fetchUserProfileThunk(result.token));
 
       return result;
@@ -23,8 +25,7 @@ export const loginThunk = createAsyncThunk(
       const res = err.response?.data;
 
       const validationError =
-        res?.validationErrors?.email ||
-        res?.validationErrors?.password;
+        res?.validationErrors?.email || res?.validationErrors?.password;
 
       const message =
         validationError ||
@@ -58,6 +59,10 @@ export const loadTokenFromStorage = createAsyncThunk(
 );
 
 // Logout thunk: clear SecureStore
-export const logoutThunk = createAsyncThunk("auth/logout", async () => {
-  await deleteToken();
-});
+export const logoutThunk = createAsyncThunk(
+  "auth/logout",
+  async (_, thunkAPI) => {
+    await deleteToken();
+    thunkAPI.dispatch(clearMediaLikedState());
+  }
+);

@@ -21,7 +21,7 @@ const mediaFeedSlice = createSlice({
   name: "mediaFeed",
   initialState,
   reducers: {
-    clearMediaState: (state) => {
+    clearMediaFeedState: (state) => {
       state.items = [];
       state.status = "idle";
       state.error = null;
@@ -39,7 +39,6 @@ const mediaFeedSlice = createSlice({
       if (state.currentFeedIndex !== action.payload) {
         state.currentFeedIndex = action.payload;
       }
-      
     },
   },
   extraReducers: (builder) => {
@@ -59,6 +58,7 @@ const mediaFeedSlice = createSlice({
   },
 });
 
-export const { clearMediaState, addMediaItemToFeed, setCurrentFeedIndex } = mediaFeedSlice.actions;
+export const { clearMediaFeedState, addMediaItemToFeed, setCurrentFeedIndex } =
+  mediaFeedSlice.actions;
 
 export default mediaFeedSlice.reducer;

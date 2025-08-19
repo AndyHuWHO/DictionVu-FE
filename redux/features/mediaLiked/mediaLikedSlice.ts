@@ -21,7 +21,7 @@ const mediaLikedSlice = createSlice({
   name: "mediaLiked",
   initialState,
   reducers: {
-    clearMediaState: (state) => {
+    clearMediaLikedState: (state) => {
       state.items = [];
       state.fetchStatus = "idle";
       state.fetchError = null;
@@ -59,6 +59,6 @@ const mediaLikedSlice = createSlice({
   },
 });
 
-export const { clearMediaState, addMediaItemToLiked, setCurrentLikedIndex } = mediaLikedSlice.actions;
+export const { clearMediaLikedState, addMediaItemToLiked, setCurrentLikedIndex } = mediaLikedSlice.actions;
 
 export default mediaLikedSlice.reducer;

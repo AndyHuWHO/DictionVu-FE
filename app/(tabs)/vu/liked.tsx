@@ -34,7 +34,7 @@ export default function LikedTopTabScreen() {
 
     if (currentIndex === media.length - 1 || media.length === 0) {
       console.log("Fetching media liked...");
-      dispatch(fetchMediaLikedThunk({}));
+      dispatch(fetchMediaLikedThunk({ token:isAuthenticated }));
     }
   }, [dispatch, currentIndex, isAuthenticated]);
 
