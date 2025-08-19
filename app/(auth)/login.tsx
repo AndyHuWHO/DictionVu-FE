@@ -31,8 +31,11 @@ export default function LoginScreen() {
   const router = useRouter();
   const { colorScheme } = useThemeContext();
   const theme = Colors[colorScheme];
+  const isLoginDisabled = !email || !password;
 
   const handleLogin = async () => {
+    console.log(email);
+    console.log(password);
     const result = await dispatch(loginThunk({ email, password }));
     if (loginThunk.fulfilled.match(result)) {
       router.back();
@@ -74,6 +77,7 @@ export default function LoginScreen() {
             value={email}
             autoCapitalize="none"
             onChangeText={setEmail}
+            onEndEditing={(e) => setEmail(e.nativeEvent.text)}
             keyboardType="email-address"
             returnKeyType="next"
           />
@@ -85,6 +89,7 @@ export default function LoginScreen() {
             value={password}
             secureTextEntry
             onChangeText={setPassword}
+            onEndEditing={(e) => setPassword(e.nativeEvent.text)} 
             returnKeyType="done"
             onSubmitEditing={Keyboard.dismiss}
           />
@@ -96,7 +101,11 @@ export default function LoginScreen() {
               style={styles.loading}
             />
           ) : (
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <TouchableOpacity 
+            style={[styles.button, isLoginDisabled && styles.buttonDisabled]} 
+            onPress={handleLogin}
+            disabled={isLoginDisabled}
+          >
               <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
           )}
@@ -144,6 +153,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
     backgroundColor: "#ff0550ff",
   },
+  buttonDisabled: {
+  backgroundColor: "#979797ff", 
+},
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
