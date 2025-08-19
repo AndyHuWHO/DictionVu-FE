@@ -34,8 +34,6 @@ export default function LoginScreen() {
   const isLoginDisabled = !email || !password;
 
   const handleLogin = async () => {
-    console.log(email);
-    console.log(password);
     const result = await dispatch(loginThunk({ email, password }));
     if (loginThunk.fulfilled.match(result)) {
       router.back();
