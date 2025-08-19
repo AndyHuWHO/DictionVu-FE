@@ -25,6 +25,20 @@ const mediaWordSlice = createSlice({
       state.status = "idle";
       state.error = null;
     },
+    likeMediaInWord: (state, action) => {
+      const mediaId = action.payload;
+      const mediaItem = state.items.find((item) => item.id === mediaId);
+      if (mediaItem) {
+        mediaItem.likeCount += 1;
+      }
+    },
+    unlikeMediaInWord: (state, action) => {
+      const mediaId = action.payload;
+      const mediaItem = state.items.find((item) => item.id === mediaId);
+      if (mediaItem) {
+        mediaItem.likeCount -= 1;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -43,6 +57,7 @@ const mediaWordSlice = createSlice({
   },
 });
 
-export const { clearMediaState } = mediaWordSlice.actions;
+export const { clearMediaState, likeMediaInWord, unlikeMediaInWord } =
+  mediaWordSlice.actions;
 
 export default mediaWordSlice.reducer;

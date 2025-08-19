@@ -12,7 +12,9 @@ import MediaList from "@/components/media/MediaList";
 export default function FeedTopTabScreen() {
   const dispatch = useDispatch<AppDispatch>();
   const media = useSelector((state: RootState) => state.mediaFeed.items);
-  const currentIndex = useSelector((state: RootState) => state.mediaFeed.currentFeedIndex);
+  const currentIndex = useSelector(
+    (state: RootState) => state.mediaFeed.currentFeedIndex
+  );
   const status = useSelector((state: RootState) => state.mediaFeed.status);
   const error = useSelector((state: RootState) => state.mediaFeed.error);
 
@@ -53,13 +55,13 @@ export default function FeedTopTabScreen() {
     <ThemedView style={{ flex: 1 }}>
       {/* <MediaList media={media} context="feed" /> */}
       <MediaList
-  media={media}
-  context="feed"
-  contextConfig={{
-    currentIndex,
-    setCurrentIndex: (index) => dispatch(setCurrentFeedIndex(index)),
-  }}
-/>
+        media={media}
+        context="feed"
+        contextConfig={{
+          currentIndex,
+          setCurrentIndex: (index) => dispatch(setCurrentFeedIndex(index)),
+        }}
+      />
     </ThemedView>
   );
 }

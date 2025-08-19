@@ -43,14 +43,9 @@ export default function VideoItem({
   const [duration, setDuration] = useState(1);
   const [isSliding, setIsSliding] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
-  // const likedMedia = useSelector((state: RootState) => state.mediaLiked.items);
-  // const likedIdSet = useMemo(() => {
-  //   return new Set(likedMedia.map((m) => m.id));
-  // }, [likedMedia]);
 
+  // const likedIdSet = useSelector(selectLikedIdSet);
   // const isLiked = likedIdSet.has(media.id);
-  const likedIdSet = useSelector(selectLikedIdSet);
-  const isLiked = likedIdSet.has(media.id);
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
@@ -218,7 +213,7 @@ export default function VideoItem({
           commentCount={media.commentCount}
           mediaId={media.id}
           authUserId={media.authUserId}
-          isLiked={isLiked}
+          // isLiked={isLiked}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
         <VideoProgressBar
