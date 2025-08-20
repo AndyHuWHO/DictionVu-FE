@@ -18,7 +18,7 @@ export default function MediaMetadataPanel({ media, userProfile }: Props) {
       <Text style={styles.description}>{media.description}</Text>
 
       {!!media.words?.length && (
-        <Text style={[styles.tagLine, { color: "#fff203ff" }]}>
+        <Text style={[styles.tagLine, { fontSize: 22, color: "#fff203ff" }]}>
           {media.words.map((word) => `$${word}`).join("   ")}
         </Text>
       )}
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   username: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 4,
   },

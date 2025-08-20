@@ -1,5 +1,5 @@
 // components/media/VideoItem.tsx
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -43,6 +43,7 @@ export default function VideoItem({
   const [duration, setDuration] = useState(1);
   const [isSliding, setIsSliding] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
 
   // const likedIdSet = useSelector(selectLikedIdSet);
   // const isLiked = likedIdSet.has(media.id);
@@ -59,6 +60,11 @@ export default function VideoItem({
 
   const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
 
+  useEffect(() => {
+    if (!player) return;
+    player.playbackRate = playbackSpeed;
+  }, [player, playbackSpeed]);
+
   // Auto play/pause based on visibility and tab focus
   useEffect(() => {
     const shouldPlay = isVisible && isTabFocused;
@@ -67,6 +73,7 @@ export default function VideoItem({
       console.log("replaying video on land");
       player.replay();
       player.play();
+      setPlaybackSpeed(1.0);
       setShowOverlay(false);
     } else if (!shouldPlay) {
       player.pause();
@@ -214,6 +221,10 @@ export default function VideoItem({
           mediaId={media.id}
           authUserId={media.authUserId}
           // isLiked={isLiked}
+          currentSpeed={playbackSpeed}
+          onChangePlaybackSpeed={(s) => {
+            setPlaybackSpeed(s);
+          }}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
         <VideoProgressBar

@@ -40,6 +40,10 @@ const mediaFeedSlice = createSlice({
         mediaItem.likeCount -= 1;
       }
     },
+    deleteMediaInFeed: (state, action) => {
+      const mediaId = action.payload;
+      state.items = state.items.filter((item) => item.id !== mediaId);
+    },
     addMediaItemToFeed: (state, action) => {
       const index = state.currentFeedIndex;
       console.log("Adding media item to feed at index:", index);
@@ -72,7 +76,13 @@ const mediaFeedSlice = createSlice({
   },
 });
 
-export const { clearMediaFeedState, addMediaItemToFeed, setCurrentFeedIndex, likeMediaInFeed, unlikeMediaInFeed } =
-  mediaFeedSlice.actions;
+export const {
+  clearMediaFeedState,
+  addMediaItemToFeed,
+  setCurrentFeedIndex,
+  likeMediaInFeed,
+  unlikeMediaInFeed,
+  deleteMediaInFeed,
+} = mediaFeedSlice.actions;
 
 export default mediaFeedSlice.reducer;

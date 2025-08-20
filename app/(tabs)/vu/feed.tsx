@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { StyleSheet, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
 import { setCurrentFeedIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
 import MediaList from "@/components/media/MediaList";
@@ -24,6 +24,10 @@ export default function FeedTopTabScreen() {
       dispatch(fetchMediaFeedThunk({}));
     }
   }, [dispatch, currentIndex]);
+
+  useEffect(() => {
+    console.log("There are", media.length, "media items, in feed");
+  }, [media]);
 
   if (status === "loading") {
     return (

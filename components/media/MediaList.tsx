@@ -50,6 +50,7 @@ export default function MediaList({ media, context, contextConfig }: Props) {
   return (
     <FlatList
       disableIntervalMomentum
+      scrollsToTop={false}
       data={media}
       keyExtractor={(item) => item.id}
       pagingEnabled

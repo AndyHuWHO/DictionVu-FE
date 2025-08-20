@@ -36,12 +36,12 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     const result = await dispatch(loginThunk({ email, password }));
     if (loginThunk.fulfilled.match(result)) {
-      router.back();
+      router.dismiss();
     }
   };
 
   const handleSkipLogin = () => {
-    router.back();
+    router.dismiss();
   };
 
   return (

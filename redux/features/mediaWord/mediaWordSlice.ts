@@ -39,6 +39,10 @@ const mediaWordSlice = createSlice({
         mediaItem.likeCount -= 1;
       }
     },
+    deleteMediaInWord: (state, action) => {
+      const mediaId = action.payload;
+      state.items = state.items.filter((item) => item.id !== mediaId);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -57,7 +61,7 @@ const mediaWordSlice = createSlice({
   },
 });
 
-export const { clearMediaState, likeMediaInWord, unlikeMediaInWord } =
+export const { clearMediaState, likeMediaInWord, unlikeMediaInWord, deleteMediaInWord } =
   mediaWordSlice.actions;
 
 export default mediaWordSlice.reducer;

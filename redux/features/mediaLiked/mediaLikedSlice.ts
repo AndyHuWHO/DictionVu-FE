@@ -35,6 +35,10 @@ const mediaLikedSlice = createSlice({
         ...state.items.slice(index),
       ];
     },
+    deleteMediaInLiked: (state, action) => {
+      const mediaId = action.payload;
+      state.items = state.items.filter((item) => item.id !== mediaId);
+    },
     setCurrentLikedIndex: (state, action) => {
       if (state.currentLikedIndex !== action.payload) {
         state.currentLikedIndex = action.payload;
@@ -59,6 +63,6 @@ const mediaLikedSlice = createSlice({
   },
 });
 
-export const { clearMediaLikedState, addMediaItemToLiked, setCurrentLikedIndex } = mediaLikedSlice.actions;
+export const { clearMediaLikedState, addMediaItemToLiked, setCurrentLikedIndex, deleteMediaInLiked } = mediaLikedSlice.actions;
 
 export default mediaLikedSlice.reducer;

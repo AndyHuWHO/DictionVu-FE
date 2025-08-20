@@ -4,6 +4,7 @@ import { wordApi } from "./apis/wordApi";
 import { visitProfileApi } from "./apis/visitProfileApi";
 import { likeMediaApi } from "./apis/likeMediaApi";
 import { unlikeMediaApi } from "./apis/unlikeMediaApi";
+import { deleteMediaApi } from "./apis/deleteMediaApi";
 import authReducer from "./features/auth/authSlice";
 import userReducer from "./features/user/userSlice";
 import mediaUploadReducer from "./features/mediaUpload/mediaUploadSlice";
@@ -17,6 +18,7 @@ export const store = configureStore({
     [visitProfileApi.reducerPath]: visitProfileApi.reducer,
     [likeMediaApi.reducerPath]: likeMediaApi.reducer,
     [unlikeMediaApi.reducerPath]: unlikeMediaApi.reducer,
+    [deleteMediaApi.reducerPath]: deleteMediaApi.reducer,
     auth: authReducer,
     user: userReducer,
     mediaUpload: mediaUploadReducer,
@@ -29,7 +31,8 @@ export const store = configureStore({
       wordApi.middleware,
       visitProfileApi.middleware,
       likeMediaApi.middleware,
-      unlikeMediaApi.middleware
+      unlikeMediaApi.middleware,
+      deleteMediaApi.middleware
     ),
 });
 
