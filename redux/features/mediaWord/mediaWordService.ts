@@ -1,22 +1,18 @@
 // redux/features/mediaWord/mediaWordService.ts
 
 import axios from "axios";
-import { MediaItem } from "@/redux/features/mediaUpload/types";
+import { MediaItem, MediaPagedResponse } from "@/redux/features/mediaUpload/types";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const fetchMediaWordFromAPI = async (
   word: string,
-  // token: string,
   page = 0,
   size = 10
-): Promise<MediaItem[]> => {
-  const response = await axios.get<MediaItem[]>(
+): Promise<MediaPagedResponse> => {
+  const response = await axios.get<MediaPagedResponse>(
     `${API_BASE_URL}/api/media/word/${encodeURIComponent(word)}`,
     {
-      // headers: {
-      //   Authorization: `Bearer ${token}`,
-      // },
       params: { page, size },
     }
   );

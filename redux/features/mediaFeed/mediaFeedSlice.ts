@@ -6,15 +6,21 @@ import { fetchMediaFeedThunk } from "./mediaFeedThunks";
 interface MediaFeedState {
   items: MediaItem[];
   currentFeedIndex: number;
+  totalPages: number | null;
+  pageSize: number;
+  currentPage: number;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: MediaFeedState = {
   items: [],
+  currentFeedIndex: 0,
+  totalPages: null,
+  pageSize: 10,
+  currentPage: -1,
   status: "idle",
   error: null,
-  currentFeedIndex: 0,
 };
 
 const mediaFeedSlice = createSlice({
@@ -67,7 +73,10 @@ const mediaFeedSlice = createSlice({
       })
       .addCase(fetchMediaFeedThunk.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.items = action.payload;
+        state.items = action.payload.content;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.page;
+        state.pageSize = action.payload.pageSize;
       })
       .addCase(fetchMediaFeedThunk.rejected, (state, action) => {
         state.status = "failed";

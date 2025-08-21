@@ -48,3 +48,10 @@ export interface MediaItem {
   updatedAt: string;
 }
 
+export interface MediaPagedResponse {
+  content: MediaItem[];
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+

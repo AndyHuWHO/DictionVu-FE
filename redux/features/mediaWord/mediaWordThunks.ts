@@ -4,19 +4,15 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 import { fetchMediaWordFromAPI } from "./mediaWordService";
 import { FetchMediaParams } from "./types";
-import { MediaItem } from "@/redux/features/mediaUpload/types";
+import { MediaPagedResponse } from "@/redux/features/mediaUpload/types";
 
+// Currently not using current page or total pages, simply only fetch the first page
 export const fetchMediaWordThunk = createAsyncThunk<
-  MediaItem[],
+  MediaPagedResponse,
   FetchMediaParams,
   { state: RootState }
 >("mediaWord/fetchMedia", async ({ word, page = 0, size = 10 }, thunkAPI) => {
   try {
-    // const token = thunkAPI.getState().auth.token;
-    // if (!token) {
-    //   throw new Error("Missing JWT token");
-    // }
-
     const mediaList = await fetchMediaWordFromAPI(word, page, size);
     return mediaList;
   } catch (error: any) {

@@ -6,12 +6,18 @@ import { fetchMediaWordThunk } from "./mediaWordThunks";
 
 interface MediaWordState {
   items: MediaItem[];
+  totalPages: number | null;
+  currentPage: number;
+  pageSize: number;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: MediaWordState = {
   items: [],
+  totalPages: null,
+  currentPage: 0,
+  pageSize: 10,
   status: "idle",
   error: null,
 };
@@ -52,7 +58,10 @@ const mediaWordSlice = createSlice({
       })
       .addCase(fetchMediaWordThunk.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.items = action.payload;
+        state.items = action.payload.content;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.page;
+        state.pageSize = action.payload.pageSize;
       })
       .addCase(fetchMediaWordThunk.rejected, (state, action) => {
         state.status = "failed";

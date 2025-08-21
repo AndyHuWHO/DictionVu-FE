@@ -3,20 +3,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 import { fetchMediaFeedFromAPI } from "./mediaFeedService";
-import { MediaItem } from "@/redux/features/mediaUpload/types";
+import { MediaPagedResponse } from "@/redux/features/mediaUpload/types";
 
 export const fetchMediaFeedThunk = createAsyncThunk<
-  MediaItem[],
-  { page?: number; size?: number },
+  MediaPagedResponse,
+  { page?: number },
   { state: RootState }
->("mediaFeed/fetchMedia", async ({ page = 0, size = 10 }, thunkAPI) => {
+>("mediaFeed/fetchMedia", async ({ page = 0,}, thunkAPI) => {
+  const totalPages = thunkAPI.getState().mediaFeed.totalPages;
+  if (totalPages === 0) {
+    return thunkAPI.rejectWithValue("There's no media available");
+  }
   try {
     // const token = thunkAPI.getState().auth.token;
     // if (!token) {
     //   throw new Error("Missing JWT token");
     // }
+    page = thunkAPI.getState().mediaFeed.currentPage + 1;
+    if (totalPages !== null && page >= totalPages) {
+      page = 0;
+    }
 
-    const mediaList = await fetchMediaFeedFromAPI(page, size);
+    const mediaList = await fetchMediaFeedFromAPI(page);
     return mediaList;
   } catch (error: any) {
     console.error("Fetch media feed failed:", error);
