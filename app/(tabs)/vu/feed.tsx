@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { StyleSheet, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
 import { setCurrentFeedIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
 import MediaList from "@/components/media/MediaList";
@@ -15,11 +15,21 @@ export default function FeedTopTabScreen() {
   const currentIndex = useSelector(
     (state: RootState) => state.mediaFeed.currentFeedIndex
   );
+  const currentPage = useSelector(
+    (state: RootState) => state.mediaFeed.currentPage
+  );
+  const totalPages = useSelector(
+    (state: RootState) => state.mediaFeed.totalPages
+  );
   const status = useSelector((state: RootState) => state.mediaFeed.status);
   const error = useSelector((state: RootState) => state.mediaFeed.error);
 
   useEffect(() => {
-    if (currentIndex === media.length - 1 || media.length === 0) {
+    if (
+      totalPages == null ||
+      (currentPage < totalPages - 1 &&
+        (currentIndex === media.length - 2 || media.length === 0))
+    ) {
       console.log("Fetching media feed...");
       dispatch(fetchMediaFeedThunk({}));
     }

@@ -15,11 +15,6 @@ import { fitFromWH } from "@/utils/videoFit";
 import MediaMetadataPanel from "./videoItemComponents/MediaMetadataPanel";
 import PlayOverlay from "./videoItemComponents/PlayOverlay";
 import VideoProgressBar from "./videoItemComponents/VideoProgressBar";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { useLikeMediaMutation } from "@/redux/apis/likeMediaApi";
-import { useUnlikeMediaMutation } from "@/redux/apis/unlikeMediaApi";
-import { selectLikedIdSet } from "@/redux/features/mediaLiked/mediaLikedSelectors";
 
 type Props = {
   media: MediaItem;

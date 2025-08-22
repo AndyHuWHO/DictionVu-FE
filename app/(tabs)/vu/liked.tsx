@@ -32,7 +32,9 @@ export default function LikedTopTabScreen() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    if (currentIndex === media.length - 1 || media.length === 0) {
+    if (
+      // currentIndex === media.length - 1 || 
+      media.length === 0) {
       console.log("Fetching media liked...");
       dispatch(fetchMediaLikedThunk({ token:isAuthenticated }));
     }
