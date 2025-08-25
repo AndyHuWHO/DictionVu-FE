@@ -1,11 +1,6 @@
 // app/(tabs)/vu/liked.tsx
-import { useEffect } from "react";
-import {
-  StyleSheet,
-  ActivityIndicator,
-  Pressable,
-  Text,
-} from "react-native";
+import { use, useEffect } from "react";
+import { StyleSheet, ActivityIndicator, Pressable, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { ThemedText } from "@/components/themed/ThemedText";
@@ -33,10 +28,11 @@ export default function LikedTopTabScreen() {
     if (!isAuthenticated) return;
 
     if (
-      // currentIndex === media.length - 1 || 
-      media.length === 0) {
+      // currentIndex === media.length - 1 ||
+      media.length === 0
+    ) {
       console.log("Fetching media liked...");
-      dispatch(fetchMediaLikedThunk({ token:isAuthenticated }));
+      dispatch(fetchMediaLikedThunk({ token: isAuthenticated }));
     }
   }, [dispatch, currentIndex, isAuthenticated]);
 
@@ -57,7 +53,7 @@ export default function LikedTopTabScreen() {
     );
   }
 
-  // 👇 Normal loading/failure/render states when logged in
+  // Normal loading/failure/render states when logged in
   if (status === "loading") {
     return (
       <ThemedView style={styles.centered}>

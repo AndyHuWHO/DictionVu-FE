@@ -15,6 +15,11 @@ import { fitFromWH } from "@/utils/videoFit";
 import MediaMetadataPanel from "./videoItemComponents/MediaMetadataPanel";
 import PlayOverlay from "./videoItemComponents/PlayOverlay";
 import VideoProgressBar from "./videoItemComponents/VideoProgressBar";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { addMediaItemToLiked, deleteMediaItemFromLiked } from "@/redux/features/mediaLiked/mediaLikedSlice";
 
 type Props = {
   media: MediaItem;
@@ -39,6 +44,7 @@ export default function VideoItem({
   const [isSliding, setIsSliding] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
+  const dispatch = useDispatch<AppDispatch>();
 
   // const likedIdSet = useSelector(selectLikedIdSet);
   // const isLiked = likedIdSet.has(media.id);
@@ -185,6 +191,16 @@ export default function VideoItem({
     }
   };
 
+  const handleLikeInMediaLikeStates = () => {
+    console.log("Like media:", media.id);
+    dispatch(addMediaItemToLiked(media));
+  };
+
+  const handleUnlikeInMediaLikeStates = () => {
+    console.log("Unlike media:", media.id);
+    dispatch(deleteMediaItemFromLiked(media));
+  };
+
   const profileImage =
     userProfile?.profileImageUrl ??
     Image.resolveAssetSource(require("@/assets/favicon.png")).uri;
@@ -220,6 +236,8 @@ export default function VideoItem({
           onChangePlaybackSpeed={(s) => {
             setPlaybackSpeed(s);
           }}
+          onLikeMedia={handleLikeInMediaLikeStates}
+          onUnlikeMedia={handleUnlikeInMediaLikeStates}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
         <VideoProgressBar

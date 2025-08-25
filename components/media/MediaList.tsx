@@ -1,6 +1,6 @@
 // components/media/MediaList.tsx
 import { FlatList, ViewToken, LayoutChangeEvent } from "react-native";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import VideoItem from "./VideoItem";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { useIsFocused } from "@react-navigation/native";

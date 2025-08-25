@@ -28,8 +28,8 @@ import {
   unlikeMediaInWord,
   deleteMediaInWord,
 } from "@/redux/features/mediaWord/mediaWordSlice";
-import { deleteMediaInLiked } from "@/redux/features/mediaLiked/mediaLikedSlice";
-import { selectLikedIdSet } from "@/redux/features/mediaLiked/mediaLikedSelectors";
+import { deleteMediaItemFromLiked } from "@/redux/features/mediaLiked/mediaLikedSlice";
+import { selectLikedIdsSet } from "@/redux/features/mediaLiked/mediaLikedSelectors";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -42,6 +42,8 @@ type Props = {
   authUserId: string;
   currentSpeed?: number;
   onChangePlaybackSpeed: (speed: number) => void;
+  onLikeMedia: () => void;
+  onUnlikeMedia: () => void;
 };
 
 const speeds = [0.75, 1.00, 1.25];
@@ -54,6 +56,8 @@ export default function MediaInteractionColumn({
   authUserId,
   currentSpeed = 1,
   onChangePlaybackSpeed,
+  onLikeMedia,
+  onUnlikeMedia,
 }: Props) {
   const [liked, setLiked] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -62,7 +66,7 @@ export default function MediaInteractionColumn({
   const [deleteMedia, { isLoading: isDeleting, isSuccess: isDeleted, error: deleteError }] = useDeleteMediaMutation();
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
-  const likedIdSet = useSelector(selectLikedIdSet);
+  const likedIdSet = useSelector(selectLikedIdsSet);
   const isLikedByUser = likedIdSet.has(mediaId);
   const currentUserId = useSelector((s: RootState) => s.user.profile?.publicId);
   const isOwner = currentUserId === authUserId;
@@ -91,14 +95,16 @@ export default function MediaInteractionColumn({
         await likeMedia({ mediaId }).unwrap();
         dispatch(likeMediaInFeed(mediaId));
         dispatch(likeMediaInWord(mediaId));
+        onLikeMedia();
       } else {
         await unlikeMedia({ mediaId }).unwrap();
         dispatch(unlikeMediaInFeed(mediaId));
         dispatch(unlikeMediaInWord(mediaId));
+        onUnlikeMedia();
       }
 
-      // Refresh liked media list to reflect server truth
-      dispatch(fetchMediaLikedThunk({ token: isAuthenticated }));
+      // // Refresh liked media list to reflect server truth
+      // dispatch(fetchMediaLikedThunk({ token: isAuthenticated }));
     } catch (error) {
       console.error("Failed to toggle like:", error);
 
@@ -129,7 +135,7 @@ export default function MediaInteractionColumn({
       await deleteMedia({ mediaId }).unwrap();
       dispatch(deleteMediaInFeed(mediaId));
       dispatch(deleteMediaInWord(mediaId));
-      dispatch(deleteMediaInLiked(mediaId));
+      dispatch(deleteMediaItemFromLiked(mediaId));
     } catch (error) {
       console.error("Failed to delete media:", error);
     }

@@ -23,3 +23,16 @@ export const fetchMediaLikedFromAPI = async (
   return response.data;
 };
 
+export const fetchLikedMediaIdsFromAPI = async (
+  token: string
+): Promise<string[]> => {
+  const response = await axios.get<string[]>(
+    `${API_BASE_URL}/api/media/likes/media-ids`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};

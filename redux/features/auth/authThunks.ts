@@ -1,11 +1,12 @@
 // redux/features/auth/authThunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { loginRequest } from "./authService";
+import { AppDispatch } from "@/redux/store";
 import { saveToken, deleteToken, getToken } from "./storage";
 import { fetchUserProfileThunk } from "../user/userThunks";
 import { isTokenExpired } from "@/redux/utils/tokenUtils";
 import { clearMediaLikedState } from "../mediaLiked/mediaLikedSlice";
-import { fetchMediaLikedThunk } from "../mediaLiked/mediaLikedThunks";
+import { fetchLikedMediaIdsThunk } from "../mediaLiked/mediaLikedThunks";
 import { clearUserState } from "../user/userSlice";
 import { clearAuthState } from "./authSlice";
 
@@ -19,7 +20,7 @@ export const loginThunk = createAsyncThunk(
     try {
       const result = await loginRequest(email, password);
       await saveToken(result.token);
-      await thunkAPI.dispatch(fetchMediaLikedThunk({ token: result.token }));
+      await thunkAPI.dispatch(fetchLikedMediaIdsThunk(result.token));
       await thunkAPI.dispatch(fetchUserProfileThunk(result.token));
 
       return result;
@@ -52,6 +53,7 @@ export const loadTokenFromStorage = createAsyncThunk(
       }
       if (token) {
         await thunkAPI.dispatch(fetchUserProfileThunk(token));
+        await thunkAPI.dispatch(fetchLikedMediaIdsThunk(token));
       }
       return token;
     } catch (err: any) {
