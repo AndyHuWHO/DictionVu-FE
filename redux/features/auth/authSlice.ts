@@ -50,7 +50,6 @@ const authSlice = createSlice({
         state.status = "error";
         state.error = action.payload as string;
       })
-
       .addCase(loadTokenFromStorage.fulfilled, (state, action) => {
         const token = action.payload;
         if (token) {
@@ -58,7 +57,6 @@ const authSlice = createSlice({
           state.status = "authenticated";
         }
       })
-
       .addCase(logoutThunk.fulfilled, (state) => {
         state.token = null;
         state.publicId = null;

@@ -8,7 +8,6 @@ import { isTokenExpired } from "@/redux/utils/tokenUtils";
 import { clearMediaLikedState } from "../mediaLiked/mediaLikedSlice";
 import { fetchLikedMediaIdsThunk } from "../mediaLiked/mediaLikedThunks";
 import { clearUserState } from "../user/userSlice";
-import { clearAuthState } from "./authSlice";
 
 // Login thunk
 export const loginThunk = createAsyncThunk(
@@ -67,7 +66,6 @@ export const logoutThunk = createAsyncThunk(
   "auth/logout",
   async (_, thunkAPI) => {
     await deleteToken();
-    thunkAPI.dispatch(clearAuthState());
     thunkAPI.dispatch(clearMediaLikedState());
     thunkAPI.dispatch(clearUserState());
   }
