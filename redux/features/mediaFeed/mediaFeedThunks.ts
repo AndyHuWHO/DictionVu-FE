@@ -15,10 +15,6 @@ export const fetchMediaFeedThunk = createAsyncThunk<
     return thunkAPI.rejectWithValue("There's no media available");
   }
   try {
-    // const token = thunkAPI.getState().auth.token;
-    // if (!token) {
-    //   throw new Error("Missing JWT token");
-    // }
     page = thunkAPI.getState().mediaFeed.currentPage + 1;
     if (totalPages !== null && page >= totalPages) {
       page = 0;

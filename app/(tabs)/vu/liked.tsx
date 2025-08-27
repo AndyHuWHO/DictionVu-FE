@@ -18,6 +18,8 @@ export default function LikedTopTabScreen() {
   const currentIndex = useSelector(
     (state: RootState) => state.mediaLiked.currentLikedIndex
   );
+  const totalPages = useSelector((state: RootState) => state.mediaLiked.totalPages);
+  const currentPage = useSelector((state: RootState) => state.mediaLiked.currentPage);
   const status = useSelector(
     (state: RootState) => state.mediaLiked.fetchStatus
   );
@@ -28,8 +30,9 @@ export default function LikedTopTabScreen() {
     if (!isAuthenticated) return;
 
     if (
-      // currentIndex === media.length - 1 ||
-      media.length === 0
+      totalPages == null ||
+      (currentPage < totalPages - 1 &&
+        (currentIndex === media.length - 1 || media.length === 0))
     ) {
       console.log("Fetching media liked...");
       dispatch(fetchMediaLikedThunk({ token: isAuthenticated }));

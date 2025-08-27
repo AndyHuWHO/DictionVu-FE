@@ -8,22 +8,28 @@ import {
 
 interface MediaLikedState {
   items: MediaItem[];
-  likedList: string[];
   currentLikedIndex: number;
+  totalPages: number | null;
+  pageSize: number;
+  currentPage: number;
   fetchStatus: "idle" | "loading" | "succeeded" | "failed";
   fetchError: string | null;
+  likedList: string[];
   fetchLikedMediaIdsStatus: "idle" | "loading" | "succeeded" | "failed";
   fetchLikedMediaIdsError: string | null;
 }
 
 const initialState: MediaLikedState = {
   items: [],
-  likedList: [],
+  currentLikedIndex: 0,
+  totalPages: null,
+  pageSize: 10,
+  currentPage: -1,
   fetchStatus: "idle",
   fetchError: null,
+  likedList: [],
   fetchLikedMediaIdsStatus: "idle",
   fetchLikedMediaIdsError: null,
-  currentLikedIndex: 0,
 };
 
 const mediaLikedSlice = createSlice({
@@ -42,12 +48,12 @@ const mediaLikedSlice = createSlice({
       const index = state.currentLikedIndex;
       const itemToAdd = action.payload;
       const updatedItem = { ...itemToAdd, likeCount: itemToAdd.likeCount + 1 };
-  state.items = [
-    ...state.items.slice(0, index),
-    updatedItem,
-    ...state.items.slice(index),
-  ];
-  state.likedList = [...state.likedList, updatedItem.id];
+      state.items = [
+        ...state.items.slice(0, index),
+        updatedItem,
+        ...state.items.slice(index),
+      ];
+      state.likedList = [...state.likedList, updatedItem.id];
     },
     deleteMediaItemFromLiked: (state, action) => {
       const mediaId = action.payload.id;
@@ -68,7 +74,12 @@ const mediaLikedSlice = createSlice({
       })
       .addCase(fetchMediaLikedThunk.fulfilled, (state, action) => {
         state.fetchStatus = "succeeded";
-        state.items = action.payload;
+        state.items = [...state.items, ...action.payload.content].slice(-20);
+        state.currentLikedIndex = state.items.length - 1 - (action.payload.content.length);
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.page;
+        state.pageSize = action.payload.pageSize;
+
       })
       .addCase(fetchMediaLikedThunk.rejected, (state, action) => {
         state.fetchStatus = "failed";

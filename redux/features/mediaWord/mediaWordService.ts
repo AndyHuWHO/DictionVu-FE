@@ -1,7 +1,7 @@
 // redux/features/mediaWord/mediaWordService.ts
 
 import axios from "axios";
-import { MediaItem, MediaPagedResponse } from "@/redux/features/mediaUpload/types";
+import {MediaPagedResponse } from "@/redux/features/mediaUpload/types";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
