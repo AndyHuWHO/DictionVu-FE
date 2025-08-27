@@ -73,9 +73,8 @@ const mediaFeedSlice = createSlice({
       })
       .addCase(fetchMediaFeedThunk.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const combined = [...state.items, ...action.payload.content];
-        state.items = combined.slice(-40);
-        state.currentFeedIndex = Math.min(state.currentFeedIndex, 18);
+        state.items = [...state.items, ...action.payload.content].slice(-40);
+        state.currentFeedIndex = Math.min(state.currentFeedIndex, 19);
         state.totalPages = action.payload.totalPages;
         state.currentPage = action.payload.page;
         state.pageSize = action.payload.pageSize;

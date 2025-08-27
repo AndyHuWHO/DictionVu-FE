@@ -28,7 +28,7 @@ export default function FeedTopTabScreen() {
     if (
       totalPages == null ||
       (currentPage < totalPages - 1 &&
-        (currentIndex === media.length - 2 || media.length === 0))
+        (currentIndex === media.length - 1 || media.length === 0))
     ) {
       console.log("Fetching media feed...");
       dispatch(fetchMediaFeedThunk({}));
