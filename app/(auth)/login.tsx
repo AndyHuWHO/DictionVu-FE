@@ -32,9 +32,12 @@ export default function LoginScreen() {
   const { colorScheme } = useThemeContext();
   const theme = Colors[colorScheme];
   const isLoginDisabled = !email || !password;
+  const [loginPressed, setLoginPressed] = useState(false);
 
   const handleLogin = async () => {
+    setLoginPressed(true);
     const result = await dispatch(loginThunk({ email, password }));
+    setLoginPressed(false);
     if (loginThunk.fulfilled.match(result)) {
       router.dismiss();
     }
@@ -92,7 +95,7 @@ export default function LoginScreen() {
             onSubmitEditing={Keyboard.dismiss}
           />
 
-          {auth.status === "loading" ? (
+          {auth.status === "loading" || loginPressed ? (
             <ActivityIndicator
               size="large"
               color={theme.activity}

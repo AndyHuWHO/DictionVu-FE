@@ -29,7 +29,7 @@ export function DictionaryEntry({ info }: { info: DictionaryInfo }) {
             {sIdx + 1}. 中文翻译： {sense.translationZh}
           </ThemedText>
           <ThemedText style={styles.definition}>
-            {sense.definitionEn}
+            英文释义：{sense.definitionEn}
           </ThemedText>
           {sense.sampleExpressions.length > 0 && (
             <ThemedView style={styles.examplesBlock}>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   translation: {
     fontSize: 16,
-    color: "#ff7dd1ff",
+    color: "#ff8ed8ff",
     marginBottom: 8,
   },
   examplesBlock: {
