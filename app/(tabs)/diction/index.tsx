@@ -16,6 +16,7 @@ import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedTextInput } from "@/components/themed/ThemedTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
+import MainPageContent from "@/components/diction/MainPageContent";
 
 export default function DictionTabScreen() {
   const [term, setTerm] = useState("");
@@ -63,6 +64,7 @@ export default function DictionTabScreen() {
                 <Ionicons name="search" size={24} color={theme.icon} />
               </TouchableOpacity>
             </ThemedView>
+            <MainPageContent />
           </ThemedView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

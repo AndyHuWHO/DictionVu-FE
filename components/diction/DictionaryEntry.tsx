@@ -1,3 +1,4 @@
+// components/diction/DictionaryEntry.tsx
 import React from "react";
 import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/themed/ThemedView";
@@ -66,31 +67,26 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     width: "100%",
   },
-  partOfSpeech: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#23f9f9ff",
-    marginBottom: 8,
-    textTransform: "capitalize",
-  },
   pronunciation: {
     fontSize: 16,
     color: "#ff9533ff",
-    marginBottom: 8,
+    marginBottom: 15,
   },
   senseBlock: {
-    marginBottom: 14,
+    marginBottom: 20,
     marginLeft: 8,
-  },
-  definition: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 8,
   },
   translation: {
     fontSize: 16,
     color: "#ff8ed8ff",
-    marginBottom: 8,
+    marginBottom: 15,
+    lineHeight: 23,
+  },
+  definition: {
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 15,
+    lineHeight: 30,
   },
   examplesBlock: {
     marginTop: 8,
@@ -105,5 +101,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     marginTop: 4,
     marginLeft: 8,
+    lineHeight: 26,
   },
 });

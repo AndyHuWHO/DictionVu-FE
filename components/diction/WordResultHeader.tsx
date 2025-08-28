@@ -3,32 +3,38 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { ThemedView } from "./themed/ThemedView";
-import { ThemedTextInput } from "./themed/ThemedTextInput";
+import { ThemedView} from "@/components/themed/ThemedView";
+import { ThemedTextInput } from "@/components/themed/ThemedTextInput";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 
 type Props = {
-    term: string | null;
-    setTerm: (term: string | null) => void;
+  route: {
+    params?: {
+      term?: string;
+    };
+  };
 };
 
-export default function MainSearchHeader({term, setTerm}: Props) {
+export default function WordResultHeader({ route }: Props) {
   const router = useRouter();
   const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const { colorScheme } = useThemeContext();
+  const term = route?.params?.term ?? "";
   const theme = Colors[colorScheme];
-  const placeholder = isFocused ? "" : term ?? "Search ...";
+  const placeholder = isFocused ? "" : route?.params?.term ?? "Search ...";
 
   const handleSearch = () => {
     const trimmed = value.trim().toLowerCase();
+    setValue("");
     if (!trimmed) return;
-    setTerm(trimmed);
+    router.replace({ pathname: "/diction/[term]", params: { term: trimmed } });
   };
 
   const handleBack = () => {
-    setTerm(null)
+    // router.replace("/(tabs)/diction");
+    router.dismiss();
   };
 
   const handleUnfocus = () => {
@@ -42,11 +48,10 @@ export default function MainSearchHeader({term, setTerm}: Props) {
       style={{ backgroundColor: theme.background }}
     >
       <ThemedView style={[styles.header]}>
-        {term && <TouchableOpacity onPress={handleBack} style={styles.icon}>
+        <TouchableOpacity onPress={handleBack} style={styles.icon}>
           <Ionicons name="chevron-back-outline" size={24} color={theme.icon} />
-        </TouchableOpacity>}
-        
-
+        </TouchableOpacity>
+        {/* <ThemedView style={[styles.inputWrapper]}> */}
         <ThemedTextInput
           style={[styles.input, {textAlign: isFocused ? "left" : "center" }]}
           value={value}
@@ -58,6 +63,18 @@ export default function MainSearchHeader({term, setTerm}: Props) {
           autoCapitalize="none"
           returnKeyType="search"
         />
+        {/* <TouchableOpacity
+            onPress={() => router.dismiss()}
+            style={[styles.icon]}
+          >
+            <Ionicons
+              name="return-down-back"
+              size={24}
+              color={theme.icon}
+              style={styles.inputIcon}
+            />
+          </TouchableOpacity> */}
+        {/* </ThemedView> */}
 
         <TouchableOpacity style={styles.icon} onPress={handleSearch}>
           <Ionicons name="search" size={24} color={theme.icon} />

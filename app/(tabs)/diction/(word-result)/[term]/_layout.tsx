@@ -2,20 +2,13 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import DictionaryScreen from "./dictionary";
 import GoogleScreen from "./Google";
-import DictionaryScreen2 from "./Dictionary2";
-import DictionaryScreen3 from "./Dictionary3";
-import DictionaryScreen4 from "./Dictionary4";
 import MediaScreen from "./media";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/ThemedText";
-import { useEffect } from "react";
-import { useNavigationState } from "@react-navigation/native";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 
 const TopTabs = createMaterialTopTabNavigator();
 const tabScreens = [

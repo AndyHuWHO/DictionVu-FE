@@ -4,7 +4,7 @@ import { useLocalSearchParams } from "expo-router";
 import { ThemedText } from "@/components/themed/ThemedText";
 import { useGetWordInfoQuery } from "@/redux/apis/wordApi";
 import { ThemedScrollView } from "@/components/themed/ThemedScrollView";
-import { DictionaryEntry } from "@/components/DictionaryEntry";
+import { DictionaryEntry } from "@/components/diction/DictionaryEntry";
 import { View, TouchableOpacity } from "react-native";
 import { useState } from "react";
 
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
   },
   posTab: {
     paddingVertical: 8,
+    marginVertical: 10,
     paddingHorizontal: 18,
     borderRadius: 20,
     backgroundColor: "#919393ff",

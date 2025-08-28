@@ -1,6 +1,6 @@
 // app/(tabs)/diction/layout.tsx
 import { Stack } from "expo-router";
-import WordResultHeader from "@/components/WordResultHeader";
+import WordResultHeader from "@/components/diction/WordResultHeader";
 
 export default function DictionLayout() {
   return (
