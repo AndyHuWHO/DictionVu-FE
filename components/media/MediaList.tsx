@@ -52,7 +52,11 @@ export default function MediaList({ media, context, contextConfig }: Props) {
 
   return (
     <FlatList
-      initialScrollIndex={contextConfig?.currentIndex ?? 0}
+      initialScrollIndex={
+        contextConfig?.currentIndex && contextConfig.currentIndex > -1
+          ? contextConfig.currentIndex
+          : 0
+      }
       disableIntervalMomentum
       scrollsToTop={false}
       data={media}
