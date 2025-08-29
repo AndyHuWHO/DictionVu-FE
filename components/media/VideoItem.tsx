@@ -240,7 +240,7 @@ export default function VideoItem({
           onUnlikeMedia={handleUnlikeInMediaLikeStates}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
-        <VideoProgressBar
+        {/* <VideoProgressBar
           progress={progress}
           duration={duration}
           isSliding={isSliding}
@@ -252,13 +252,13 @@ export default function VideoItem({
             player.currentTime = parseFloat(value.toFixed(2));
             setIsSliding(false);
 
-            // setTimeout(() => {
-            //   const confirmedTime = player.currentTime;
-            //   console.log("Confirmed seek time:", confirmedTime);
-            //   setProgress(confirmedTime);
-            // }, 20);
+            setTimeout(() => {
+              const confirmedTime = player.currentTime;
+              console.log("Confirmed seek time:", confirmedTime);
+              setProgress(confirmedTime);
+            }, 20);
           }}
-        />
+        /> */}
       </View>
     </TouchableWithoutFeedback>
   );

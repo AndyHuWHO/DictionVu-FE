@@ -18,13 +18,13 @@ export default function MediaMetadataPanel({ media, userProfile }: Props) {
       <Text style={styles.description}>{media.description}</Text>
 
       {!!media.words?.length && (
-        <Text style={[styles.tagLine, { fontSize: 22, color: "#fff203ff" }]}>
+        <Text style={[styles.tagLine, { fontSize: 20, color: "#ff9d00ff" }]}>
           {media.words.map((word) => `$${word}`).join("   ")}
         </Text>
       )}
 
       {!!media.tags?.length && (
-        <Text style={[styles.tagLine, { color: "#04abffff" }]}>
+        <Text style={[styles.tagLine, { color: "#ffffffff", marginTop:8 }]}>
           {media.tags.map((tag) => `#${tag}`).join(" ")}
         </Text>
       )}
@@ -35,7 +35,7 @@ export default function MediaMetadataPanel({ media, userProfile }: Props) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 30,
+    bottom: 20,
     left: 15,
     right: 80,
   },
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 4,
+    // marginBottom: 4,
   },
   description: {
     color: "#fff",
@@ -52,6 +52,6 @@ const styles = StyleSheet.create({
   tagLine: {
     color: "#ccc",
     fontSize: 16,
-    marginTop: 4,
+    // marginTop: 4,
   },
 });

@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 export default function MessageTabScreen() {
   return (
     <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ThemedText>Welcome to Message Tab</ThemedText>
+      <ThemedText>Messaging functionality is coming soon!</ThemedText>
     </ThemedView>
   );
 }

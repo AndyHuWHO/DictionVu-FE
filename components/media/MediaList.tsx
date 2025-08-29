@@ -30,15 +30,15 @@ export default function MediaList({ media, context, contextConfig }: Props) {
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems.length > 0 && viewableItems[0].index !== null) {
         setVisibleIndex(viewableItems[0].index);
-        console.log(
-          "current index before updating: ",
-          contextConfig?.currentIndex
-        );
+        // console.log(
+        //   "current index before updating: ",
+        //   contextConfig?.currentIndex
+        // );
         if (
           contextConfig &&
           contextConfig.currentIndex !== viewableItems[0].index
         ) {
-          console.log("updating current index to:", viewableItems[0].index);
+          // console.log("updating current index to:", viewableItems[0].index);
           contextConfig.setCurrentIndex(viewableItems[0].index);
         }
       }
