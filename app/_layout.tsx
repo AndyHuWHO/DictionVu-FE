@@ -5,7 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
-import AuthProvider from "@/context/AuthProvider";
+import AppProvider from "@/context/AppProvider";
 import Toast from "react-native-toast-message";
 
 export default function RootLayout() {
@@ -13,7 +13,7 @@ export default function RootLayout() {
     <Provider store={store}>
       <ThemeProvider>
         <SafeAreaProvider>
-          <AuthProvider>
+          <AppProvider>
             <StatusBar style="auto" />
             <Stack>
               <Stack.Screen
@@ -40,7 +40,7 @@ export default function RootLayout() {
               />
             </Stack>
             <Toast />
-          </AuthProvider>
+          </AppProvider>
         </SafeAreaProvider>
       </ThemeProvider>
     </Provider>

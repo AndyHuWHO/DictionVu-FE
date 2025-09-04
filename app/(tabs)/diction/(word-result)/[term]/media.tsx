@@ -8,22 +8,33 @@ import { ThemedText } from "@/components/themed/ThemedText";
 import { fetchMediaWordThunk } from "@/redux/features/mediaWord/mediaWordThunks";
 import { RootState, AppDispatch } from "@/redux/store";
 import MediaList from "@/components/media/MediaList";
-import MediaPager from "@/components/media/MediaPager";
+import { useRouter } from "expo-router";
+import { Pressable, Text } from "react-native";
 
 export default function MediaScreen() {
   const { term } = useLocalSearchParams();
   const searchTerm = Array.isArray(term) ? term[0] : term ?? "";
 
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const media = useSelector((state: RootState) => state.mediaWord.items);
   const status = useSelector((state: RootState) => state.mediaWord.status);
   const error = useSelector((state: RootState) => state.mediaWord.error);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.token);
 
   useEffect(() => {
     if (searchTerm) {
       dispatch(fetchMediaWordThunk({ word: searchTerm }));
     }
   }, [searchTerm]);
+
+  const handlePostMedia = () => {
+    if (isAuthenticated) {
+      router.push(`/(modals)/upload/capture`);
+    } else {
+      router.push("/(auth)/login");
+    }
+  };
 
   if (status === "loading") {
     return (
@@ -46,13 +57,21 @@ export default function MediaScreen() {
   if (media.length === 0) {
     return (
       <ThemedView style={styles.centered}>
-        <ThemedText>No media found for "{searchTerm}"</ThemedText>
+        <ThemedText style={styles.infoText}>
+          Be the first to add media for "{searchTerm}"!
+        </ThemedText>
+        <Pressable
+          style={styles.button}
+          onPress={handlePostMedia}
+        >
+          <Text style={styles.buttonText}>Post Media</Text>
+        </Pressable>
       </ThemedView>
     );
   }
 
   return (
-    <ThemedView style={{ flex: 1}}>
+    <ThemedView style={{ flex: 1 }}>
       <MediaList media={media} context="word" />
     </ThemedView>
   );
@@ -68,5 +87,22 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     textAlign: "center",
+  },
+  infoText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 6,
+    marginVertical: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
   },
 });
