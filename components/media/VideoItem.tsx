@@ -8,18 +8,19 @@ import {
   Image,
 } from "react-native";
 import { VideoView, useVideoPlayer } from "expo-video";
+import { AppState } from "react-native";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { useGetUserProfileQuery } from "@/redux/apis/visitProfileApi";
 import MediaInteractionColumn from "./videoItemComponents/MediaInteractionColumn";
 import { fitFromWH } from "@/utils/videoFit";
 import MediaMetadataPanel from "./videoItemComponents/MediaMetadataPanel";
 import PlayOverlay from "./videoItemComponents/PlayOverlay";
-import VideoProgressBar from "./videoItemComponents/VideoProgressBar";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { addMediaItemToLiked, deleteMediaItemFromLiked } from "@/redux/features/mediaLiked/mediaLikedSlice";
+import {
+  addMediaItemToLiked,
+  deleteMediaItemFromLiked,
+} from "@/redux/features/mediaLiked/mediaLikedSlice";
 
 type Props = {
   media: MediaItem;
@@ -39,10 +40,6 @@ export default function VideoItem({
   const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
   const [contentFit, setContentFit] = useState<"contain" | "cover">("contain");
 
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(1);
-  const [isSliding, setIsSliding] = useState(false);
-  const [showProgressBar, setShowProgressBar] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -82,52 +79,24 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
-  // Update progress and duration when player is ready
-  useEffect(() => {
-    if (!player) return;
-    const checkDuration = setInterval(() => {
-      if (player.duration > 0) {
-        setDuration(player.duration);
-        clearInterval(checkDuration);
+useEffect(() => {
+  const sub = AppState.addEventListener("change", (state) => {
+    if (state === "active") {
+      if (isVisible && isTabFocused && !isPaused) {
+        console.log("video not paused, playing on active");
+        player.play();
       }
-    }, 100);
-
-    return () => clearInterval(checkDuration);
-  }, [player]);
-
-  // Update progress every 10ms
-  useEffect(() => {
-    if (!player) return;
-
-    const interval = setInterval(() => {
-      if (!isSliding) {
-        setProgress(player.currentTime);
+    } else if (state.match(/inactive|background/)) {
+      if (isVisible && isTabFocused) {
+        player.pause();
+        setIsPaused(true);
+        setShowOverlay(true);
+        fadeAnim.setValue(1);
       }
-    }, 10);
-
-    return () => clearInterval(interval);
-  }, [player, isSliding]);
-
-  // Show progress bar when paused or sliding
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-
-    if (isPaused || isSliding) {
-      setShowProgressBar(true);
-    } else {
-      // // show for 2s, then hide
-      // setShowProgressBar(true);
-      // timeout = setTimeout(() => {
-      //   setShowProgressBar(false);
-      // }, 2000);
-
-      setShowProgressBar(false);
     }
-
-    // return () => {
-    //   if (timeout) clearTimeout(timeout);
-    // };
-  }, [isPaused, isSliding]);
+  });
+  return () => sub.remove();
+}, [player, isVisible, isTabFocused, fadeAnim]);
 
   // Determine contentFit based on video dimensions
   useEffect(() => {
@@ -182,7 +151,9 @@ export default function VideoItem({
         toValue: 0,
         duration: 600,
         useNativeDriver: true,
-      }).start(() => setShowOverlay(false));
+      }).start(() => {
+        requestAnimationFrame(() => setShowOverlay(false));
+      });
     } else {
       setIsPaused(true);
       player.pause();
@@ -208,7 +179,7 @@ export default function VideoItem({
   return (
     <TouchableWithoutFeedback
       onPress={handleTogglePlay}
-      onPressIn={() => setShowProgressBar(true)}
+      // onPressIn={() => setShowProgressBar(true)}
     >
       <View style={[styles.videoContainer, { height }]}>
         {contentFit && (
@@ -224,7 +195,6 @@ export default function VideoItem({
         )}
 
         <PlayOverlay visible={showOverlay} fadeAnim={fadeAnim} />
-
         <MediaInteractionColumn
           profileImage={profileImage}
           likeCount={media.likeCount}
@@ -240,25 +210,6 @@ export default function VideoItem({
           onUnlikeMedia={handleUnlikeInMediaLikeStates}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
-        {/* <VideoProgressBar
-          progress={progress}
-          duration={duration}
-          isSliding={isSliding}
-          visible={showProgressBar}
-          onSeek={(value) => setProgress(value)}
-          onSlidingStart={() => setIsSliding(true)}
-          onSlidingComplete={(value) => {
-            // console.log("Seeking to:", value);
-            player.currentTime = parseFloat(value.toFixed(2));
-            setIsSliding(false);
-
-            setTimeout(() => {
-              const confirmedTime = player.currentTime;
-              console.log("Confirmed seek time:", confirmedTime);
-              setProgress(confirmedTime);
-            }, 20);
-          }}
-        /> */}
       </View>
     </TouchableWithoutFeedback>
   );

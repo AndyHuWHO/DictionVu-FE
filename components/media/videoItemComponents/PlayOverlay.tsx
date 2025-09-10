@@ -21,7 +21,7 @@ export default function PlayOverlay({ visible, fadeAnim }: Props) {
 const styles = StyleSheet.create({
   overlay: {
     position: "absolute",
-    top: "40%",
+    top: "45%",
     left: "40%",
     justifyContent: "center",
     alignItems: "center",

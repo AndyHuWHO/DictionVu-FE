@@ -34,7 +34,7 @@ export const Colors = {
     disabled: '#424242',
     tabBarBackground: '#151718',
     tabBarActive: '#ffffffff',
-    tabBarInactive: '#d7d7d7ff',
+    tabBarInactive: '#747474ff',
     activity: '#0a7ea4',
   },
 };
