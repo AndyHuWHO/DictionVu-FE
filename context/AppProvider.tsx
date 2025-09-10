@@ -5,6 +5,7 @@ import { AppDispatch } from "@/redux/store";
 import { loadTokenFromStorage } from "@/redux/features/auth/authThunks";
 import { setRecentSearches } from "@/redux/features/recentSearchSlice";
 import { loadRecentSearches } from "@/redux/utils/recentSearchStorage";
+import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
 
 export default function AppProvider({
   children,
@@ -21,6 +22,8 @@ export default function AppProvider({
       // Load recent search history
       const recentWords = await loadRecentSearches();
       dispatch(setRecentSearches(recentWords));
+
+      dispatch(fetchMediaFeedThunk({}));
     };
 
     hydrateApp();
