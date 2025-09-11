@@ -56,6 +56,7 @@ export default function VideoItem({
     }
   });
 
+
   const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
 
   useEffect(() => {
@@ -79,24 +80,30 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
-useEffect(() => {
-  const sub = AppState.addEventListener("change", (state) => {
-    if (state === "active") {
-      if (isVisible && isTabFocused && !isPaused) {
-        console.log("video not paused, playing on active");
-        player.play();
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        setTimeout(() => {
+          if (player.status == "error") {
+            console.log("video player in error state");
+            return;
+          }
+          if (isVisible && isTabFocused && !isPaused) {
+            console.log("video not paused, playing on active");
+            player.play();
+          }
+        }, 500);
+      } else if (state.match(/inactive|background/)) {
+        if (isVisible && isTabFocused) {
+          player.pause();
+          setIsPaused(true);
+          setShowOverlay(true);
+          fadeAnim.setValue(1);
+        }
       }
-    } else if (state.match(/inactive|background/)) {
-      if (isVisible && isTabFocused) {
-        player.pause();
-        setIsPaused(true);
-        setShowOverlay(true);
-        fadeAnim.setValue(1);
-      }
-    }
-  });
-  return () => sub.remove();
-}, [player, isVisible, isTabFocused, fadeAnim]);
+    });
+    return () => sub.remove();
+  }, [player, isVisible, isTabFocused, fadeAnim]);
 
   // Determine contentFit based on video dimensions
   useEffect(() => {
