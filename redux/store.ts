@@ -12,6 +12,7 @@ import mediaWordReducer from "./features/mediaWord/mediaWordSlice";
 import mediaFeedReducer from "./features/mediaFeed/mediaFeedSlice";
 import mediaLikedReducer from "./features/mediaLiked/mediaLikedSlice";
 import recentSearchesReducer from "./features/recentSearchSlice";
+import videoPlayerCrashReducer from "./features/videoPlayerCrashSlice";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const store = configureStore({
     mediaFeed: mediaFeedReducer,
     mediaLiked: mediaLikedReducer,
     recentSearches: recentSearchesReducer,
+    videoPlayerCrash: videoPlayerCrashReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

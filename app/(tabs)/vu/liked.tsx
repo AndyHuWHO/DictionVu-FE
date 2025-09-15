@@ -26,6 +26,10 @@ export default function LikedTopTabScreen() {
   const error = useSelector((state: RootState) => state.mediaLiked.fetchError);
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
 
+    const hasCrashed = useSelector(
+    (state: RootState) => state.videoPlayerCrash.hasCrashed
+  );
+
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -86,6 +90,8 @@ export default function LikedTopTabScreen() {
   return (
     <ThemedView style={{ flex: 1 }}>
       <MediaList
+        key={hasCrashed + "liked"} // Force remount MediaList and VideoItems if there was a crash
+        kid={`liked-${hasCrashed}`}
         media={media}
         context="liked"
         contextConfig={{

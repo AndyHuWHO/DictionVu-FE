@@ -22,6 +22,10 @@ export default function MediaScreen() {
   const error = useSelector((state: RootState) => state.mediaWord.error);
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
 
+    const hasCrashed = useSelector(
+    (state: RootState) => state.videoPlayerCrash.hasCrashed
+  );
+
   useEffect(() => {
     if (searchTerm) {
       dispatch(fetchMediaWordThunk({ word: searchTerm }));
@@ -72,7 +76,10 @@ export default function MediaScreen() {
 
   return (
     <ThemedView style={{ flex: 1 }}>
-      <MediaList media={media} context="word" />
+      <MediaList 
+      key={hasCrashed + "word"} // Force remount MediaList and VideoItems if there was a crash
+      kid={`word-${hasCrashed}`}
+      media={media} context="word" />
     </ThemedView>
   );
 }

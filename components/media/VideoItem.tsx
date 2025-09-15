@@ -1,5 +1,5 @@
 // components/media/VideoItem.tsx
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -21,6 +21,7 @@ import {
   addMediaItemToLiked,
   deleteMediaItemFromLiked,
 } from "@/redux/features/mediaLiked/mediaLikedSlice";
+import { reportCrash } from "@/redux/features/videoPlayerCrashSlice";
 
 type Props = {
   media: MediaItem;
@@ -42,9 +43,7 @@ export default function VideoItem({
 
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const dispatch = useDispatch<AppDispatch>();
-
-  // const likedIdSet = useSelector(selectLikedIdSet);
-  // const isLiked = likedIdSet.has(media.id);
+  const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
@@ -56,9 +55,6 @@ export default function VideoItem({
     }
   });
 
-
-  const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
-
   useEffect(() => {
     if (!player) return;
     player.playbackRate = playbackSpeed;
@@ -69,7 +65,6 @@ export default function VideoItem({
     const shouldPlay = isVisible && isTabFocused;
     if (shouldPlay && isPaused) {
       setIsPaused(false);
-      console.log("replaying video on land");
       player.replay();
       player.play();
       setPlaybackSpeed(1.0);
@@ -80,16 +75,34 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
       if (state === "active") {
-        setTimeout(() => {
-          if (player.status == "error") {
+        // setTimeout(() => {
+        //   if (player.status == "error") {
+        //     console.log("video player in error state");
+        //     dispatch(reportCrash());
+        //     return;
+        //   }
+        //   if (isVisible && isTabFocused && !isPaused) {
+        //     player.play();
+        //   }
+        // }, 500);
+
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          if (player.status === "error") {
             console.log("video player in error state");
+            dispatch(reportCrash());
             return;
           }
+
           if (isVisible && isTabFocused && !isPaused) {
-            console.log("video not paused, playing on active");
             player.play();
           }
         }, 500);
@@ -102,7 +115,12 @@ export default function VideoItem({
         }
       }
     });
-    return () => sub.remove();
+    return () => {
+      sub.remove();
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [player, isVisible, isTabFocused, fadeAnim]);
 
   // Determine contentFit based on video dimensions
@@ -195,7 +213,6 @@ export default function VideoItem({
             player={player}
             contentFit={contentFit}
             // contentFit="contain"
-            allowsFullscreen
             allowsPictureInPicture
             nativeControls={false}
           />

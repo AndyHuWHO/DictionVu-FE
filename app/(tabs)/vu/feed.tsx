@@ -4,10 +4,11 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { StyleSheet, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
 import { setCurrentFeedIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
 import MediaList from "@/components/media/MediaList";
+import { resetCrash } from "@/redux/features/videoPlayerCrashSlice";
 
 export default function FeedTopTabScreen() {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +24,10 @@ export default function FeedTopTabScreen() {
   );
   const status = useSelector((state: RootState) => state.mediaFeed.status);
   const error = useSelector((state: RootState) => state.mediaFeed.error);
+  const hasCrashed = useSelector(
+    (state: RootState) => state.videoPlayerCrash.hasCrashed
+  );
+
 
   useEffect(() => {
     if (
@@ -69,6 +74,8 @@ export default function FeedTopTabScreen() {
     <ThemedView style={{ flex: 1 }}>
       {/* <MediaList media={media} context="feed" /> */}
       <MediaList
+        key={hasCrashed + "feed"} // Force remount MediaList and VideoItems if there was a crash
+        kid={`feed-${hasCrashed}`}
         media={media}
         context="feed"
         contextConfig={{
