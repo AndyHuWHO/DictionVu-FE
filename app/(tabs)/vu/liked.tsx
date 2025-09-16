@@ -1,5 +1,5 @@
 // app/(tabs)/vu/liked.tsx
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { StyleSheet, ActivityIndicator, Pressable, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -18,17 +18,17 @@ export default function LikedTopTabScreen() {
   const currentIndex = useSelector(
     (state: RootState) => state.mediaLiked.currentLikedIndex
   );
-  const totalPages = useSelector((state: RootState) => state.mediaLiked.totalPages);
-  const currentPage = useSelector((state: RootState) => state.mediaLiked.currentPage);
+  const totalPages = useSelector(
+    (state: RootState) => state.mediaLiked.totalPages
+  );
+  const currentPage = useSelector(
+    (state: RootState) => state.mediaLiked.currentPage
+  );
   const status = useSelector(
     (state: RootState) => state.mediaLiked.fetchStatus
   );
   const error = useSelector((state: RootState) => state.mediaLiked.fetchError);
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
-
-    const hasCrashed = useSelector(
-    (state: RootState) => state.videoPlayerCrash.hasCrashed
-  );
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -90,8 +90,7 @@ export default function LikedTopTabScreen() {
   return (
     <ThemedView style={{ flex: 1 }}>
       <MediaList
-        key={hasCrashed + "liked"} 
-        kid={`liked-${hasCrashed}`}
+        key={"liked"}
         media={media}
         context="liked"
         contextConfig={{

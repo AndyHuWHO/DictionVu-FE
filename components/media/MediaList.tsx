@@ -46,8 +46,6 @@ export default function MediaList({ kid, media, context, contextConfig }: Props)
     itemVisiblePercentThreshold: 20,
   }).current;
   
-  console.log("mounting MediaList", kid);
-
   return (
     <FlatList
       initialScrollIndex={
@@ -56,6 +54,7 @@ export default function MediaList({ kid, media, context, contextConfig }: Props)
           : 0
       }
       disableIntervalMomentum
+      windowSize={3}
       scrollsToTop={false}
       data={media}
       keyExtractor={(item) => item.id}

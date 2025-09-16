@@ -21,7 +21,6 @@ import {
   addMediaItemToLiked,
   deleteMediaItemFromLiked,
 } from "@/redux/features/mediaLiked/mediaLikedSlice";
-import { reportCrash } from "@/redux/features/videoPlayerCrashSlice";
 
 type Props = {
   media: MediaItem;
@@ -75,51 +74,45 @@ export default function VideoItem({
     }
   }, [isVisible, isTabFocused]);
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
       if (state === "active") {
-        // setTimeout(() => {
-        //   if (player.status == "error") {
+        // if (timeoutRef.current) {
+        //   clearTimeout(timeoutRef.current);
+        // }
+
+        // timeoutRef.current = setTimeout(() => {
+        //   if (player.status === "error") {
         //     console.log("video player in error state");
         //     dispatch(reportCrash());
         //     return;
         //   }
+
         //   if (isVisible && isTabFocused && !isPaused) {
         //     player.play();
         //   }
         // }, 500);
-
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-
-        timeoutRef.current = setTimeout(() => {
-          if (player.status === "error") {
-            console.log("video player in error state");
-            dispatch(reportCrash());
-            return;
-          }
-
-          if (isVisible && isTabFocused && !isPaused) {
-            player.play();
-          }
-        }, 500);
-      } else if (state.match(/inactive|background/)) {
         if (isVisible && isTabFocused) {
-          player.pause();
-          setIsPaused(true);
-          setShowOverlay(true);
-          fadeAnim.setValue(1);
+          player.play();
+          setIsPaused(false);
+          setShowOverlay(false);
         }
+      } else if (state.match(/inactive|background/)) {
+        // if (isVisible && isTabFocused) {
+        //   player.pause();
+        //   setIsPaused(true);
+        //   setShowOverlay(true);
+        //   fadeAnim.setValue(1);
+        // }
       }
     });
     return () => {
       sub.remove();
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      // if (timeoutRef.current) {
+      //   clearTimeout(timeoutRef.current);
+      // }
     };
   }, [player, isVisible, isTabFocused, fadeAnim]);
 
