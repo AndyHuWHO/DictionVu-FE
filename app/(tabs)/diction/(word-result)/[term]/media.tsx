@@ -77,7 +77,7 @@ export default function MediaScreen() {
   return (
     <ThemedView style={{ flex: 1 }}>
       <MediaList 
-      key={hasCrashed + "word"} // Force remount MediaList and VideoItems if there was a crash
+      key={hasCrashed + "word"} 
       kid={`word-${hasCrashed}`}
       media={media} context="word" />
     </ThemedView>

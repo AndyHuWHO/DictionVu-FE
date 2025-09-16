@@ -90,7 +90,7 @@ export default function LikedTopTabScreen() {
   return (
     <ThemedView style={{ flex: 1 }}>
       <MediaList
-        key={hasCrashed + "liked"} // Force remount MediaList and VideoItems if there was a crash
+        key={hasCrashed + "liked"} 
         kid={`liked-${hasCrashed}`}
         media={media}
         context="liked"

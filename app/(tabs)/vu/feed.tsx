@@ -74,7 +74,7 @@ export default function FeedTopTabScreen() {
     <ThemedView style={{ flex: 1 }}>
       {/* <MediaList media={media} context="feed" /> */}
       <MediaList
-        key={hasCrashed + "feed"} // Force remount MediaList and VideoItems if there was a crash
+        key={hasCrashed + "feed"}
         kid={`feed-${hasCrashed}`}
         media={media}
         context="feed"
