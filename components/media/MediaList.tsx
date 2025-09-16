@@ -29,7 +29,7 @@ export default function MediaList({ kid, media, context, contextConfig }: Props)
 
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0 && viewableItems[0].index !== null) {
+      if (viewableItems.length === 1 && viewableItems[0].index !== null) {
         setVisibleIndex(viewableItems[0].index);
         if (
           contextConfig &&
