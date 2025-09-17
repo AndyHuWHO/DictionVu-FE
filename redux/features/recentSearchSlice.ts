@@ -1,8 +1,10 @@
 // redux/features/recentsearchSlice.ts
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { saveRecentSearches, clearRecentSearchesStorage } from "../utils/recentSearchStorage";
-
+import {
+  saveRecentSearches,
+  clearRecentSearchesStorage,
+} from "../utils/recentSearchStorage";
 
 const MAX_RECENT_SEARCHES = 20;
 
@@ -24,8 +26,7 @@ const recentSearchSlice = createSlice({
       if (state.words.unshift(word) > MAX_RECENT_SEARCHES) {
         state.words.pop();
       }
-
-    saveRecentSearches(state.words);
+      saveRecentSearches(state.words);
     },
     clearSearches: (state) => {
       state.words = [];
@@ -38,6 +39,7 @@ const recentSearchSlice = createSlice({
   },
 });
 
-export const { addSearch, clearSearches, setRecentSearches } = recentSearchSlice.actions;
+export const { addSearch, clearSearches, setRecentSearches } =
+  recentSearchSlice.actions;
 
 export default recentSearchSlice.reducer;

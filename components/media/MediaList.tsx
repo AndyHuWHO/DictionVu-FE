@@ -11,13 +11,12 @@ type ContextConfig = {
 };
 
 type Props = {
-  kid?: string;
   media: MediaItem[];
   context?: "feed" | "liked" | "word";
   contextConfig?: ContextConfig;
 };
 
-export default function MediaList({ kid, media, context, contextConfig }: Props) {
+export default function MediaList({ media, context, contextConfig }: Props) {
   const [visibleIndex, setVisibleIndex] = useState<number>(0);
   const [availableHeight, setAvailableHeight] = useState<number | null>(null);
   const isFocused = useIsFocused();

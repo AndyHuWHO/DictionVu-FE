@@ -109,7 +109,7 @@ export default function TabLayout() {
         }}
         listeners={{
           tabPress: (e) => {
-            e.preventDefault(); // <- critical to avoid switching the tab
+            e.preventDefault(); //avoid switching the tab
             if (!requireAuth()) return;
             router.push("/(modals)/upload/capture");
           },
