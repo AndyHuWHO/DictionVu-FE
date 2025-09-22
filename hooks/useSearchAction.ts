@@ -5,26 +5,26 @@ import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import { addSearch } from "@/redux/features/recentSearchSlice";
 
-
 export function useSearchAction() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
   const performSearch = useCallback(
     (term: string) => {
-        const normalized = term.trim().toLowerCase();
-        if (!normalized) {
-          return;
-        }
+      const normalized = term.trim().toLowerCase();
+      if (!normalized) {
+        return;
+      }
 
-        dispatch(addSearch(normalized));
-        const route = { pathname: "/diction/[term]", params: { term:normalized } };
-        router.dismissAll();
-        router.push(route);
+      dispatch(addSearch(normalized));
+      const route = {
+        pathname: "/diction/[term]",
+        params: { term: normalized },
+      };
+      router.replace(route);
     },
     [dispatch, router]
-  )
-
+  );
 
   return { performSearch };
 }

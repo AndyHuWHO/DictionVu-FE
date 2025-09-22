@@ -35,7 +35,7 @@ export default function WordResultHeader({ route }: Props) {
 
   const handleBack = () => {
     // router.replace("/(tabs)/diction");
-    router.dismiss();
+    router.dismissAll();
   };
 
   const handleUnfocus = () => {
