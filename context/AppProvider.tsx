@@ -18,11 +18,11 @@ export default function AppProvider({
 
   const hydrateApp = async () => {
     // Load JWT token (from SecureStore or persisted state)
-    dispatch(loadTokenFromStorage());
+    await dispatch(loadTokenFromStorage());
 
     // Load recent search history
     const recentWords = await loadRecentSearches();
-    dispatch(setRecentSearches(recentWords));
+    await dispatch(setRecentSearches(recentWords));
 
     // // Refresh feed 
     // dispatch(fetchMediaFeedThunk({}));
@@ -30,16 +30,19 @@ export default function AppProvider({
 
   // Initial hydration
   useEffect(() => {
-    hydrateApp();
+    const runHydrate = async () => {
+      await hydrateApp();
+    };
+    runHydrate();
   }, []);
 
   // Run hydrate when app returns to foreground
   useEffect(() => {
-    const onChange = (nextState: AppStateStatus) => {
+    const onChange = async (nextState: AppStateStatus) => {
       const wasBg = /inactive|background/.test(appState.current);
       if (wasBg && nextState === "active") {
         // App resumed — rehydrate to avoid “frozen”/stale state
-        hydrateApp();
+        await hydrateApp();
       }
       appState.current = nextState;
     };

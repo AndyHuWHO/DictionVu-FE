@@ -34,7 +34,7 @@ export const uploadMediaThunk = createAsyncThunk<
     }
 
     // Step 1: Get presigned upload URLs
-    const presigned = await getPresignedUploadUrls(token);
+    const presigned = await getPresignedUploadUrls(token, localUris.contentUri);
 
     // Step 2: Validate metadata
     const validationRequest: MediaMetadataRequest = {

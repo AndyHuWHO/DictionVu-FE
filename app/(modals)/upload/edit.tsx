@@ -20,10 +20,10 @@ import { useVideoPlayer } from "expo-video";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import * as FileSystem from "expo-file-system";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadMediaThunk } from "@/redux/features/mediaUpload/mediaUploadThunks";
 import { RootState, AppDispatch } from "@/redux/store";
+import { File } from "expo-file-system";
 
 export default function EditMediaScreen() {
   const { contentUri, thumbnailUri, contentFit } = useLocalSearchParams<{
@@ -37,14 +37,14 @@ export default function EditMediaScreen() {
   const MAX_WORDS = 100;
 
   const countGraphemes = (text: string) => {
-  // if (typeof Intl !== "undefined" && Intl.Segmenter) {
+    // if (typeof Intl !== "undefined" && Intl.Segmenter) {
     // console.log("Using Intl.Segmenter for grapheme counting");
     // const s = new Intl.Segmenter();
     // return Array.from(s.segment(text)).length;
-  // }
-  // Fallback: counts code points (good enough for most cases)
-  return Array.from(text).length;
-};
+    // }
+    // Fallback: counts code points (good enough for most cases)
+    return Array.from(text).length;
+  };
 
   const handleDescriptionChange = (text: string) => {
     const count = countGraphemes(text);
@@ -74,13 +74,28 @@ export default function EditMediaScreen() {
       router.back();
       return;
     }
-    FileSystem.getInfoAsync(contentUri as string).then((info) => {
-      if (info.exists && info.size != null) {
-        setFileSizeBytes(info.size);
-      } else {
-        console.warn("Could not retrieve file size");
+
+    (async () => {
+      try {
+        const file = new File(contentUri as string);
+        const info = file.info();
+
+        if (info.exists && info.size != null) {
+          setFileSizeBytes(info.size);
+        } else {
+          console.warn("Could not retrieve file size");
+        }
+      } catch (err) {
+        console.error("Error retrieving file info:", err);
       }
-    });
+    })();
+    // FileSystem.getInfoAsync(contentUri as string).then((info) => {
+    //   if (info.exists && info.size != null) {
+    //     setFileSizeBytes(info.size);
+    //   } else {
+    //     console.warn("Could not retrieve file size");
+    //   }
+    // });
   }, [contentUri, thumbnailUri]);
 
   const addWord = () => {
@@ -125,6 +140,8 @@ export default function EditMediaScreen() {
       contentUri: contentUri!,
       thumbnailUri: thumbnailUri!,
     };
+
+    console.log("Uploading local URIs:", localUris);
 
     console.log("Uploading metadata:", metadata);
 
@@ -230,8 +247,7 @@ export default function EditMediaScreen() {
                   },
                 ]}
               >
-                {countGraphemes(description)}/
-                {MAX_WORDS} words
+                {countGraphemes(description)}/{MAX_WORDS} words
               </Text>
               {/* Tag input */}
               <View style={styles.wordRow}>
@@ -404,7 +420,6 @@ const styles = StyleSheet.create({
     // bottom: 50,
     // alignSelf: "center",
     // paddingHorizontal: 40,
-
   },
   uploadButtonText: {
     color: "#fff",

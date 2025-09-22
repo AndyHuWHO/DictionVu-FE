@@ -7,6 +7,7 @@ export function ThemedTextInput(props: TextInputProps) {
   const borderColor = useThemeColor({}, "border");
   const backgroundColor = useThemeColor({}, "background");
   const placeholderColor = useThemeColor({}, "placeholder");
+  
 
   return (
     <TextInput

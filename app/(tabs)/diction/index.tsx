@@ -31,10 +31,11 @@ export default function DictionTabScreen() {
   );
 
   const handleSearch = () => {
-    const trimmed = term.trim().toLowerCase();
-    if (!trimmed) return;
-    // router.push(`/(word-result)/${encodeURIComponent(trimmed)}`);
-    router.push({ pathname: "/diction/[term]", params: { term: trimmed } });
+    // const trimmed = term.trim().toLowerCase();
+    // if (!trimmed) return;
+    // // router.push(`/(word-result)/${encodeURIComponent(trimmed)}`);
+    // router.push({ pathname: "/diction/[term]", params: { term: trimmed } });
+    router.push("/search");
   };
 
   return (
@@ -45,25 +46,32 @@ export default function DictionTabScreen() {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ThemedView style={[styles.container]}>
-            <ThemedView
-              style={[styles.searchRow, { borderColor: theme.border }]}
+            <TouchableOpacity
+              onPress={handleSearch}
+              // style={{ borderWidth:1, borderColor:theme.border, borderRadius:8, width:"100%" }}
             >
-              <ThemedTextInput
+              <ThemedView
+                style={[styles.searchRow, { borderColor: theme.border }]}
+              >
+                {/* <ThemedTextInput
                 value={term}
+                editable={false}
                 onChangeText={setTerm}
                 style={[styles.input]}
                 autoCapitalize="none"
                 returnKeyType="search"
                 // onBlur={() => setTerm("")}
                 onSubmitEditing={handleSearch}
-              />
-              <TouchableOpacity
-                onPress={handleSearch}
-                style={styles.iconButton}
-              >
-                <Ionicons name="search" size={24} color={theme.icon} />
-              </TouchableOpacity>
-            </ThemedView>
+              /> */}
+                <TouchableOpacity
+                  onPress={handleSearch}
+                  style={styles.iconButton}
+                >
+                  <Ionicons name="search" size={24} color={theme.icon} />
+                </TouchableOpacity>
+              </ThemedView>
+            </TouchableOpacity>
+
             <MainPageContent />
           </ThemedView>
         </TouchableWithoutFeedback>

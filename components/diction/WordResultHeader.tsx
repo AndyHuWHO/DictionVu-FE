@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { ThemedView} from "@/components/themed/ThemedView";
+import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedTextInput } from "@/components/themed/ThemedTextInput";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
@@ -26,10 +26,11 @@ export default function WordResultHeader({ route }: Props) {
   const placeholder = isFocused ? "" : route?.params?.term ?? "Search ...";
 
   const handleSearch = () => {
-    const trimmed = value.trim().toLowerCase();
-    setValue("");
-    if (!trimmed) return;
-    router.replace({ pathname: "/diction/[term]", params: { term: trimmed } });
+    // const trimmed = value.trim().toLowerCase();
+    // setValue("");
+    // if (!trimmed) return;
+    // router.replace({ pathname: "/diction/[term]", params: { term: trimmed } });
+    router.push("/search");
   };
 
   const handleBack = () => {
@@ -53,8 +54,9 @@ export default function WordResultHeader({ route }: Props) {
         </TouchableOpacity>
         {/* <ThemedView style={[styles.inputWrapper]}> */}
         <ThemedTextInput
-          style={[styles.input, {textAlign: isFocused ? "left" : "center" }]}
+          style={[styles.input, { textAlign: isFocused ? "left" : "center" }]}
           value={value}
+          editable={false}
           onFocus={() => setIsFocused(true)}
           onBlur={handleUnfocus}
           onChangeText={setValue}
@@ -62,6 +64,7 @@ export default function WordResultHeader({ route }: Props) {
           placeholder={placeholder}
           autoCapitalize="none"
           returnKeyType="search"
+          onPress={handleSearch}
         />
         {/* <TouchableOpacity
             onPress={() => router.dismiss()}

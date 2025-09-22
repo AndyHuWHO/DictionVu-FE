@@ -18,7 +18,7 @@ export default function RootLayout() {
             <Stack>
               <Stack.Screen
                 name="(tabs)"
-                options={{ headerShown: false, title: "" }}
+                options={{ headerShown: false, title: "", }}
               />
               <Stack.Screen
                 name="(auth)/login"
@@ -36,6 +36,7 @@ export default function RootLayout() {
                   presentation: "fullScreenModal",
                   // animation: "slide_from_bottom",
                   // animationDuration: 300,
+                  animation: "none",
                 }}
               />
             </Stack>

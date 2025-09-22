@@ -1,24 +1,29 @@
 // redux/features/mediaUpload/mediaUploadService.ts
 import axios from "axios";
-import * as FileSystem from "expo-file-system";
+import { File } from "expo-file-system";
 import {
   MediaItem,
   PresignedUploadResponse,
   MediaMetadataRequest,
 } from "./types";
 import * as Mime from "react-native-mime-types";
+import { fetch } from "expo/fetch"; 
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const getPresignedUploadUrls = async (
-  token: string
+  token: string,
+  uri: string
 ): Promise<PresignedUploadResponse> => {
+  const mimeType = Mime.lookup(uri) || "application/octet-stream";
+
   const response = await axios.post<PresignedUploadResponse>(
     `${API_BASE_URL}/api/media/upload-url`,
     {},
     {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": mimeType,
       },
     }
   );
@@ -30,19 +35,22 @@ export const uploadFileToPresignedUrl = async (
   uploadUrl: string
 ): Promise<void> => {
   const mimeType = Mime.lookup(localUri) || "application/octet-stream";
+  console.log(`Uploading file ${uploadUrl} with MIME type ${mimeType}`);
+  const file = new File(localUri);
 
-  const uploadResult = await FileSystem.uploadAsync(uploadUrl, localUri, {
-    httpMethod: "PUT",
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
     headers: {
       "Content-Type": mimeType,
     },
-    uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
+    body: file, 
   });
 
-  if (uploadResult.status !== 200) {
-    throw new Error(`Upload failed with status ${uploadResult.status}`);
+  if (!response.ok) {
+    throw new Error(`Upload failed with status ${response.status}`);
   }
 };
+
 
 export const validateMetadata = async (
   token: string,
