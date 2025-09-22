@@ -17,11 +17,14 @@ export default function MediaScreen() {
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const media = useSelector((state: RootState) => state.mediaWord.wordItems[searchTerm]?.media || []);
+  const media =
+    useSelector(
+      (state: RootState) => state.mediaWord.wordItems[searchTerm]?.media
+    ) ?? [];
+
   const status = useSelector((state: RootState) => state.mediaWord.status);
   const error = useSelector((state: RootState) => state.mediaWord.error);
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
-
 
   useEffect(() => {
     if (searchTerm) {
@@ -61,10 +64,7 @@ export default function MediaScreen() {
         <ThemedText style={styles.infoText}>
           Be the first to add media for "{searchTerm}"!
         </ThemedText>
-        <Pressable
-          style={styles.button}
-          onPress={handlePostMedia}
-        >
+        <Pressable style={styles.button} onPress={handlePostMedia}>
           <Text style={styles.buttonText}>Post Media</Text>
         </Pressable>
       </ThemedView>
@@ -73,9 +73,7 @@ export default function MediaScreen() {
 
   return (
     <ThemedView style={{ flex: 1 }}>
-      <MediaList 
-      key={"word"} 
-      media={media} context="word" />
+      <MediaList key={"word"} media={media} context="word" />
     </ThemedView>
   );
 }

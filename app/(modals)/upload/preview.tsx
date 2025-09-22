@@ -121,7 +121,6 @@ useFocusEffect(
       <VideoView
         player={player}
         style={styles.video}
-        allowsFullscreen={false}
         nativeControls={false}
         contentFit={contentFit}
       />
