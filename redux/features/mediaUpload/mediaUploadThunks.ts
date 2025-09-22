@@ -14,6 +14,7 @@ import {
 } from "./types";
 import { RootState } from "../../store";
 import { addMediaItemToFeed } from "@/redux/features/mediaFeed/mediaFeedSlice";
+import { addMediaToWords } from "@/redux/features/mediaWord/mediaWordSlice";
 
 // Input to the thunk
 interface UploadMediaParams {
@@ -57,6 +58,7 @@ export const uploadMediaThunk = createAsyncThunk<
 
     // Add to media feed immediately
     thunkAPI.dispatch(addMediaItemToFeed(savedMedia));
+    thunkAPI.dispatch(addMediaToWords(savedMedia));
 
     return savedMedia;
   } catch (error: any) {

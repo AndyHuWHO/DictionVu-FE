@@ -17,7 +17,7 @@ export default function MediaScreen() {
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const media = useSelector((state: RootState) => state.mediaWord.items);
+  const media = useSelector((state: RootState) => state.mediaWord.wordItems[searchTerm]?.media || []);
   const status = useSelector((state: RootState) => state.mediaWord.status);
   const error = useSelector((state: RootState) => state.mediaWord.error);
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
