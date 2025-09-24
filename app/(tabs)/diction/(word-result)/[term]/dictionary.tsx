@@ -9,7 +9,12 @@ import { View, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addSearch } from "@/redux/features/recentSearchSlice";
-import { normalizePartOfSpeech } from "@/utils/normalizePartOfSpeech";
+import {
+  normalizePartOfSpeech,
+  abbreviatePartOfSpeech,
+} from "@/utils/normalizePartOfSpeech";
+import { useThemeContext } from "@/context/ThemeContext";
+import { Colors } from "@/constants/Colors";
 
 export default function DictionaryScreen() {
   const { term } = useLocalSearchParams();
@@ -20,21 +25,23 @@ export default function DictionaryScreen() {
   });
   const [selectedIdx, setSelectedIdx] = useState(0);
   const dispatch = useDispatch();
+  const { colorScheme } = useThemeContext();
+  const theme = Colors[colorScheme];
 
-useEffect(() => {
-  if (data) {
-    const firstInfo = data.dictionaryInfoList[0];
-    const firstSense = firstInfo?.wordSenseList[0];
-    const posAbbr = normalizePartOfSpeech(firstInfo?.partOfSpeech);
+  useEffect(() => {
+    if (data) {
+      const firstInfo = data.dictionaryInfoList[0];
+      const firstSense = firstInfo?.wordSenseList[0];
+      const posAbbr = abbreviatePartOfSpeech(firstInfo?.partOfSpeech);
 
-    const brief = firstInfo && firstSense
-      ? `${posAbbr} ${firstSense.translationZh || ""}`
-      : "";
+      const brief =
+        firstInfo && firstSense
+          ? `${posAbbr} ${firstSense.translationZh || ""}`
+          : "";
 
-    dispatch(addSearch({ word: data.word, brief }));
-  }
-}, [data]);
-
+      dispatch(addSearch({ word: data.word, brief }));
+    }
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -91,11 +98,14 @@ useEffect(() => {
                 idx === selectedIdx && styles.posTabTextSelected,
               ]}
             >
-              {pos}
+              {normalizePartOfSpeech(pos)}
             </ThemedText>
           </TouchableOpacity>
         ))}
       </View>
+      <ThemedText style={[styles.originalPosText, { color:theme.tabBarActive }]}>
+        {data.dictionaryInfoList[selectedIdx]?.partOfSpeech}:
+      </ThemedText>
       {/* Only show the selected DictionaryEntry */}
       <DictionaryEntry info={data.dictionaryInfoList[selectedIdx]} />
     </ThemedScrollView>
@@ -127,10 +137,11 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   posTab: {
-    paddingVertical: 8,
-    marginVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 20,
+    paddingVertical: 6,
+    marginVertical: 6,
+    paddingHorizontal: 15,
+    marginHorizontal: 4,
+    borderRadius: 15,
     backgroundColor: "#919393ff",
     // marginRight: 8,
     // marginBottom: 8,
@@ -144,18 +155,25 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   posTabSelected: {
-    backgroundColor: "#12cbd9ff",
-    borderColor: "#12cbd9ff",
+    backgroundColor: "#0bd3f1ff",
+    borderColor: "#18d3efff",
     shadowOpacity: 0.25,
     elevation: 6,
   },
   posTabText: {
-    fontSize: 15,
+    fontSize: 16,
     color: "#eee",
     fontWeight: "500",
-    textTransform: "capitalize",
+    // textTransform: "capitalize",
   },
   posTabTextSelected: {
     color: "#fff",
+  },
+  originalPosText: {
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 12,
+    // marginLeft: 4,
+    textTransform: "capitalize",
   },
 });
