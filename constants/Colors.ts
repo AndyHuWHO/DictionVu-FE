@@ -15,7 +15,7 @@ export const Colors = {
     disabled: '#e0e0e0',
     tabBarBackground: '#fff',
     tabBarActive: '#010101ff',
-    tabBarInactive: '#a3a6a8ff',
+    tabBarInactive: '#6c6c6cff',
     activity: '#0a7ea4',
   },
   dark: {

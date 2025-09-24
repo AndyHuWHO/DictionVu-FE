@@ -6,7 +6,7 @@ import {
   clearRecentSearchesStorage,
 } from "../utils/recentSearchStorage";
 
-const MAX_RECENT_SEARCHES = 20;
+const MAX_RECENT_SEARCHES = 40;
 
 interface RecentSearchState {
   words: string[];

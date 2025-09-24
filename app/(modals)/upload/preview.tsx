@@ -1,14 +1,14 @@
 // app/(modals)/upload/preview.tsx
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useState, useEffect, useCallback } from "react";
 import { View, TouchableOpacity, Text, Alert, StyleSheet } from "react-native";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import Slider from "@react-native-community/slider";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useFocusEffect } from "@react-navigation/native";
 import { fitFromWH } from "@/utils/videoFit";
 import { fmtMMSS } from "@/utils/fmtMMSS";
+import { setStatusBarStyle } from "expo-status-bar";
 
 export default function PreviewScreen() {
   const { contentUri } = useLocalSearchParams<{ contentUri: string }>();
@@ -17,7 +17,7 @@ export default function PreviewScreen() {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(1);
   const [isSliding, setIsSliding] = useState(false);
-  const [contentFit, setContentFit] = useState<"contain" | "cover" >("contain");
+  const [contentFit, setContentFit] = useState<"contain" | "cover">("contain");
 
   const player = useVideoPlayer(contentUri, (player) => {
     player.loop = true;
@@ -26,9 +26,12 @@ export default function PreviewScreen() {
 
   const generateThumbnail = async () => {
     try {
-      const { uri, width, height } = await VideoThumbnails.getThumbnailAsync(contentUri, {
-        time: 1,
-      });
+      const { uri, width, height } = await VideoThumbnails.getThumbnailAsync(
+        contentUri,
+        {
+          time: 1,
+        }
+      );
       setImage(uri);
       setContentFit(fitFromWH(width, height));
     } catch (e) {
@@ -73,18 +76,24 @@ export default function PreviewScreen() {
     return () => clearInterval(interval);
   }, [player, isSliding]);
 
+  useFocusEffect(
+    useCallback(() => {
+      let tick = setInterval(() => {
+        if (player && player.duration > 0) {
+          player.play();
+          clearInterval(tick);
+        }
+      }, 50);
+      return () => clearInterval(tick);
+    }, [player])
+  );
 
-useFocusEffect(
-  useCallback(() => {
-    let tick = setInterval(() => {
-      if (player && player.duration > 0) {
-        player.play();
-        clearInterval(tick);
-      }
-    }, 50);
-    return () => clearInterval(tick);
-  }, [player])
-);
+  useFocusEffect(() => {
+    setStatusBarStyle("light");
+    return () => {
+      setStatusBarStyle("auto");
+    };
+  });
 
   return (
     <View style={styles.container}>
@@ -101,8 +110,8 @@ useFocusEffect(
       </TouchableOpacity>
       <Text style={styles.previewTag}>Preview</Text>
       <Text style={styles.timeText}>
-                {fmtMMSS(progress)} / {fmtMMSS(duration)}
-              </Text>
+        {fmtMMSS(progress)} / {fmtMMSS(duration)}
+      </Text>
       <Slider
         style={styles.progressSlider}
         minimumValue={0}
@@ -167,7 +176,7 @@ const styles = StyleSheet.create({
   closeButtonIcon: {
     color: "#fff",
   },
-    timeText: {
+  timeText: {
     color: "#fff",
     fontSize: 13,
     textAlign: "center",
@@ -196,7 +205,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 40,
     alignSelf: "center",
-    backgroundColor: "#FF004F", 
+    backgroundColor: "#FF004F",
     paddingHorizontal: 38,
     paddingVertical: 10,
     borderRadius: 20,

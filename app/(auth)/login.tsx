@@ -20,8 +20,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginThunk } from "@/redux/features/auth/authThunks";
 import { RootState, AppDispatch } from "@/redux/store";
 import { useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { setStatusBarStyle } from "expo-status-bar";
 import Feather from "@expo/vector-icons/Feather";
+import { useFocusEffect } from "expo-router";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -47,6 +48,13 @@ export default function LoginScreen() {
     router.dismiss();
   };
 
+    useFocusEffect(() => {
+      setStatusBarStyle("dark");
+      return () => {
+        setStatusBarStyle("auto");
+      };
+    });
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -57,7 +65,7 @@ export default function LoginScreen() {
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
         >
-          <StatusBar style="dark" />
+          {/* <StatusBar style="dark" /> */}
 
           <TouchableOpacity onPress={handleSkipLogin} style={styles.closeButton}>
             <Feather name="x" size={28} color="#000000ff" />

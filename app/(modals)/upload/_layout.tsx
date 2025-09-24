@@ -8,7 +8,7 @@ export default function UploadLayout() {
         name="capture"
         options={{
           // immersive, dark UI for camera
-          statusBarStyle: "light",
+          // statusBarStyle: "light",
           contentStyle: { backgroundColor: "#000" },
           // avoid accidental back-swipe during recording (iOS)
           gestureEnabled: false,
@@ -17,15 +17,14 @@ export default function UploadLayout() {
       <Stack.Screen
         name="preview"
         options={{
-          statusBarStyle: "light",
+          // statusBarStyle: "light",
           contentStyle: { backgroundColor: "#000" },
         }}
       />
       <Stack.Screen
         name="edit"
         options={{
-          // edit is form-like on white
-          statusBarStyle: "dark",
+          // statusBarStyle: "dark",
           contentStyle: { backgroundColor: "#fff" },
         }}
       />

@@ -47,8 +47,12 @@ export default function SuggestionList({ onPick }: Props) {
       </ThemedView>
 
       <FlatList
+        style={{ flex:1}}
         data={recent}
         keyboardDismissMode="on-drag"
+        scrollEnabled={true}
+        showsVerticalScrollIndicator={true}
+        scrollIndicatorInsets={{ right: 1 }}
         keyboardShouldPersistTaps="handled"
         keyExtractor={(item) => item}
         renderItem={({ item }) => (
@@ -69,6 +73,7 @@ const styles = StyleSheet.create({
   container: {
     // borderWidth: 1,
     // borderRadius: 8,
+    flex: 1,
     marginTop: 8,
     paddingHorizontal: 20,
   },

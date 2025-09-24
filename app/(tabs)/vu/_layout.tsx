@@ -1,13 +1,17 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import FeedTopTabScreen from "./feed";
 import LikedTopTabScreen from "./liked";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-
+import { StatusBar, setStatusBarStyle } from "expo-status-bar";
+import { useFocusEffect } from "expo-router";
 const TopTabs = createMaterialTopTabNavigator();
 
 const tabScreens = [
@@ -25,14 +29,20 @@ const tabScreens = [
 export default function MediaTabsLayout() {
   const { colorScheme } = useThemeContext();
   const theme = Colors[colorScheme];
+  const insets = useSafeAreaInsets();
+
+  useFocusEffect(() => {
+    setStatusBarStyle("light");
+      return () => {
+    setStatusBarStyle("auto"); 
+  };
+  });
   return (
     <SafeAreaView
-      edges={["top", "left", "right"]}
+      edges={["left", "right"]}
       style={{
         flex: 1,
         backgroundColor: theme.background,
-        // borderWidth: 1,
-        // borderColor: "blue",
       }}
     >
       <TouchableOpacity
@@ -51,6 +61,7 @@ export default function MediaTabsLayout() {
           tabBarStyle: {
             backgroundColor: "transparent",
             position: "absolute",
+            paddingTop: insets.top,
             // top: 0,
             // left: 0,
             // right: 0,
@@ -71,8 +82,8 @@ export default function MediaTabsLayout() {
               <ThemedText
                 style={{
                   color: props.focused
-                    ? theme.tabBarActive
-                    : theme.tabBarInactive,
+                    ? Colors.dark.tabBarActive
+                    : Colors.dark.tabBarInactive,
                   fontSize: 16,
                   fontWeight: props.focused ? "bold" : "normal",
                 }}

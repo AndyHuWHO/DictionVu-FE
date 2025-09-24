@@ -15,9 +15,9 @@ import {
   TouchableWithoutFeedback,
   Switch,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
 import { useVideoPlayer } from "expo-video";
-import { StatusBar } from "expo-status-bar";
+import { setStatusBarStyle } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,6 +67,13 @@ export default function EditMediaScreen() {
 
   const player = useVideoPlayer(contentUri);
   const durationSeconds = player?.duration.toFixed(1);
+
+      useFocusEffect(() => {
+        setStatusBarStyle("dark");
+        return () => {
+          setStatusBarStyle("auto");
+        };
+      });
 
   useEffect(() => {
     if (!contentUri) {
@@ -170,7 +177,7 @@ export default function EditMediaScreen() {
             keyboardShouldPersistTaps="handled"
             contentInsetAdjustmentBehavior="automatic"
           >
-            <StatusBar style="dark" />
+            {/* <StatusBar style="dark" /> */}
 
             <TouchableOpacity
               onPress={() => router.back()}

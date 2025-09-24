@@ -10,10 +10,12 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
-import { useIsFocused, useFocusEffect } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import { useFocusEffect } from "expo-router";
 import { InteractionManager } from "react-native";
 import UploadControls from "@/components/upload/UploadControls";
 import { fmtMMSS } from "@/utils/fmtMMSS";
+import { setStatusBarStyle } from "expo-status-bar";
 
 export default function UploadCaptureScreen() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
@@ -55,7 +57,6 @@ export default function UploadCaptureScreen() {
     setElapsedSec(0);
   };
 
-
   const cancelRef = useRef(false);
   const handleClose = () => {
     cancelRef.current = true;
@@ -66,6 +67,13 @@ export default function UploadCaptureScreen() {
     }
     router.dismiss();
   };
+
+  useFocusEffect(() => {
+    setStatusBarStyle("light");
+    return () => {
+      setStatusBarStyle("auto");
+    };
+  });
 
   useEffect(() => {
     const requestAllPermissions = async () => {
