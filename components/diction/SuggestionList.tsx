@@ -22,7 +22,7 @@ type Props = {
 export default function SuggestionList({ onPick }: Props) {
   const { colorScheme } = useThemeContext();
   const theme = Colors[colorScheme];
-  const recent = useSelector((state: RootState) => state.recentSearch.words);
+  const recent = useSelector((state: RootState) => state.recentSearch.entries);
   const dispatch = useDispatch();
 
   if (!recent.length) {
@@ -47,21 +47,26 @@ export default function SuggestionList({ onPick }: Props) {
       </ThemedView>
 
       <FlatList
-        style={{ flex:1}}
+        style={{ flex: 1 }}
         data={recent}
         keyboardDismissMode="on-drag"
         scrollEnabled={true}
         showsVerticalScrollIndicator={true}
         scrollIndicatorInsets={{ right: 1 }}
         keyboardShouldPersistTaps="handled"
-        keyExtractor={(item) => item}
+        keyExtractor={(item) => item.word}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => onPick(item)}
+            onPress={() => onPick(item.word)}
             style={({ pressed }) => [styles.itemRow]}
           >
             <Ionicons name="time-outline" size={18} color={theme.icon} />
-            <ThemedText style={styles.itemText}>{item}</ThemedText>
+            <ThemedText style={styles.itemText}>
+              <ThemedText style={[styles.wordText, { color: theme.tabBarActive }]}>{item.word}</ThemedText>
+              {item.brief ? (
+                <ThemedText style={[styles.briefText, { color: theme.tabBarInactive }]}>     {item.brief}</ThemedText>
+              ) : null}
+            </ThemedText>
           </Pressable>
         )}
       />
@@ -92,5 +97,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   itemText: { marginLeft: 8, fontSize: 16 },
+  wordText: {
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  briefText: {
+    fontWeight: "400",
+    fontSize: 15,
+  },
+
   empty: { padding: 12, alignItems: "center" },
 });

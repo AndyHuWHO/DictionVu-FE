@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { useThemeContext } from "@/context/ThemeContext";
 import { Colors } from "@/constants/Colors";
-import { ThemedTextInput } from "@/components/themed/ThemedTextInput";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MainPageContent from "@/components/diction/MainPageContent";
 

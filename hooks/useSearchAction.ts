@@ -16,7 +16,6 @@ export function useSearchAction() {
         return;
       }
 
-      dispatch(addSearch(normalized));
       const route = {
         pathname: "/diction/[term]",
         params: { term: normalized },

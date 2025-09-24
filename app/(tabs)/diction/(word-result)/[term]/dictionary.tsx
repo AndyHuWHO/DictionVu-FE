@@ -6,7 +6,10 @@ import { useGetWordInfoQuery } from "@/redux/apis/wordApi";
 import { ThemedScrollView } from "@/components/themed/ThemedScrollView";
 import { DictionaryEntry } from "@/components/diction/DictionaryEntry";
 import { View, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addSearch } from "@/redux/features/recentSearchSlice";
+import { normalizePartOfSpeech } from "@/utils/normalizePartOfSpeech";
 
 export default function DictionaryScreen() {
   const { term } = useLocalSearchParams();
@@ -16,6 +19,22 @@ export default function DictionaryScreen() {
     // refetchOnReconnect: true,
   });
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const dispatch = useDispatch();
+
+useEffect(() => {
+  if (data) {
+    const firstInfo = data.dictionaryInfoList[0];
+    const firstSense = firstInfo?.wordSenseList[0];
+    const posAbbr = normalizePartOfSpeech(firstInfo?.partOfSpeech);
+
+    const brief = firstInfo && firstSense
+      ? `${posAbbr} ${firstSense.translationZh || ""}`
+      : "";
+
+    dispatch(addSearch({ word: data.word, brief }));
+  }
+}, [data]);
+
 
   if (isLoading) {
     return (

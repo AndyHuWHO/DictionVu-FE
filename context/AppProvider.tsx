@@ -6,7 +6,6 @@ import { AppDispatch } from "@/redux/store";
 import { loadTokenFromStorage } from "@/redux/features/auth/authThunks";
 import { setRecentSearches } from "@/redux/features/recentSearchSlice";
 import { loadRecentSearches } from "@/redux/utils/recentSearchStorage";
-import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
 
 export default function AppProvider({
   children,

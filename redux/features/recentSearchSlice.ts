@@ -8,33 +8,48 @@ import {
 
 const MAX_RECENT_SEARCHES = 40;
 
+interface RecentSearch {
+  word: string;
+  brief: string;
+}
+
 interface RecentSearchState {
-  words: string[];
+  entries: RecentSearch[];
 }
 
 const initialState: RecentSearchState = {
-  words: [],
+  entries: [],
 };
 
 const recentSearchSlice = createSlice({
   name: "recentSearch",
   initialState,
   reducers: {
-    addSearch: (state, action: PayloadAction<string>) => {
-      const word = action.payload;
-      state.words = state.words.filter((w) => w !== word);
-      if (state.words.unshift(word) > MAX_RECENT_SEARCHES) {
-        state.words.pop();
+    addSearch: (state, action: PayloadAction<RecentSearch>) => {
+      const newEntry = action.payload;
+
+      // Remove existing entry if exists
+      state.entries = state.entries.filter(
+        (entry) => entry.word !== newEntry.word
+      );
+
+      // Insert at the beginning
+      state.entries.unshift(newEntry);
+
+      // Trim if over max length
+      if (state.entries.length > MAX_RECENT_SEARCHES) {
+        state.entries.pop();
       }
-      saveRecentSearches(state.words);
+
+      saveRecentSearches(state.entries);
     },
     clearSearches: (state) => {
-      state.words = [];
+      state.entries = [];
       clearRecentSearchesStorage();
     },
 
-    setRecentSearches: (state, action: PayloadAction<string[]>) => {
-      state.words = action.payload;
+    setRecentSearches: (state, action: PayloadAction<RecentSearch[]>) => {
+      state.entries = action.payload;
     },
   },
 });
