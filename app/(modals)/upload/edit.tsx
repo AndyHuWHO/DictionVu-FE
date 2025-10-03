@@ -59,6 +59,7 @@ export default function EditMediaScreen() {
   const [tags, setTags] = useState<string[]>([]);
   const [isPublic, setIsPublic] = useState(true);
   const [fileSizeBytes, setFileSizeBytes] = useState<number | null>(null);
+  // const [isInputFocused, setIsInputFocused] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const uploadStatus = useSelector(
@@ -68,12 +69,12 @@ export default function EditMediaScreen() {
   const player = useVideoPlayer(contentUri);
   const durationSeconds = player?.duration.toFixed(1);
 
-      useFocusEffect(() => {
-        setStatusBarStyle("dark");
-        return () => {
-          setStatusBarStyle("auto");
-        };
-      });
+  useFocusEffect(() => {
+    setStatusBarStyle("dark");
+    return () => {
+      setStatusBarStyle("auto");
+    };
+  });
 
   useEffect(() => {
     if (!contentUri) {
@@ -185,6 +186,25 @@ export default function EditMediaScreen() {
             >
               <Ionicons name="chevron-back" size={28} />
             </TouchableOpacity>
+
+            {/* {isInputFocused && (
+                <TouchableOpacity
+                  onPress={handleConfirm}
+                  style={styles.topUploadButton}
+                  activeOpacity={0.85}
+                >
+                  <Text style={styles.topUploadButtonText}>Upload</Text>
+                </TouchableOpacity>
+              )} */}
+
+            <TouchableOpacity
+              onPress={handleConfirm}
+              style={styles.topUploadButton}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.topUploadButtonText}>Upload</Text>
+            </TouchableOpacity>
+
             {/* ───── THUMBNAIL ───── */}
             {thumbnailUri && (
               <View style={styles.thumbnailWrapper}>
@@ -208,6 +228,8 @@ export default function EditMediaScreen() {
                   onChangeText={setWordInput}
                   onSubmitEditing={addWord}
                   maxLength={20}
+                  //  onFocus={() => setIsInputFocused(true)}
+                  //   onBlur={() => setIsInputFocused(false)}
                 />
                 <TouchableOpacity
                   onPress={addWord}
@@ -244,6 +266,8 @@ export default function EditMediaScreen() {
                 onChangeText={handleDescriptionChange}
                 multiline
                 scrollEnabled // Allow internal scrolling
+                // onFocus={() => setIsInputFocused(true)}
+                // onBlur={() => setIsInputFocused(false)}
               />
 
               <Text
@@ -266,6 +290,8 @@ export default function EditMediaScreen() {
                   onChangeText={setTagInput}
                   onSubmitEditing={addTag}
                   maxLength={20}
+                  //   onFocus={() => setIsInputFocused(true)}
+                  // onBlur={() => setIsInputFocused(false)}
                 />
                 <TouchableOpacity
                   onPress={addTag}
@@ -310,13 +336,13 @@ export default function EditMediaScreen() {
             </View>
 
             {/* ───── ACTION ───── */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={handleConfirm}
               style={styles.uploadButton}
               activeOpacity={0.85}
             >
               <Text style={styles.uploadButtonText}>Confirm Upload</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -327,7 +353,7 @@ export default function EditMediaScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingVertical: 0,
+    paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: "#fff",
   },
@@ -352,8 +378,8 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     fontSize: 16,
     paddingVertical: 20,
-    minHeight: 70,
-    maxHeight: 70, // limits height
+    minHeight: 150,
+    maxHeight: 150, // limits height
     color: "#000",
     textAlignVertical: "top",
   },
@@ -431,6 +457,21 @@ const styles = StyleSheet.create({
   uploadButtonText: {
     color: "#fff",
     fontSize: 16,
+    fontWeight: "bold",
+  },
+  topUploadButton: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+    backgroundColor: "#ff0050",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignItems: "center",
+  },
+  topUploadButtonText: {
+    color: "#fff",
+    fontSize: 14,
     fontWeight: "bold",
   },
 });
