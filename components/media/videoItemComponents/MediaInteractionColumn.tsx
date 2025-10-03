@@ -8,10 +8,9 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { fetchMediaLikedThunk } from "@/redux/features/mediaLiked/mediaLikedThunks";
 import { useLikeMediaMutation } from "@/redux/apis/likeMediaApi";
 import { useUnlikeMediaMutation } from "@/redux/apis/unlikeMediaApi";
 import { useDeleteMediaMutation } from "@/redux/apis/deleteMediaApi";
@@ -48,7 +47,7 @@ type Props = {
 
 const speeds = [0.75, 1.00, 1.25];
 
-export default function MediaInteractionColumn({
+function MediaInteractionColumn({
   profileImage,
   likeCount,
   commentCount,
@@ -226,6 +225,8 @@ export default function MediaInteractionColumn({
     </View>
   );
 }
+
+export default memo(MediaInteractionColumn);
 
 const styles = StyleSheet.create({
   container: {

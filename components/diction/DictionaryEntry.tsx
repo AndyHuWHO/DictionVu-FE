@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   examplesHeader: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "600",
   },
   example: {

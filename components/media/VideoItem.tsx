@@ -1,5 +1,5 @@
 // components/media/VideoItem.tsx
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import {
   View,
   StyleSheet,
@@ -29,7 +29,7 @@ type Props = {
   height: number;
 };
 
-export default function VideoItem({
+function VideoItem({
   media,
   isVisible,
   isTabFocused,
@@ -180,19 +180,37 @@ export default function VideoItem({
     }
   };
 
-  const handleLikeInMediaLikeStates = () => {
-    console.log("Like media:", media.id);
+  // const handleLikeInMediaLikeStates = () => {
+  //   console.log("Like media:", media.id);
+  //   dispatch(addMediaItemToLiked(media));
+  // };
+
+  // const handleUnlikeInMediaLikeStates = () => {
+  //   console.log("Unlike media:", media.id);
+  //   dispatch(deleteMediaItemFromLiked(media));
+  // };
+
+  const handleChangePlaybackSpeed = useCallback((s: number) => {
+    setPlaybackSpeed(s);
+  }, []);
+
+  const handleLikeInMediaLikeStates = useCallback(() => {
     dispatch(addMediaItemToLiked(media));
-  };
+  }, [media, dispatch]);
 
-  const handleUnlikeInMediaLikeStates = () => {
-    console.log("Unlike media:", media.id);
+  const handleUnlikeInMediaLikeStates = useCallback(() => {
     dispatch(deleteMediaItemFromLiked(media));
-  };
+  }, [media, dispatch]);
 
-  const profileImage =
-    userProfile?.profileImageUrl ??
-    Image.resolveAssetSource(require("@/assets/favicon.png")).uri;
+  // const profileImage =
+  //   userProfile?.profileImageUrl ??
+  //   Image.resolveAssetSource(require("@/assets/favicon.png")).uri;
+  const profileImage = useMemo(
+    () =>
+      userProfile?.profileImageUrl ??
+      Image.resolveAssetSource(require("@/assets/favicon.png")).uri,
+    [userProfile?.profileImageUrl]
+  );
 
   return (
     <TouchableWithoutFeedback
@@ -220,9 +238,10 @@ export default function VideoItem({
           authUserId={media.authUserId}
           // isLiked={isLiked}
           currentSpeed={playbackSpeed}
-          onChangePlaybackSpeed={(s) => {
-            setPlaybackSpeed(s);
-          }}
+          // onChangePlaybackSpeed={(s) => {
+          //   setPlaybackSpeed(s);
+          // }}
+          onChangePlaybackSpeed={handleChangePlaybackSpeed}
           onLikeMedia={handleLikeInMediaLikeStates}
           onUnlikeMedia={handleUnlikeInMediaLikeStates}
         />
@@ -231,6 +250,8 @@ export default function VideoItem({
     </TouchableWithoutFeedback>
   );
 }
+
+export default memo(VideoItem);
 
 const styles = StyleSheet.create({
   videoContainer: {

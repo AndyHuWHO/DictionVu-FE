@@ -1,5 +1,5 @@
 // components/media/PlayOverlay.tsx
-import React from "react";
+import {memo} from "react";
 import { Animated, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -8,7 +8,7 @@ type Props = {
   fadeAnim: Animated.Value;
 };
 
-export default function PlayOverlay({ visible, fadeAnim }: Props) {
+function PlayOverlayComponent({ visible, fadeAnim }: Props) {
   if (!visible) return null;
 
   return (
@@ -27,3 +27,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default memo( PlayOverlayComponent);

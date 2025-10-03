@@ -1,5 +1,5 @@
 // components/media/MediaMetadataPanel.tsx
-import React from "react";
+import {memo} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { VisitUserProfile } from "@/redux/apis/types/visitUserProfile";
@@ -9,7 +9,7 @@ type Props = {
   userProfile?: VisitUserProfile;
 };
 
-export default function MediaMetadataPanel({ media, userProfile }: Props) {
+function MediaMetadataPanel({ media, userProfile }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.username}>
@@ -31,6 +31,8 @@ export default function MediaMetadataPanel({ media, userProfile }: Props) {
     </View>
   );
 }
+
+export default memo(MediaMetadataPanel);
 
 const styles = StyleSheet.create({
   container: {
