@@ -29,12 +29,7 @@ type Props = {
   height: number;
 };
 
-function VideoItem({
-  media,
-  isVisible,
-  isTabFocused,
-  height,
-}: Props) {
+function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
   const [showOverlay, setShowOverlay] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(1));
   const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
@@ -43,6 +38,10 @@ function VideoItem({
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const dispatch = useDispatch<AppDispatch>();
   const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
+
+  console.log(
+    `VideoItem render: ${media.id}, visible=${isVisible}, focused=${isTabFocused}`
+  );
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
@@ -76,45 +75,58 @@ function VideoItem({
 
   // const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // useEffect(() => {
+  //   const sub = AppState.addEventListener("change", (state) => {
+  //     if (state === "active") {
+  //       // if (timeoutRef.current) {
+  //       //   clearTimeout(timeoutRef.current);
+  //       // }
+
+  //       // timeoutRef.current = setTimeout(() => {
+  //       //   if (player.status === "error") {
+  //       //     console.log("video player in error state");
+  //       //     dispatch(reportCrash());
+  //       //     return;
+  //       //   }
+
+  //       //   if (isVisible && isTabFocused && !isPaused) {
+  //       //     player.play();
+  //       //   }
+  //       // }, 500);
+  //       if (isVisible && isTabFocused) {
+  //         player.play();
+  //         setIsPaused(false);
+  //         setShowOverlay(false);
+  //       }
+  //     } else if (state.match(/inactive|background/)) {
+  //       // if (isVisible && isTabFocused) {
+  //       //   player.pause();
+  //       //   setIsPaused(true);
+  //       //   setShowOverlay(true);
+  //       //   fadeAnim.setValue(1);
+  //       // }
+  //     }
+  //   });
+  //   return () => {
+  //     sub.remove();
+  //     // if (timeoutRef.current) {
+  //     //   clearTimeout(timeoutRef.current);
+  //     // }
+  //   };
+  // }, [player, isVisible, isTabFocused, fadeAnim]);
+
+  // VideoItem.tsx
   useEffect(() => {
+    if (!isVisible) return; // only when actually visible
     const sub = AppState.addEventListener("change", (state) => {
-      if (state === "active") {
-        // if (timeoutRef.current) {
-        //   clearTimeout(timeoutRef.current);
-        // }
-
-        // timeoutRef.current = setTimeout(() => {
-        //   if (player.status === "error") {
-        //     console.log("video player in error state");
-        //     dispatch(reportCrash());
-        //     return;
-        //   }
-
-        //   if (isVisible && isTabFocused && !isPaused) {
-        //     player.play();
-        //   }
-        // }, 500);
-        if (isVisible && isTabFocused) {
-          player.play();
-          setIsPaused(false);
-          setShowOverlay(false);
-        }
-      } else if (state.match(/inactive|background/)) {
-        // if (isVisible && isTabFocused) {
-        //   player.pause();
-        //   setIsPaused(true);
-        //   setShowOverlay(true);
-        //   fadeAnim.setValue(1);
-        // }
+      if (state === "active" && isTabFocused) {
+        player.play();
+        setIsPaused((p) => (p ? false : p));
+        setShowOverlay(false);
       }
     });
-    return () => {
-      sub.remove();
-      // if (timeoutRef.current) {
-      //   clearTimeout(timeoutRef.current);
-      // }
-    };
-  }, [player, isVisible, isTabFocused, fadeAnim]);
+    return () => sub.remove();
+  }, [isVisible, isTabFocused, player]);
 
   // Determine contentFit based on video dimensions
   useEffect(() => {
@@ -212,12 +224,14 @@ function VideoItem({
     [userProfile?.profileImageUrl]
   );
 
+  const containerStyle = useMemo(() => [styles.videoContainer, { height }], [height]);
+
   return (
     <TouchableWithoutFeedback
       onPress={handleTogglePlay}
       // onPressIn={() => setShowProgressBar(true)}
     >
-      <View style={[styles.videoContainer, { height }]}>
+      <View style={containerStyle}>
         {contentFit && (
           <VideoView
             style={styles.video}

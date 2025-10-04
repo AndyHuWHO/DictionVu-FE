@@ -44,7 +44,26 @@ export default function MediaList({ media, context, contextConfig }: Props) {
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 20,
   }).current;
-  
+
+  const renderItem = useCallback(
+    ({ item, index }: { item: MediaItem; index: number }) => {
+      console.log(`renderItem invoked for index=${index}, id=${item.id}`);
+      return availableHeight !== null ? (
+        <VideoItem
+          media={item}
+          isVisible={
+            contextConfig
+              ? index === contextConfig.currentIndex
+              : index === visibleIndex
+          }
+          isTabFocused={isFocused}
+          height={availableHeight}
+        />
+      ) : null;
+    },
+    [availableHeight, contextConfig, visibleIndex, isFocused]
+  );
+
   return (
     <FlatList
       initialScrollIndex={
@@ -70,20 +89,7 @@ export default function MediaList({ media, context, contextConfig }: Props) {
       })}
       onViewableItemsChanged={onViewableItemsChanged}
       viewabilityConfig={viewabilityConfig}
-      renderItem={({ item, index }) =>
-        availableHeight !== null ? (
-          <VideoItem
-            media={item}
-            isVisible={
-              contextConfig
-                ? index === contextConfig.currentIndex
-                : index === visibleIndex
-            }
-            isTabFocused={isFocused}
-            height={availableHeight}
-          />
-        ) : null
-      }
+      renderItem={renderItem}
     />
   );
 }
