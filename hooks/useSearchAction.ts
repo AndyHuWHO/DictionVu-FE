@@ -22,13 +22,13 @@ export function useSearchAction() {
       // router.replace(route);
 
       router.back();
-      router.push("/(tabs)/diction");
+      // router.push("/(tabs)/diction");
       setTimeout(() => {
         router.push({
           pathname: "/(tabs)/diction/(word-result)/[term]",
           params: { term: normalized },
         });
-      }, 0); 
+      }, 0);
     },
     [dispatch, router]
   );
