@@ -4,7 +4,7 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { StyleSheet, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { fetchMediaFeedThunk } from "@/redux/features/mediaFeed/mediaFeedThunks";
 import { setCurrentFeedIndex } from "@/redux/features/mediaFeed/mediaFeedSlice";
 import MediaList from "@/components/media/MediaList";
@@ -40,7 +40,16 @@ export default function FeedTopTabScreen() {
     console.log("There are", media.length, "media items, in feed");
   }, [media]);
 
-  if (status === "loading") {
+  const contextConfig = useMemo(
+  () => ({
+    currentIndex,
+    setCurrentIndex: (index: number) => dispatch(setCurrentFeedIndex(index)),
+  }),
+  [currentIndex, dispatch]
+);
+
+
+  if (status === "loading"  && media.length === 0) {
     return (
       <ThemedView style={styles.centered}>
         <ActivityIndicator size="large" />
@@ -73,10 +82,7 @@ export default function FeedTopTabScreen() {
         key={"feed"}
         media={media}
         context="feed"
-        contextConfig={{
-          currentIndex,
-          setCurrentIndex: (index) => dispatch(setCurrentFeedIndex(index)),
-        }}
+        contextConfig={contextConfig}
       />
     </ThemedView>
   );
