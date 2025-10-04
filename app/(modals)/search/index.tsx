@@ -27,7 +27,7 @@ export default function SearchModal() {
   const { performSearch } = useSearchAction();
 
   const submit = () => {
-    performSearch(value); // will normalize + replace modal with result
+    performSearch(value);
   };
 
   return (

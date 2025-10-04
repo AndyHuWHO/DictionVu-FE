@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
-import { addSearch } from "@/redux/features/recentSearchSlice";
 
 export function useSearchAction() {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,11 +15,20 @@ export function useSearchAction() {
         return;
       }
 
-      const route = {
-        pathname: "/diction/[term]",
-        params: { term: normalized },
-      };
-      router.replace(route);
+      // const route = {
+      //   pathname: "/diction/[term]",
+      //   params: { term: normalized },
+      // };
+      // router.replace(route);
+
+      router.back();
+      router.push("/(tabs)/diction");
+      setTimeout(() => {
+        router.push({
+          pathname: "/(tabs)/diction/(word-result)/[term]",
+          params: { term: normalized },
+        });
+      }, 0); 
     },
     [dispatch, router]
   );

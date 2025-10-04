@@ -2,8 +2,9 @@
 import { ThemedView } from "@/components/themed/ThemedView";
 import { StyleSheet } from "react-native";
 import { Image } from "react-native";
+import { memo } from "react";
 
-export default function MainPageContent() {
+function MainPageContent() {
     return (
         <ThemedView style={styles.container}>
             <ThemedView style={styles.tabBar}>
@@ -17,6 +18,8 @@ export default function MainPageContent() {
         </ThemedView>
     );
 }
+
+export default memo(MainPageContent);
 
 const styles = StyleSheet.create({
     container: {

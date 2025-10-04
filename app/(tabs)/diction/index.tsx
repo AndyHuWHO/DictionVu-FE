@@ -18,22 +18,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import MainPageContent from "@/components/diction/MainPageContent";
 
 export default function DictionTabScreen() {
-  const [term, setTerm] = useState("");
   const router = useRouter();
   const { colorScheme } = useThemeContext();
   const theme = Colors[colorScheme];
 
-  useFocusEffect(
-    React.useCallback(() => {
-      setTerm("");
-    }, [])
-  );
-
   const handleSearch = () => {
-    // const trimmed = term.trim().toLowerCase();
-    // if (!trimmed) return;
-    // // router.push(`/(word-result)/${encodeURIComponent(trimmed)}`);
-    // router.push({ pathname: "/diction/[term]", params: { term: trimmed } });
     router.push("/search");
   };
 
@@ -45,29 +34,16 @@ export default function DictionTabScreen() {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ThemedView style={[styles.container]}>
-            <TouchableOpacity
-              onPress={handleSearch}
-              // style={{ borderWidth:1, borderColor:theme.border, borderRadius:8, width:"100%" }}
-            >
+            <TouchableOpacity onPress={handleSearch}>
               <ThemedView
                 style={[styles.searchRow, { borderColor: theme.border }]}
               >
-                {/* <ThemedTextInput
-                value={term}
-                editable={false}
-                onChangeText={setTerm}
-                style={[styles.input]}
-                autoCapitalize="none"
-                returnKeyType="search"
-                // onBlur={() => setTerm("")}
-                onSubmitEditing={handleSearch}
-              /> */}
-                <TouchableOpacity
-                  onPress={handleSearch}
+                <Ionicons
+                  name="search"
+                  size={24}
+                  color={theme.icon}
                   style={styles.iconButton}
-                >
-                  <Ionicons name="search" size={24} color={theme.icon} />
-                </TouchableOpacity>
+                />
               </ThemedView>
             </TouchableOpacity>
 
@@ -84,12 +60,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     paddingTop: 80,
-    // justifyContent: "center",
   },
   searchRow: {
     flexDirection: "row",
     alignItems: "center",
-    // borderColor: "#ccc",
+    justifyContent: "flex-end",
     borderWidth: 1,
     borderRadius: 6,
     paddingHorizontal: 8,
@@ -102,6 +77,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   iconButton: {
-    padding: 8,
+    padding: 10,
   },
 });

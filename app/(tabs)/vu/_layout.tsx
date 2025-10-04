@@ -10,8 +10,9 @@ import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
-import { StatusBar, setStatusBarStyle } from "expo-status-bar";
+import { setStatusBarStyle } from "expo-status-bar";
 import { useFocusEffect } from "expo-router";
+import { useRouter } from "expo-router";
 const TopTabs = createMaterialTopTabNavigator();
 
 const tabScreens = [
@@ -30,12 +31,13 @@ export default function MediaTabsLayout() {
   const { colorScheme } = useThemeContext();
   const theme = Colors[colorScheme];
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   useFocusEffect(() => {
     setStatusBarStyle("light");
-      return () => {
-    setStatusBarStyle("auto"); 
-  };
+    return () => {
+      setStatusBarStyle("auto");
+    };
   });
   return (
     <SafeAreaView
@@ -50,7 +52,7 @@ export default function MediaTabsLayout() {
           { padding: 10, position: "absolute", right: 20, top: 48, zIndex: 10 },
         ]}
         onPress={() => {
-          console.log("Search pressed");
+          router.push("/search");
         }}
       >
         <Ionicons name="search" size={22} color={theme.icon} />
