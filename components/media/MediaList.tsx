@@ -47,7 +47,6 @@ export default function MediaList({ media, context, contextConfig }: Props) {
 
   const renderItem = useCallback(
     ({ item, index }: { item: MediaItem; index: number }) => {
-      console.log(`renderItem invoked for index=${index}, id=${item.id}`);
       return availableHeight !== null ? (
         <VideoItem
           media={item}

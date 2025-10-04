@@ -39,10 +39,6 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
 
-  console.log(
-    `VideoItem render: ${media.id}, visible=${isVisible}, focused=${isTabFocused}`
-  );
-
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
     player.loop = true;
     if (isVisible && isTabFocused && !isPaused) {
