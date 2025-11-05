@@ -1,12 +1,13 @@
 // hooks/useSearchAction.ts
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useCallback } from "react";
 
 export function useSearchAction() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const params = useLocalSearchParams();
 
   const performSearch = useCallback(
     (term: string) => {
@@ -14,6 +15,7 @@ export function useSearchAction() {
       if (!normalized) {
         return;
       }
+      const isFromWordResult = params.from === "word-result";
 
       // const route = {
       //   pathname: "/diction/[term]",
@@ -22,9 +24,9 @@ export function useSearchAction() {
       // router.replace(route);
 
       router.back();
-      // router.push("/(tabs)/diction");
       setTimeout(() => {
-        router.push({
+        const action = isFromWordResult ? router.replace : router.push;
+        action({
           pathname: "/(tabs)/diction/(word-result)/[term]",
           params: { term: normalized },
         });

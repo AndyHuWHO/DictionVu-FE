@@ -1,6 +1,4 @@
 // app/(tabs)/diction/index.tsx
-import React, { useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import {
   StyleSheet,
@@ -23,7 +21,8 @@ export default function DictionTabScreen() {
   const theme = Colors[colorScheme];
 
   const handleSearch = () => {
-    router.push("/search");
+    // router.push("/search");
+    router.push({ pathname: "/search", params: { from: "root" } });
   };
 
   return (

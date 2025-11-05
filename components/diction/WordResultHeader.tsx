@@ -30,7 +30,9 @@ export default function WordResultHeader({ route }: Props) {
     // setValue("");
     // if (!trimmed) return;
     // router.replace({ pathname: "/diction/[term]", params: { term: trimmed } });
-    router.push("/search");
+    
+    // router.push("/search");
+    router.push({ pathname: "/search", params: { from: "word-result" } });
   };
 
   const handleBack = () => {
