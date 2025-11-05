@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { WordResponse } from "./types/wordDictionaryInfo";
 
-
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 export const wordApi = createApi({
   reducerPath: "wordApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.EXPO_PUBLIC_WORD_API_BASE_URL,
+    baseUrl: `${API_BASE_URL}/api/words`,
   }),
   tagTypes: ['Word'],
   endpoints: (builder) => ({

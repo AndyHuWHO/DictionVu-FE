@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { VisitUserProfile } from "./types/visitUserProfile";
 
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const visitProfileApi = createApi({
   reducerPath: "visitProfileApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.EXPO_PUBLIC_VISIT_PROFILE_API_BASE_URL,
+    baseUrl: `${API_BASE_URL}/api/user/profile/visit`,
   }),
   tagTypes: ['UserProfile'],
   endpoints: (builder) => ({
