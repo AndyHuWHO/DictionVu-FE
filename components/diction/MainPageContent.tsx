@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 26,
     },
     imageContainer: {
-        width: "100%",
-        height: "90%",
+        width: "120%",
+        height: "98%",
         // margin: 10,
         // padding: 10,
         // borderWidth:1,

@@ -27,7 +27,7 @@ export function useSearchAction() {
       setTimeout(() => {
         const action = isFromWordResult ? router.replace : router.push;
         action({
-          pathname: "/(tabs)/diction/(word-result)/[term]",
+          pathname: "/diction/[term]",
           params: { term: normalized },
         });
       }, 0);
