@@ -68,9 +68,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   pronunciation: {
-    fontSize: 16,
+    fontSize: 18,
     color: "#ff9533ff",
     marginBottom: 15,
+    fontWeight: "600"
   },
   senseBlock: {
     marginBottom: 20,
@@ -81,6 +82,7 @@ const styles = StyleSheet.create({
     color: "#ff8ed8ff",
     marginBottom: 15,
     lineHeight: 23,
+    fontWeight: "900"
   },
   definition: {
     fontSize: 16,
