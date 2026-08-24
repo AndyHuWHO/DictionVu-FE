@@ -1,12 +1,13 @@
 // redux/features/mediaUpload/mediaUploadThunk.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import * as Mime from "react-native-mime-types";
 import {
-  getPresignedUploadUrls,
+  initiateMediaUpload,
   uploadFileToPresignedUrl,
-  validateMetadata,
   uploadMetadata,
 } from "./mediaUploadService";
 import {
+  InitiateMediaUploadRequest,
   MediaItem,
   MediaMetadata,
   LocalUris,
@@ -34,27 +35,31 @@ export const uploadMediaThunk = createAsyncThunk<
       throw new Error("User not authenticated.");
     }
 
-    // Step 1: Get presigned upload URLs
-    const presigned = await getPresignedUploadUrls(token, localUris.contentUri);
+    const videoContentType = Mime.lookup(localUris.contentUri) || "video/mp4";
 
-    // Step 2: Validate metadata
-    const validationRequest: MediaMetadataRequest = {
+    // Step 1: Backend validates metadata and generates URLs.
+    const initiationRequest: InitiateMediaUploadRequest = {
+      ...metadata,
+      videoContentType,
+    };
+
+    const presigned = await initiateMediaUpload(token, initiationRequest);
+
+    // Step 2: Upload video and thumbnail to S3
+    await uploadFileToPresignedUrl(localUris.contentUri, presigned.uploadUrl);
+    await uploadFileToPresignedUrl(
+      localUris.thumbnailUri,
+      presigned.thumbnailUploadUrl,
+    );
+
+    const metadataRequest: MediaMetadataRequest = {
       ...metadata,
       objectKey: presigned.objectKey,
       thumbnailKey: presigned.thumbnailKey,
     };
 
-    await validateMetadata(token, validationRequest);
-
-    // Step 3: Upload video and thumbnail to S3
-    await uploadFileToPresignedUrl(localUris.contentUri, presigned.uploadUrl);
-    await uploadFileToPresignedUrl(
-      localUris.thumbnailUri,
-      presigned.thumbnailUploadUrl
-    );
-
-    // Step 4: Upload metadata
-    const savedMedia = await uploadMetadata(token, validationRequest);
+    // Step 3: Upload metadata
+    const savedMedia = await uploadMetadata(token, metadataRequest);
 
     // Add to media feed immediately
     thunkAPI.dispatch(addMediaItemToFeed(savedMedia));
@@ -62,13 +67,8 @@ export const uploadMediaThunk = createAsyncThunk<
 
     return savedMedia;
   } catch (error: any) {
-    // console.error("Upload failed:", error);
-    // // Log the full response body if available
-    // if (error.response && error.response.data) {
-    //   console.error("Response body:", error.response.data);
-    // }
     return thunkAPI.rejectWithValue(
-      error.response?.data || error.message || "Unknown error"
+      error.response?.data || error.message || "Unknown error",
     );
   }
 });

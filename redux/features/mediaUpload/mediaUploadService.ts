@@ -2,6 +2,7 @@
 import axios from "axios";
 import { File } from "expo-file-system";
 import {
+  InitiateMediaUploadRequest,
   MediaItem,
   PresignedUploadResponse,
   MediaMetadataRequest,
@@ -11,19 +12,17 @@ import { fetch } from "expo/fetch";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
-export const getPresignedUploadUrls = async (
-  token: string,
-  uri: string
-): Promise<PresignedUploadResponse> => {
-  const mimeType = Mime.lookup(uri) || "application/octet-stream";
 
+export const initiateMediaUpload = async (
+  token: string,
+  request: InitiateMediaUploadRequest
+): Promise<PresignedUploadResponse> => {
   const response = await axios.post<PresignedUploadResponse>(
-    `${API_BASE_URL}/api/media/upload-url`,
-    {},
+    `${API_BASE_URL}/api/media/upload/initiate`,
+    request,
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": mimeType,
       },
     }
   );
@@ -35,7 +34,6 @@ export const uploadFileToPresignedUrl = async (
   uploadUrl: string
 ): Promise<void> => {
   const mimeType = Mime.lookup(localUri) || "application/octet-stream";
-  console.log(`Uploading file ${uploadUrl} with MIME type ${mimeType}`);
   const file = new File(localUri);
 
   const response = await fetch(uploadUrl, {
@@ -51,17 +49,6 @@ export const uploadFileToPresignedUrl = async (
   }
 };
 
-
-export const validateMetadata = async (
-  token: string,
-  metadataRequest: MediaMetadataRequest
-): Promise<void> => {
-  await axios.post(`${API_BASE_URL}/api/media/validate`, metadataRequest, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
 
 export const uploadMetadata = async (
   token: string,

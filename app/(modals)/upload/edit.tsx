@@ -149,14 +149,8 @@ export default function EditMediaScreen() {
       thumbnailUri: thumbnailUri!,
     };
 
-    console.log("Uploading local URIs:", localUris);
-
-    console.log("Uploading metadata:", metadata);
-
-    // Fire upload in background
     dispatch(uploadMediaThunk({ metadata, localUris }));
 
-    // // dismiss to feed tab without rerendering
     router.dismissTo("/(tabs)/vu");
   };
 
@@ -166,7 +160,7 @@ export default function EditMediaScreen() {
         flex: 1,
         backgroundColor: "#fff",
       }}
-      edges={["top", "bottom"]} // Ensure safe area insets are respected
+      edges={["top", "bottom"]} 
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
