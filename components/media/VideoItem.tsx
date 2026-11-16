@@ -69,51 +69,8 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
     }
   }, [isVisible, isTabFocused]);
 
-  // const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // useEffect(() => {
-  //   const sub = AppState.addEventListener("change", (state) => {
-  //     if (state === "active") {
-  //       // if (timeoutRef.current) {
-  //       //   clearTimeout(timeoutRef.current);
-  //       // }
-
-  //       // timeoutRef.current = setTimeout(() => {
-  //       //   if (player.status === "error") {
-  //       //     console.log("video player in error state");
-  //       //     dispatch(reportCrash());
-  //       //     return;
-  //       //   }
-
-  //       //   if (isVisible && isTabFocused && !isPaused) {
-  //       //     player.play();
-  //       //   }
-  //       // }, 500);
-  //       if (isVisible && isTabFocused) {
-  //         player.play();
-  //         setIsPaused(false);
-  //         setShowOverlay(false);
-  //       }
-  //     } else if (state.match(/inactive|background/)) {
-  //       // if (isVisible && isTabFocused) {
-  //       //   player.pause();
-  //       //   setIsPaused(true);
-  //       //   setShowOverlay(true);
-  //       //   fadeAnim.setValue(1);
-  //       // }
-  //     }
-  //   });
-  //   return () => {
-  //     sub.remove();
-  //     // if (timeoutRef.current) {
-  //     //   clearTimeout(timeoutRef.current);
-  //     // }
-  //   };
-  // }, [player, isVisible, isTabFocused, fadeAnim]);
-
-  // VideoItem.tsx
   useEffect(() => {
-    if (!isVisible) return; // only when actually visible
+    if (!isVisible) return; 
     const sub = AppState.addEventListener("change", (state) => {
       if (state === "active" && isTabFocused) {
         player.play();
@@ -187,16 +144,6 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
       fadeAnim.setValue(1);
     }
   };
-
-  // const handleLikeInMediaLikeStates = () => {
-  //   console.log("Like media:", media.id);
-  //   dispatch(addMediaItemToLiked(media));
-  // };
-
-  // const handleUnlikeInMediaLikeStates = () => {
-  //   console.log("Unlike media:", media.id);
-  //   dispatch(deleteMediaItemFromLiked(media));
-  // };
 
   const handleChangePlaybackSpeed = useCallback((s: number) => {
     setPlaybackSpeed(s);

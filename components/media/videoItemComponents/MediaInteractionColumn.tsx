@@ -45,7 +45,7 @@ type Props = {
   onUnlikeMedia: () => void;
 };
 
-const speeds = [0.75, 1.00, 1.25];
+const speeds = [0.75, 1.0, 1.25];
 
 function MediaInteractionColumn({
   profileImage,
@@ -60,9 +60,18 @@ function MediaInteractionColumn({
 }: Props) {
   const [liked, setLiked] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const [likeMedia, { isLoading: isLiking, isSuccess: isLiked, error: likeError }] = useLikeMediaMutation();
-  const [unlikeMedia, { isLoading: isUnliking, isSuccess: isUnliked, error: unlikeError }] = useUnlikeMediaMutation();
-  const [deleteMedia, { isLoading: isDeleting, isSuccess: isDeleted, error: deleteError }] = useDeleteMediaMutation();
+  const [
+    likeMedia,
+    { isLoading: isLiking, isSuccess: isLiked, error: likeError },
+  ] = useLikeMediaMutation();
+  const [
+    unlikeMedia,
+    { isLoading: isUnliking, isSuccess: isUnliked, error: unlikeError },
+  ] = useUnlikeMediaMutation();
+  const [
+    deleteMedia,
+    { isLoading: isDeleting, isSuccess: isDeleted, error: deleteError },
+  ] = useDeleteMediaMutation();
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
   const likedIdSet = useSelector(selectLikedIdsSet);
@@ -143,9 +152,11 @@ function MediaInteractionColumn({
   return (
     <View style={styles.container}>
       <View style={styles.iconGroup}>
-        <View style={styles.profileBorder}>
-          <Image source={{ uri: profileImage }} style={styles.profileImage} />
-        </View>
+        <TouchableOpacity onPress={handlePressAvatar}>
+          <View style={styles.profileBorder} >
+            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.iconGroup}>
@@ -189,7 +200,12 @@ function MediaInteractionColumn({
         >
           <View style={styles.menu}>
             <View style={styles.menuRow}>
-              <MaterialIcons name="slow-motion-video" size={20} color={"white"} style={{ marginRight: 10 }} />
+              <MaterialIcons
+                name="slow-motion-video"
+                size={20}
+                color={"white"}
+                style={{ marginRight: 10 }}
+              />
               <View style={styles.speedGroup}>
                 {speeds.map((s) => (
                   <TouchableOpacity
@@ -215,7 +231,11 @@ function MediaInteractionColumn({
                 style={[styles.menuRow, styles.deleteRow]}
                 onPress={confirmDelete}
               >
-                <MaterialIcons name="delete" size={20} color="rgba(255, 255, 255, 1)" />
+                <MaterialIcons
+                  name="delete"
+                  size={20}
+                  color="rgba(255, 255, 255, 1)"
+                />
                 <Text style={styles.deleteText}>Delete Video</Text>
               </TouchableOpacity>
             )}
