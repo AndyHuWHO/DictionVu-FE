@@ -1,22 +1,39 @@
 // redux/features/mediaLiked/mediaLikedThunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "@/redux/store";
+import type { RootState } from "@/redux/store";
 import {
   fetchMediaLikedFromAPI,
   fetchLikedMediaIdsFromAPI,
 } from "./mediaLikedService";
-import {
-  MediaItem,
+import type {
   MediaPagedResponse,
 } from "@/redux/features/mediaUpload/types";
+
+type MediaLikedThunkConfig = {
+  state: RootState;
+  rejectValue: string;
+};
+
+type RejectStringThunkConfig = {
+  rejectValue: string;
+};
+
+const getErrorMessage = (error: any, fallback: string): string => {
+  return (
+    error.response?.data?.message ??
+    error.response?.data?.error ??
+    error.message ??
+    fallback
+  );
+};
 
 export const fetchMediaLikedThunk = createAsyncThunk<
   MediaPagedResponse,
   { page?: number; size?: number; token: string },
-  { state: RootState }
+  MediaLikedThunkConfig
 >("mediaLiked/fetchMedia", async ({ page = 0, size = 10, token }, thunkAPI) => {
   if (!token) {
-    throw new Error("Missing JWT token");
+    return thunkAPI.rejectWithValue("Missing JWT token");
   }
 
   const totalPages = thunkAPI.getState().mediaLiked.totalPages;
@@ -31,31 +48,25 @@ export const fetchMediaLikedThunk = createAsyncThunk<
     const mediaList = await fetchMediaLikedFromAPI(token, page, size);
     return mediaList;
   } catch (error: any) {
-    console.error("Fetch media liked failed:", error);
     return thunkAPI.rejectWithValue(
-      error.response?.data?.message ||
-        error.message ||
-        "Failed to fetch media liked"
+      getErrorMessage(error, "Failed to fetch media liked"),
     );
   }
 });
 
-export const fetchLikedMediaIdsThunk = createAsyncThunk(
-  "mediaLiked/fetchLikedMediaIds",
-  async (token: string, thunkAPI) => {
-    try {
-      if (!token) {
-        throw new Error("Missing JWT token");
-      }
-      const ids = await fetchLikedMediaIdsFromAPI(token);
-      return ids;
-    } catch (error: any) {
-      console.error("Fetch liked media IDs failed:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to fetch liked media IDs"
-      );
-    }
+export const fetchLikedMediaIdsThunk = createAsyncThunk<
+  string[],
+  string,
+  RejectStringThunkConfig
+>("mediaLiked/fetchLikedMediaIds", async (token, thunkAPI) => {
+  if (!token) {
+    return thunkAPI.rejectWithValue("Missing JWT token");
   }
-);
+  try {
+    return await fetchLikedMediaIdsFromAPI(token);
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(
+      getErrorMessage(error, "Failed to fetch liked media IDs"),
+    );
+  }
+});

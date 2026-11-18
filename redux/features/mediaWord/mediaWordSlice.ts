@@ -2,6 +2,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { fetchMediaWordThunk } from "./mediaWordThunks";
+import { likeMediaApi } from "@/redux/apis/likeMediaApi";
+import { unlikeMediaApi } from "@/redux/apis/unlikeMediaApi";
+import { deleteMediaApi } from "@/redux/apis/deleteMediaApi";
 
 // --- Types ---
 interface WordResult {
@@ -61,36 +64,6 @@ const mediaWordSlice = createSlice({
         }
       }
     },
-    likeMediaInWord: (state, action: PayloadAction<string>) => {
-      const mediaId = action.payload;
-      for (const word in state.wordItems) {
-        const mediaItem = state.wordItems[word].media.find(
-          (m) => m.id === mediaId
-        );
-        if (mediaItem) {
-          mediaItem.likeCount += 1;
-        }
-      }
-    },
-    unlikeMediaInWord: (state, action: PayloadAction<string>) => {
-      const mediaId = action.payload;
-      for (const word in state.wordItems) {
-        const mediaItem = state.wordItems[word].media.find(
-          (m) => m.id === mediaId
-        );
-        if (mediaItem) {
-          mediaItem.likeCount -= 1;
-        }
-      }
-    },
-    deleteMediaInWord: (state, action: PayloadAction<string>) => {
-      const mediaId = action.payload;
-      for (const word in state.wordItems) {
-        state.wordItems[word].media = state.wordItems[word].media.filter(
-          (m) => m.id !== mediaId
-        );
-      }
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -114,7 +87,51 @@ const mediaWordSlice = createSlice({
       .addCase(fetchMediaWordThunk.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
-      });
+      })
+      .addMatcher(
+        likeMediaApi.endpoints.likeMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.media.id;
+
+          for (const wordResult of Object.values(state.wordItems)) {
+            const mediaItem = wordResult.media.find(
+              (item) => item.id === mediaId,
+            );
+
+            if (mediaItem) {
+              mediaItem.likeCount += 1;
+            }
+          }
+        },
+      )
+      .addMatcher(
+        unlikeMediaApi.endpoints.unlikeMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.mediaId;
+
+          for (const wordResult of Object.values(state.wordItems)) {
+            const mediaItem = wordResult.media.find(
+              (item) => item.id === mediaId,
+            );
+
+            if (mediaItem) {
+              mediaItem.likeCount = Math.max(0, mediaItem.likeCount - 1);
+            }
+          }
+        },
+      )
+      .addMatcher(
+        deleteMediaApi.endpoints.deleteMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.mediaId;
+
+          for (const wordResult of Object.values(state.wordItems)) {
+            wordResult.media = wordResult.media.filter(
+              (item) => item.id !== mediaId,
+            );
+          }
+        },
+      );
   },
 });
 
@@ -122,9 +139,6 @@ const mediaWordSlice = createSlice({
 export const {
   clearMediaState,
   addMediaToWords,
-  likeMediaInWord,
-  unlikeMediaInWord,
-  deleteMediaInWord,
 } = mediaWordSlice.actions;
 
 export default mediaWordSlice.reducer;

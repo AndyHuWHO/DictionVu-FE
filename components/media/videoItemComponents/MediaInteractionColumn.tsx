@@ -8,121 +8,74 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState, memo } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { memo } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
+import type { MediaItem } from "@/redux/features/mediaUpload/types";
 import { useLikeMediaMutation } from "@/redux/apis/likeMediaApi";
 import { useUnlikeMediaMutation } from "@/redux/apis/unlikeMediaApi";
 import { useDeleteMediaMutation } from "@/redux/apis/deleteMediaApi";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
 import { useRouter } from "expo-router";
-import {
-  likeMediaInFeed,
-  unlikeMediaInFeed,
-  deleteMediaInFeed,
-} from "@/redux/features/mediaFeed/mediaFeedSlice";
-import {
-  likeMediaInWord,
-  unlikeMediaInWord,
-  deleteMediaInWord,
-} from "@/redux/features/mediaWord/mediaWordSlice";
-import { deleteMediaItemFromLiked } from "@/redux/features/mediaLiked/mediaLikedSlice";
 import { selectLikedIdsSet } from "@/redux/features/mediaLiked/mediaLikedSelectors";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type Props = {
+  media: MediaItem;
   profileImage: string;
-  likeCount: number;
-  commentCount: number;
-  mediaId: string;
-  authUserId: string;
   currentSpeed?: number;
   onChangePlaybackSpeed: (speed: number) => void;
-  onLikeMedia: () => void;
-  onUnlikeMedia: () => void;
 };
 
 const speeds = [0.75, 1.0, 1.25];
 
 function MediaInteractionColumn({
+  media,
   profileImage,
-  likeCount,
-  commentCount,
-  mediaId,
-  authUserId,
   currentSpeed = 1,
   onChangePlaybackSpeed,
-  onLikeMedia,
-  onUnlikeMedia,
 }: Props) {
-  const [liked, setLiked] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
   const [
     likeMedia,
-    { isLoading: isLiking, isSuccess: isLiked, error: likeError },
+    { isLoading: isLiking },
   ] = useLikeMediaMutation();
   const [
     unlikeMedia,
-    { isLoading: isUnliking, isSuccess: isUnliked, error: unlikeError },
+    { isLoading: isUnliking },
   ] = useUnlikeMediaMutation();
-  const [
-    deleteMedia,
-    { isLoading: isDeleting, isSuccess: isDeleted, error: deleteError },
-  ] = useDeleteMediaMutation();
-  const isAuthenticated = useSelector((state: RootState) => state.auth.token);
+  const [deleteMedia] = useDeleteMediaMutation();
+  const authToken = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
   const likedIdSet = useSelector(selectLikedIdsSet);
-  const isLikedByUser = likedIdSet.has(mediaId);
+  const isLikedByUser = likedIdSet.has(media.id);
   const currentUserId = useSelector((s: RootState) => s.user.profile?.publicId);
-  const isOwner = currentUserId === authUserId;
-
-  // const displayLikeCount = likeCount + (liked && !isLiked ? 1 : 0) + (!liked && isLiked ? -1 : 0);
-
-  useEffect(() => {
-    setLiked(isLikedByUser);
-  }, [isLikedByUser]);
+  const isOwner = currentUserId === media.authUserId;
+  const isUpdatingLike = isLiking || isUnliking;
 
   const handlePressAvatar = () => {
-    console.log("Navigate to user profile:", authUserId);
+    console.log("Navigate to user profile:", media.authUserId);
   };
 
   const handlePressLike = async () => {
-    if (!isAuthenticated) {
+    if (!authToken) {
       router.push("/(auth)/login");
       return;
     }
-    const newLiked = !liked;
 
-    setLiked(newLiked);
+    if (isUpdatingLike) {
+      return;
+    }
 
     try {
-      if (newLiked) {
-        await likeMedia({ mediaId }).unwrap();
-        dispatch(likeMediaInFeed(mediaId));
-        dispatch(likeMediaInWord(mediaId));
-        onLikeMedia();
+      if (isLikedByUser) {
+        await unlikeMedia({ mediaId: media.id }).unwrap();
       } else {
-        await unlikeMedia({ mediaId }).unwrap();
-        dispatch(unlikeMediaInFeed(mediaId));
-        dispatch(unlikeMediaInWord(mediaId));
-        onUnlikeMedia();
+        await likeMedia({ media }).unwrap();
       }
-
-      // // Refresh liked media list to reflect server truth
-      // dispatch(fetchMediaLikedThunk({ token: isAuthenticated }));
     } catch (error) {
       console.error("Failed to toggle like:", error);
-
-      // Revert optimistic update
-      setLiked(!newLiked);
     }
-  };
-
-  const handlePressComment = () => {
-    console.log("Open comments for media:", mediaId);
   };
 
   const confirmDelete = () => {
@@ -140,10 +93,7 @@ function MediaInteractionColumn({
 
   const handleDeleteMedia = async () => {
     try {
-      await deleteMedia({ mediaId }).unwrap();
-      dispatch(deleteMediaInFeed(mediaId));
-      dispatch(deleteMediaInWord(mediaId));
-      dispatch(deleteMediaItemFromLiked(mediaId));
+      await deleteMedia({ mediaId: media.id }).unwrap();
     } catch (error) {
       console.error("Failed to delete media:", error);
     }
@@ -163,21 +113,12 @@ function MediaInteractionColumn({
         <Ionicons
           name={"heart"}
           size={40}
-          color={liked ? "#ff0550ff" : "#ffffffff"}
-          onPress={handlePressLike}
+          color={isLikedByUser ? "#ff0550ff" : "#ffffffff"}
+          onPress={isUpdatingLike ? undefined : handlePressLike}
+          style={{ opacity: isUpdatingLike ? 0.6 : 1 }}
         />
-        <Text style={styles.iconLabel}>{likeCount}</Text>
+        <Text style={styles.iconLabel}>{media.likeCount}</Text>
       </View>
-
-      {/* <View style={styles.iconGroup}>
-        <Ionicons
-          name="chatbubble-outline"
-          size={40}
-          color="#fff"
-          onPress={handlePressComment}
-        />
-        <Text style={styles.iconLabel}>{commentCount}</Text>
-      </View> */}
 
       <View style={styles.iconGroup}>
         <Popover

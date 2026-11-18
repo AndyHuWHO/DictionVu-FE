@@ -6,21 +6,15 @@ import {
   TouchableWithoutFeedback,
   Animated,
   Image,
+  AppState,
 } from "react-native";
 import { VideoView, useVideoPlayer } from "expo-video";
-import { AppState } from "react-native";
-import { MediaItem } from "@/redux/features/mediaUpload/types";
+import type { MediaItem } from "@/redux/features/mediaUpload/types";
 import { useGetUserProfileQuery } from "@/redux/apis/visitProfileApi";
 import MediaInteractionColumn from "./videoItemComponents/MediaInteractionColumn";
 import { fitFromWH } from "@/utils/videoFit";
 import MediaMetadataPanel from "./videoItemComponents/MediaMetadataPanel";
 import PlayOverlay from "./videoItemComponents/PlayOverlay";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
-import {
-  addMediaItemToLiked,
-  deleteMediaItemFromLiked,
-} from "@/redux/features/mediaLiked/mediaLikedSlice";
 
 type Props = {
   media: MediaItem;
@@ -36,7 +30,6 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
   const [contentFit, setContentFit] = useState<"contain" | "cover">("contain");
 
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
-  const dispatch = useDispatch<AppDispatch>();
   const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
 
   const player = useVideoPlayer(media.objectPresignedGetUrl, (player) => {
@@ -149,17 +142,7 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
     setPlaybackSpeed(s);
   }, []);
 
-  const handleLikeInMediaLikeStates = useCallback(() => {
-    dispatch(addMediaItemToLiked(media));
-  }, [media, dispatch]);
 
-  const handleUnlikeInMediaLikeStates = useCallback(() => {
-    dispatch(deleteMediaItemFromLiked(media));
-  }, [media, dispatch]);
-
-  // const profileImage =
-  //   userProfile?.profileImageUrl ??
-  //   Image.resolveAssetSource(require("@/assets/favicon.png")).uri;
   const profileImage = useMemo(
     () =>
       userProfile?.profileImageUrl ??
@@ -172,7 +155,6 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
   return (
     <TouchableWithoutFeedback
       onPress={handleTogglePlay}
-      // onPressIn={() => setShowProgressBar(true)}
     >
       <View style={containerStyle}>
         {contentFit && (
@@ -180,7 +162,6 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
             style={styles.video}
             player={player}
             contentFit={contentFit}
-            // contentFit="contain"
             allowsPictureInPicture
             nativeControls={false}
           />
@@ -188,19 +169,10 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
 
         <PlayOverlay visible={showOverlay} fadeAnim={fadeAnim} />
         <MediaInteractionColumn
+          media={media}
           profileImage={profileImage}
-          likeCount={media.likeCount}
-          commentCount={media.commentCount}
-          mediaId={media.id}
-          authUserId={media.authUserId}
-          // isLiked={isLiked}
           currentSpeed={playbackSpeed}
-          // onChangePlaybackSpeed={(s) => {
-          //   setPlaybackSpeed(s);
-          // }}
           onChangePlaybackSpeed={handleChangePlaybackSpeed}
-          onLikeMedia={handleLikeInMediaLikeStates}
-          onUnlikeMedia={handleUnlikeInMediaLikeStates}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
       </View>

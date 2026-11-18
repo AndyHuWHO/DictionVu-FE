@@ -1,10 +1,13 @@
 // redux/features/mediaLiked/mediaLikedSlice.ts
-import { createSlice } from "@reduxjs/toolkit";
-import { MediaItem } from "@/redux/features/mediaUpload/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { MediaItem } from "@/redux/features/mediaUpload/types";
 import {
   fetchMediaLikedThunk,
   fetchLikedMediaIdsThunk,
 } from "./mediaLikedThunks";
+import { likeMediaApi } from "@/redux/apis/likeMediaApi";
+import { unlikeMediaApi } from "@/redux/apis/unlikeMediaApi";
+import { deleteMediaApi } from "@/redux/apis/deleteMediaApi";
 
 interface MediaLikedState {
   items: MediaItem[];
@@ -19,7 +22,7 @@ interface MediaLikedState {
   fetchLikedMediaIdsError: string | null;
 }
 
-const initialState: MediaLikedState = {
+const createInitialState = (): MediaLikedState => ({
   items: [],
   currentLikedIndex: 0,
   totalPages: null,
@@ -30,40 +33,15 @@ const initialState: MediaLikedState = {
   likedList: [],
   fetchLikedMediaIdsStatus: "idle",
   fetchLikedMediaIdsError: null,
-};
+});
 
 const mediaLikedSlice = createSlice({
   name: "mediaLiked",
-  initialState,
+  initialState: createInitialState(),
   reducers: {
-    clearMediaLikedState: (state) => {
-      state.items = [];
-      state.likedList = [];
-      state.fetchStatus = "idle";
-      state.fetchError = null;
-      state.fetchLikedMediaIdsStatus = "idle";
-      state.fetchLikedMediaIdsError = null;
-    },
-    addMediaItemToLiked: (state, action) => {
-      const index = state.currentLikedIndex;
-      const itemToAdd = action.payload;
-      const updatedItem = { ...itemToAdd, likeCount: itemToAdd.likeCount + 1 };
-      state.items = [
-        ...state.items.slice(0, index),
-        updatedItem,
-        ...state.items.slice(index),
-      ];
-      state.likedList = [...state.likedList, updatedItem.id];
-    },
-    deleteMediaItemFromLiked: (state, action) => {
-      const mediaId = action.payload.id;
-      state.items = state.items.filter((item) => item.id !== mediaId);
-      state.likedList = state.likedList.filter((id) => id !== mediaId);
-    },
-    setCurrentLikedIndex: (state, action) => {
-      if (state.currentLikedIndex !== action.payload) {
-        state.currentLikedIndex = action.payload;
-      }
+    clearMediaLikedState: () => createInitialState(),
+    setCurrentLikedIndex: (state, action: PayloadAction<number>) => {
+      state.currentLikedIndex = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -83,7 +61,10 @@ const mediaLikedSlice = createSlice({
       })
       .addCase(fetchMediaLikedThunk.rejected, (state, action) => {
         state.fetchStatus = "failed";
-        state.fetchError = action.payload as string;
+        state.fetchError =
+          action.payload ??
+          action.error.message ??
+          "Failed to fetch liked media";
       })
       .addCase(fetchLikedMediaIdsThunk.pending, (state) => {
         state.fetchLikedMediaIdsStatus = "loading";
@@ -95,16 +76,100 @@ const mediaLikedSlice = createSlice({
       })
       .addCase(fetchLikedMediaIdsThunk.rejected, (state, action) => {
         state.fetchLikedMediaIdsStatus = "failed";
-        state.fetchLikedMediaIdsError = action.payload as string;
-      });
+        state.fetchLikedMediaIdsError =
+          action.payload ??
+          action.error.message ??
+          "Failed to fetch liked media IDs";
+      })
+      .addMatcher(
+        likeMediaApi.endpoints.likeMedia.matchFulfilled,
+        (state, action) => {
+          const media = action.meta.arg.originalArgs.media;
+
+          if (!state.likedList.includes(media.id)) {
+            state.likedList.unshift(media.id);
+          }
+
+          const itemAlreadyExists = state.items.some(
+            (item) => item.id === media.id,
+          );
+
+          if (!itemAlreadyExists) {
+            const hadExistingItems = state.items.length > 0;
+
+            state.items.unshift({
+              ...media,
+              likeCount: media.likeCount + 1,
+            });
+
+            if (hadExistingItems) {
+              state.currentLikedIndex += 1;
+            }
+          }
+        },
+      )
+      .addMatcher(
+        unlikeMediaApi.endpoints.unlikeMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.mediaId;
+          const removedIndex = state.items.findIndex(
+            (item) => item.id === mediaId,
+          );
+
+          state.likedList = state.likedList.filter(
+            (id) => id !== mediaId,
+          );
+          state.items = state.items.filter(
+            (item) => item.id !== mediaId,
+          );
+
+          if (
+            removedIndex !== -1 &&
+            removedIndex < state.currentLikedIndex
+          ) {
+            state.currentLikedIndex -= 1;
+          }
+
+          state.currentLikedIndex = Math.min(
+            state.currentLikedIndex,
+            Math.max(0, state.items.length - 1),
+          );
+        },
+      )
+      .addMatcher(
+        deleteMediaApi.endpoints.deleteMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.mediaId;
+          const removedIndex = state.items.findIndex(
+            (item) => item.id === mediaId,
+          );
+
+          state.items = state.items.filter(
+            (item) => item.id !== mediaId,
+          );
+          state.likedList = state.likedList.filter(
+            (id) => id !== mediaId,
+          );
+
+          if (
+            removedIndex !== -1 &&
+            removedIndex < state.currentLikedIndex
+          ) {
+            state.currentLikedIndex -= 1;
+          }
+
+          state.currentLikedIndex = Math.min(
+            state.currentLikedIndex,
+            Math.max(0, state.items.length - 1),
+          );
+        },
+      );
   },
 });
 
 export const {
   clearMediaLikedState,
-  addMediaItemToLiked,
   setCurrentLikedIndex,
-  deleteMediaItemFromLiked,
 } = mediaLikedSlice.actions;
 
 export default mediaLikedSlice.reducer;

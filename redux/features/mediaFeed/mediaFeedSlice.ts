@@ -2,6 +2,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { fetchMediaFeedThunk } from "./mediaFeedThunks";
+import { likeMediaApi } from "@/redux/apis/likeMediaApi";
+import { unlikeMediaApi } from "@/redux/apis/unlikeMediaApi";
+import { deleteMediaApi } from "@/redux/apis/deleteMediaApi";
 
 interface MediaFeedState {
   items: MediaItem[];
@@ -31,24 +34,6 @@ const mediaFeedSlice = createSlice({
       state.items = [];
       state.status = "idle";
       state.error = null;
-    },
-    likeMediaInFeed: (state, action) => {
-      const mediaId = action.payload;
-      const mediaItem = state.items.find((item) => item.id === mediaId);
-      if (mediaItem) {
-        mediaItem.likeCount += 1;
-      }
-    },
-    unlikeMediaInFeed: (state, action) => {
-      const mediaId = action.payload;
-      const mediaItem = state.items.find((item) => item.id === mediaId);
-      if (mediaItem) {
-        mediaItem.likeCount -= 1;
-      }
-    },
-    deleteMediaInFeed: (state, action) => {
-      const mediaId = action.payload;
-      state.items = state.items.filter((item) => item.id !== mediaId);
     },
     addMediaItemToFeed: (state, action) => {
       const index = state.currentFeedIndex;
@@ -82,7 +67,58 @@ const mediaFeedSlice = createSlice({
       .addCase(fetchMediaFeedThunk.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
-      });
+      })
+      .addMatcher(
+        likeMediaApi.endpoints.likeMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.media.id;
+          const mediaItem = state.items.find(
+            (item) => item.id === mediaId,
+          );
+
+          if (mediaItem) {
+            mediaItem.likeCount += 1;
+          }
+        },
+      )
+      .addMatcher(
+        unlikeMediaApi.endpoints.unlikeMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.mediaId;
+          const mediaItem = state.items.find(
+            (item) => item.id === mediaId,
+          );
+
+          if (mediaItem) {
+            mediaItem.likeCount = Math.max(0, mediaItem.likeCount - 1);
+          }
+        },
+      )
+      .addMatcher(
+        deleteMediaApi.endpoints.deleteMedia.matchFulfilled,
+        (state, action) => {
+          const mediaId = action.meta.arg.originalArgs.mediaId;
+          const removedIndex = state.items.findIndex(
+            (item) => item.id === mediaId,
+          );
+
+          state.items = state.items.filter(
+            (item) => item.id !== mediaId,
+          );
+
+          if (
+            removedIndex !== -1 &&
+            removedIndex < state.currentFeedIndex
+          ) {
+            state.currentFeedIndex -= 1;
+          }
+
+          state.currentFeedIndex = Math.min(
+            state.currentFeedIndex,
+            Math.max(0, state.items.length - 1),
+          );
+        },
+      );
   },
 });
 
@@ -90,9 +126,6 @@ export const {
   clearMediaFeedState,
   addMediaItemToFeed,
   setCurrentFeedIndex,
-  likeMediaInFeed,
-  unlikeMediaInFeed,
-  deleteMediaInFeed,
 } = mediaFeedSlice.actions;
 
 export default mediaFeedSlice.reducer;
