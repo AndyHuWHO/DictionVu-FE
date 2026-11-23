@@ -102,7 +102,7 @@ export default function TermTabsLayout() {
                   color: props.focused
                     ? theme.tabBarActive
                     : theme.tabBarInactive,
-                  fontSize: 14,
+                  fontSize: props.focused ? 15 : 14,
                   fontWeight: props.focused ? "bold" : "normal",
                 }}
               >

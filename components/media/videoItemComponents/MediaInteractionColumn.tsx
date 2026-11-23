@@ -36,14 +36,8 @@ function MediaInteractionColumn({
   currentSpeed = 1,
   onChangePlaybackSpeed,
 }: Props) {
-  const [
-    likeMedia,
-    { isLoading: isLiking },
-  ] = useLikeMediaMutation();
-  const [
-    unlikeMedia,
-    { isLoading: isUnliking },
-  ] = useUnlikeMediaMutation();
+  const [likeMedia, { isLoading: isLiking }] = useLikeMediaMutation();
+  const [unlikeMedia, { isLoading: isUnliking }] = useUnlikeMediaMutation();
   const [deleteMedia] = useDeleteMediaMutation();
   const authToken = useSelector((state: RootState) => state.auth.token);
   const router = useRouter();
@@ -103,7 +97,7 @@ function MediaInteractionColumn({
     <View style={styles.container}>
       <View style={styles.iconGroup}>
         <TouchableOpacity onPress={handlePressAvatar}>
-          <View style={styles.profileBorder} >
+          <View style={styles.profileBorder}>
             <Image source={{ uri: profileImage }} style={styles.profileImage} />
           </View>
         </TouchableOpacity>
@@ -124,7 +118,12 @@ function MediaInteractionColumn({
         <Popover
           from={
             <TouchableOpacity style={{ padding: 14 }}>
-              <Entypo name="dots-three-horizontal" size={24} color="white" />
+              <Entypo
+                name="dots-three-horizontal"
+                size={24}
+                color="white"
+                style={styles.iconShadow}
+              />
             </TouchableOpacity>
           }
           placement={PopoverPlacement.BOTTOM}
@@ -205,6 +204,14 @@ const styles = StyleSheet.create({
     color: "#ffffffff",
     fontSize: 16,
     fontWeight: "500",
+    textShadowColor: "#000",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  iconShadow: {
+    textShadowColor: "#000",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 2,
   },
   profileBorder: {
     borderWidth: 2,

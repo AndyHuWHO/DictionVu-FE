@@ -70,7 +70,7 @@ export default function FeedTopTabScreen() {
   if (media.length === 0) {
     return (
       <ThemedView style={styles.centered}>
-        <ThemedText>No media feed were found"</ThemedText>
+        <ThemedText>No media feed were found</ThemedText>
       </ThemedView>
     );
   }
