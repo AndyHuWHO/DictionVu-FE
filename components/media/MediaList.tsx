@@ -1,5 +1,5 @@
 // components/media/MediaList.tsx
-import { FlatList, ViewToken, LayoutChangeEvent } from "react-native";
+import { FlatList, View, ViewToken, LayoutChangeEvent } from "react-native";
 import { useRef, useState, useCallback, useEffect } from "react";
 import VideoItem from "./VideoItem";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
@@ -23,7 +23,9 @@ export default function MediaList({ media, context, contextConfig }: Props) {
 
   const determineHeight = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
-    setAvailableHeight(height);
+    if (height > 0) {
+      setAvailableHeight(height);
+    }
   };
 
   const onViewableItemsChanged = useCallback(
@@ -38,7 +40,7 @@ export default function MediaList({ media, context, contextConfig }: Props) {
         }
       }
     },
-    [contextConfig, context]
+    [contextConfig, context],
   );
 
   const viewabilityConfig = useRef({
@@ -60,35 +62,41 @@ export default function MediaList({ media, context, contextConfig }: Props) {
         />
       ) : null;
     },
-    [availableHeight, contextConfig, visibleIndex, isFocused]
+    [availableHeight, contextConfig, visibleIndex, isFocused],
+  );
+
+  const initialScrollIndex = Math.max(
+    0,
+    Math.min(contextConfig?.currentIndex ?? 0, media.length - 1),
   );
 
   return (
-    <FlatList
-      initialScrollIndex={
-        contextConfig?.currentIndex && contextConfig.currentIndex > -1
-          ? contextConfig.currentIndex
-          : 0
-      }
-      disableIntervalMomentum
-      windowSize={3}
-      scrollsToTop={false}
-      data={media}
-      keyExtractor={(item) => item.id}
-      pagingEnabled
-      showsVerticalScrollIndicator={false}
-      decelerationRate="fast"
-      snapToAlignment="start"
-      onLayout={determineHeight}
-      snapToInterval={availableHeight ?? 0}
-      getItemLayout={(data, index) => ({
-        length: availableHeight ?? 0,
-        offset: (availableHeight ?? 0) * index,
-        index,
-      })}
-      onViewableItemsChanged={onViewableItemsChanged}
-      viewabilityConfig={viewabilityConfig}
-      renderItem={renderItem}
-    />
+    <View style={{ flex: 1 }} onLayout={determineHeight}>
+      {availableHeight !== null && (
+        <FlatList
+          style={{ flex: 1 }}
+          data={media}
+          renderItem={renderItem}
+          initialScrollIndex={initialScrollIndex}
+          disableIntervalMomentum
+          initialNumToRender={2}
+          windowSize={3}
+          scrollsToTop={false}
+          keyExtractor={(item) => item.id}
+          pagingEnabled
+          showsVerticalScrollIndicator={false}
+          decelerationRate="fast"
+          snapToAlignment="start"
+          snapToInterval={availableHeight}
+          getItemLayout={(_, index) => ({
+            length: availableHeight,
+            offset: availableHeight * index,
+            index,
+          })}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+        />
+      )}
+    </View>
   );
 }
