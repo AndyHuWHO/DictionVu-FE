@@ -35,7 +35,7 @@ export default function TabLayout() {
           paddingTop: 8,
         },
         tabBarActiveTintColor: theme.tabBarActive,
-        tabBarInactiveTintColor: theme.tabBarInactive,
+        tabBarInactiveTintColor: theme.bottomTabInactive,
         // tabBarIcon: () => null,
         tabBarLabel(props) {
           return (
@@ -43,9 +43,9 @@ export default function TabLayout() {
               style={{
                 color: props.focused
                   ? theme.tabBarActive
-                  : theme.tabBarInactive,
-                fontSize: 14,
-                fontWeight: props.focused ? "500" : "400",
+                  : theme.bottomTabInactive,
+                fontSize: props.focused ? 15 : 14,
+                fontWeight: props.focused ? "700" : "400",
                 // marginTop: -20,
               }}
             >
@@ -67,7 +67,7 @@ export default function TabLayout() {
                 style={{
                   color: props.focused
                     ? theme.tabBarActive
-                    : theme.tabBarInactive,
+                    : theme.bottomTabInactive,
                 }}
               />
             );
@@ -86,7 +86,7 @@ export default function TabLayout() {
                 style={{
                   color: props.focused
                     ? theme.tabBarActive
-                    : theme.tabBarInactive,
+                    : theme.bottomTabInactive,
                 }}
               />
             );
@@ -127,7 +127,7 @@ export default function TabLayout() {
                 style={{
                   color: props.focused
                     ? theme.tabBarActive
-                    : theme.tabBarInactive,
+                    : theme.bottomTabInactive,
                 }}
               />
             );
@@ -146,7 +146,7 @@ export default function TabLayout() {
                 style={{
                   color: props.focused
                     ? theme.tabBarActive
-                    : theme.tabBarInactive,
+                    : theme.bottomTabInactive,
                 }}
               />
             );

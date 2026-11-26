@@ -16,7 +16,7 @@ import { clearSearches } from "@/redux/features/recentSearchSlice";
 import { ThemedView } from "../themed/ThemedView";
 
 type Props = {
-  onPick: (term: string) => void;
+  onPick: (term: string, fromSearch: boolean) => void;
 };
 
 export default function SuggestionList({ onPick }: Props) {
@@ -57,7 +57,7 @@ export default function SuggestionList({ onPick }: Props) {
         keyExtractor={(item) => item.word}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => onPick(item.word)}
+            onPress={() => onPick(item.word, true)}
             style={({ pressed }) => [styles.itemRow]}
           >
             <Ionicons name="time-outline" size={18} color={theme.icon} />

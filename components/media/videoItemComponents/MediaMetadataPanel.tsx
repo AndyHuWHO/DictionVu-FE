@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MediaItem } from "@/redux/features/mediaUpload/types";
 import { VisitUserProfile } from "@/redux/apis/types/visitUserProfile";
 import { useRouter } from "expo-router";
+import { useSearchAction } from "@/hooks/useSearchAction";
 
 type Props = {
   media: MediaItem;
@@ -11,14 +12,11 @@ type Props = {
 };
 
 function MediaMetadataPanel({ media, userProfile }: Props) {
+  const { performSearch } = useSearchAction();
   const router = useRouter();
+
   const handleWordPress = (word: string) => {
-    const normalized = word.trim().toLowerCase();
-    if (!normalized) return;
-    router.navigate({
-      pathname: "/diction/[term]",
-      params: { term: normalized },
-    });
+    performSearch(word, false);
   };
   return (
     <View style={styles.container}>

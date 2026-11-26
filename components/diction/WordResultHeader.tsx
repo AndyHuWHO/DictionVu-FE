@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 20,
+    fontWeight: "bold",
     borderWidth: 1,
     borderRadius: 6,
     paddingVertical: 6,
