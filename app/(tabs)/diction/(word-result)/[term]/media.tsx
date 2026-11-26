@@ -1,5 +1,6 @@
 // app/(tabs)/diction/(word-result)/[term]/media.tsx
 import { useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocalSearchParams } from "expo-router";
@@ -17,20 +18,22 @@ export default function MediaScreen() {
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const media =
-    useSelector(
-      (state: RootState) => state.mediaWord.wordItems[searchTerm]?.media
-    ) ?? [];
+  const isFocused = useIsFocused();
+  const wordResult = useSelector(
+    (state: RootState) => state.mediaWord.wordItems[searchTerm]
+  );
+  const hasCachedResult = wordResult !== undefined;
+  const media = wordResult?.media ?? [];
 
   const status = useSelector((state: RootState) => state.mediaWord.status);
   const error = useSelector((state: RootState) => state.mediaWord.error);
   const isAuthenticated = useSelector((state: RootState) => state.auth.token);
 
   useEffect(() => {
-    if (searchTerm) {
+    if (isFocused && searchTerm && !hasCachedResult) {
       dispatch(fetchMediaWordThunk({ word: searchTerm }));
     }
-  }, [searchTerm]);
+  }, [dispatch, isFocused, searchTerm, hasCachedResult]);
 
   const handlePostMedia = () => {
     if (isAuthenticated) {
@@ -40,7 +43,7 @@ export default function MediaScreen() {
     }
   };
 
-  if (status === "loading") {
+  if (!hasCachedResult && status !== "failed") {
     return (
       <ThemedView style={styles.centered}>
         <ActivityIndicator size="large" />
@@ -48,7 +51,7 @@ export default function MediaScreen() {
     );
   }
 
-  if (status === "failed") {
+  if (!hasCachedResult && status === "failed") {
     return (
       <ThemedView style={styles.centered}>
         <ThemedText style={styles.errorText}>
