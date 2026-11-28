@@ -23,7 +23,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type Props = {
   media: MediaItem;
-  profileImage: string;
+  profileImageUrl?: string;
   currentSpeed?: number;
   onChangePlaybackSpeed: (speed: number) => void;
 };
@@ -32,7 +32,7 @@ const speeds = [0.75, 1.0, 1.25];
 
 function MediaInteractionColumn({
   media,
-  profileImage,
+  profileImageUrl,
   currentSpeed = 1,
   onChangePlaybackSpeed,
 }: Props) {
@@ -98,7 +98,14 @@ function MediaInteractionColumn({
       <View style={styles.iconGroup}>
         <TouchableOpacity onPress={handlePressAvatar}>
           <View style={styles.profileBorder}>
-            <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            <Image
+              source={
+                profileImageUrl == null
+                  ? require("@/assets/favicon.png")
+                  : { uri: profileImageUrl }
+              }
+              style={styles.profileImage}
+            />
           </View>
         </TouchableOpacity>
       </View>

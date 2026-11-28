@@ -1,10 +1,9 @@
 // components/media/VideoItem.tsx
-import { useEffect, useState, useCallback, useMemo, memo } from "react";
+import { useEffect, useState, memo } from "react";
 import {
   View,
   StyleSheet,
   TouchableWithoutFeedback,
-  Animated,
   Image,
   AppState,
 } from "react-native";
@@ -25,10 +24,8 @@ type Props = {
 
 function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
   const [showOverlay, setShowOverlay] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(1));
   const [isPaused, setIsPaused] = useState(!isVisible || !isTabFocused);
   const [contentFit, setContentFit] = useState<"contain" | "cover">("contain");
-
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   const { data: userProfile } = useGetUserProfileQuery(media.authUserId);
 
@@ -36,7 +33,7 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
     player.loop = true;
     if (isVisible && isTabFocused && !isPaused) {
       player.replay();
-      player.play();
+      // player.play();
     } else {
       player.pause();
     }
@@ -53,7 +50,7 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
     if (shouldPlay && isPaused) {
       setIsPaused(false);
       player.replay();
-      player.play();
+      // player.play();
       setPlaybackSpeed(1.0);
       setShowOverlay(false);
     } else if (!shouldPlay) {
@@ -63,7 +60,7 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
   }, [isVisible, isTabFocused]);
 
   useEffect(() => {
-    if (!isVisible) return; 
+    if (!isVisible) return;
     const sub = AppState.addEventListener("change", (state) => {
       if (state === "active" && isTabFocused) {
         player.play();
@@ -117,46 +114,19 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
 
   const handleTogglePlay = () => {
     if (isPaused) {
-      setIsPaused(false);
       player.play();
-
-      // setShowOverlay(true);
-      // fadeAnim.setValue(1);
-
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: true,
-      }).start(() => {
-        requestAnimationFrame(() => setShowOverlay(false));
-      });
+      setIsPaused(false);
+      setShowOverlay(false);
     } else {
-      setIsPaused(true);
       player.pause();
+      setIsPaused(true);
       setShowOverlay(true);
-      fadeAnim.setValue(1);
     }
   };
 
-  const handleChangePlaybackSpeed = useCallback((s: number) => {
-    setPlaybackSpeed(s);
-  }, []);
-
-
-  const profileImage = useMemo(
-    () =>
-      userProfile?.profileImageUrl ??
-      Image.resolveAssetSource(require("@/assets/favicon.png")).uri,
-    [userProfile?.profileImageUrl]
-  );
-
-  const containerStyle = useMemo(() => [styles.videoContainer, { height }], [height]);
-
   return (
-    <TouchableWithoutFeedback
-      onPress={handleTogglePlay}
-    >
-      <View style={containerStyle}>
+    <TouchableWithoutFeedback onPress={handleTogglePlay}>
+      <View style={[styles.videoContainer, { height }]}>
         {contentFit && (
           <VideoView
             style={styles.video}
@@ -167,12 +137,12 @@ function VideoItem({ media, isVisible, isTabFocused, height }: Props) {
           />
         )}
 
-        <PlayOverlay visible={showOverlay} fadeAnim={fadeAnim} />
+        <PlayOverlay visible={showOverlay} />
         <MediaInteractionColumn
           media={media}
-          profileImage={profileImage}
+          profileImageUrl={userProfile?.profileImageUrl}
           currentSpeed={playbackSpeed}
-          onChangePlaybackSpeed={handleChangePlaybackSpeed}
+          onChangePlaybackSpeed={setPlaybackSpeed}
         />
         <MediaMetadataPanel media={media} userProfile={userProfile} />
       </View>

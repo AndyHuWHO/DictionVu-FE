@@ -1,18 +1,27 @@
-// components/media/PlayOverlay.tsx
-import {memo} from "react";
+import { memo, useEffect, useState } from "react";
 import { Animated, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 type Props = {
   visible: boolean;
-  fadeAnim: Animated.Value;
 };
 
-function PlayOverlayComponent({ visible, fadeAnim }: Props) {
-  if (!visible) return null;
+function PlayOverlay({ visible }: Props) {
+  const [opacity] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    const animation = Animated.timing(opacity, {
+      toValue: visible ? 1 : 0,
+      duration: visible ? 120 : 250,
+      useNativeDriver: true,
+    });
+
+    animation.start();
+    return () => animation.stop();
+  }, [opacity, visible]);
 
   return (
-    <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+    <Animated.View pointerEvents="none" style={[styles.overlay, { opacity }]}>
       <Ionicons name="play" size={72} color="rgba(255,255,255,0.85)" />
     </Animated.View>
   );
@@ -28,4 +37,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo( PlayOverlayComponent);
+export default memo(PlayOverlay);
